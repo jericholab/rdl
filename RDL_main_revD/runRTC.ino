@@ -1,3 +1,5 @@
+//RunRTC function
+
 int runRTC(){
     DateTime now = rtc.now();
     Serial.print(now.year(), DEC);
