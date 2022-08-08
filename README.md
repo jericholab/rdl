@@ -1,5 +1,4 @@
-# rdl
-Resistance Data Logger
+# Resistance Data Logger (RDL) by Jericho Lab
 
 https://jericholab.com
 
