@@ -1,0 +1,9 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+BAT1,3V,BatteryHolder_Keystone_3000_1x12mm,194.945,-64.135,180,top
+C1,1 uF,C_1206_3216Metric,194.31,-77.47,0,top
+R1,10k,R_1206_3216Metric,201.295,-77.47,0,top
+R2,10k,R_1206_3216Metric,187.96,-77.47,0,top
+R3,10K,R_1206_3216Metric,110.49,-100.33,180,top
+U1,DS1307ZN+,SOIC-8_3.9x4.9mm_P1.27mm,209.55,-66.04,90,top
+U2,CD74HC4067M96,SOIC-24_W7.50mm,110.49,-88.9,-90,top
+Y1,Crystal,Crystal_SMD_Abracon_ABS25-4Pin_8.0x3.8mm,209.55,-76.2,90,top

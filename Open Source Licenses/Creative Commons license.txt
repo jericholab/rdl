@@ -1,0 +1,6 @@
+
+The Creative Common license of sub-type CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0) applies to the documentation distributed by Jericho Laboratory Inc.
+
+You can find the most recent version of the human-readable and offical legal text here:
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
