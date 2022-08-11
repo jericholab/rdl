@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // FONCTION: printHeader
 // INPUT: none
-// OUTPUT: non
+// OUTPUT: none
 
 int printHeader(){
         if (headerDisplay == 1){
