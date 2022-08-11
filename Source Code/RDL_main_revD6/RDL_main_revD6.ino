@@ -14,7 +14,7 @@
 #define word2 strlen(__FILENAME_LINUX__)
 #define __FILENAME__ ((word1)<(word2)? (__FILENAME_WIN__) : (__FILENAME_LINUX__))  // Linux and Windows do not use the same character. so the preprocessor compares the two lengths and pick the string that worked.
 
-////////// USER PARAMETERS //////////// 
+////////// USER PARAMETERS ////////////  
 
 int generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 int headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
@@ -22,11 +22,11 @@ int timeDisplay=1;                     // optional display of timestamp (1 = yes
 int idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 int tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 int ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-int humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
-int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-int WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
+int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+int i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 1;                   // optional display of soil water content values (1 = yes, 0 = no)
-int VoltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)
+int VoltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -277,44 +277,21 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
 
     if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
       Serial.print("*");
-      spacing2("*",12);  
-
-      float WetBulb= arrayV[WBGT_wet-1];    // "Minus 1" to convert Channel number to Multiplexer Array (indexed to 0)
-      float BlackGlobe=arrayV[WBGT_globe-1] ; 
-      float DryBulb=arrayV[WBGT_dry-1];
-      float WBGT = 0.7*WetBulb + 0.2*BlackGlobe + 0.1*DryBulb;  //WBGT equation for outdoors
-      Serial.print(WBGT);
-      spacing(WBGT,12);  
+      spacing2("*",12);
+      wbgtFunc();             //run function to calculate and display the WBGT value
+      
     }
 
     if (SoilDisplay ==1){     //optional print of the soil water content values, based on fixed channels.
       Serial.print("*");
       spacing2("*",12); 
+      soilFunc();     //run function 
 
-      float soil_R = arrayR[5] ;   //plaster block resistance, fixed channel (C1 = array 0, C2 is array 1, etc.)
-      float soil_T = arrayV[6] ;   //temperature probe for temperature compensation of the plaster block reading
-      //float soilWater = 10;      //temp test //soil water content (g/cm3)
-      float soilWater_uncorr = 0.0577*pow(log10(soil_R),2) - 0.6996*(log10(soil_R))+2.0933;    //water content, uncorrected for temperature
-      float soilWater = soilWater_uncorr-0.0017*(soil_T-21);                        //water content, corrected for temperature, referenced at 21C.
-      //Serial.print(soil_R); //optional printing of the raw resistance value of the plaster block
-      //Serial.print(soil_T); //optional printing of the raw temperature value (temperature compensation)
-      //spacing2("*",12); //optional printing
-      Serial.print(soilWater);
-      spacing(soilWater,12);
     }
 
     if (VoltDisplay==1){
-      analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
-      delay(10);                   //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
-      int sensorValue;               //variable declaration
-      for (int i= 1; i<5; i++){
-        sensorValue = analogRead(A1);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
-      }
-      analogReference(EXTERNAL);     //put the analog reference back to 3.3V
-      float voltage = sensorValue * (V_ref / 1023.0);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V)
-      Serial.print("*");
-      spacing2("*",12);      
-      Serial.print(voltage);  // print out the value you read:
+      voltFunc();       //run function
+
     }
     
     Serial.println();          //new line for the next measurements
