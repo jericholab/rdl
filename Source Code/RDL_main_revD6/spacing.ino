@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
-// FONCTION: spacing (FOR FLOATS)
+// FONCTION: spacing (for float variables)
+// PURPOSE: add the correct amount of space after a float to keep the columns aligned
 // INPUT: item (item to display), space(number of characters of the area in total)
 // OUTPUT: none
 

@@ -1,7 +1,8 @@
 //-------------------------------------------------------------------
 // FONCTION: commands
+// PURPOSE: execute the command required by the user input
 // INPUT: none
-// OUTPUT: it depends
+// OUTPUT: none
 
 int commands(){
 
@@ -22,7 +23,7 @@ if (str == F("CELCIUS\r")){
     units = 0;
     EEPROM.put(0, units);                // writes the chosen unit to EEPROM address "1".
     delay(1000);                         // after printing out the EEPROM content, wait two seconds before starting measurements again
-    resetFunc(); //restart the Arduino
+    resetFunc();                         //restart the Arduino
 }
 
 if (str == F("FAHRENHEIT\r")){
@@ -84,7 +85,7 @@ if (str == F("EEPROM-ERASE\r")){
   for (int i=0; i < EEPROM.length() ; i++) {
     EEPROM.write(i, 0);
   }
-  resetFunc(); //reset the arduino
+  resetFunc();                  //reset the arduino
 }
 
 
@@ -97,10 +98,10 @@ if (str == F("SENSORS\r")){
   Serial.println(text2);       // print question to user
   Serial.println();
   const int BUFFER_SIZE = 16;
-  Serial.setTimeout(30000);      //maximum time the Serial.ReadBytesUntil() function will wait out.
+  Serial.setTimeout(30000);                        //maximum time the Serial.ReadBytesUntil() function will wait out.
   Serial.readBytesUntil('\r', buf , BUFFER_SIZE);  //Read the data the user has input. (Array has 16 characters (16 channels) plus the null character to terminate the array. Total is 16+1)
   Serial.println(buf);
-  score = 0;                               // score is initialized at 0 - we dont know if the buffer content is good
+  score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
   if (sizeof(buf) ==17){                       // if new string has the expected length...
      score = 1;                                // the buffer gets a perfect score
      for(int i=0; i<16; i++){                  // and a chance to get its content verified 
@@ -109,15 +110,15 @@ if (str == F("SENSORS\r")){
          }
      }
      }
-     if(score == 1){                                // if the final score is good
+     if(score == 1){                                    // if the final score is good
              Serial.println(F("Good input"));             
              for(int i=0; i<17; i++){
               sensors[i] = buf[i];                      // we can substitute the sensor variable content
               }
-            EEPROM.put(20, sensors);                 // and write the new definition to the dedicated EEPROM address.
+            EEPROM.put(20, sensors);                    // and write the new definition to the dedicated EEPROM address.
          }
-     else{                                          //otherwise it means the user send too short definition or bad character
-       Serial.println(F("Bad input"));              // otherwise the input was bad....         
+     else{                                              //otherwise it means the user send too short definition or bad character
+       Serial.println(F("Bad input"));                  // otherwise the input was bad....         
      }
         
     Serial.print(text3);
@@ -129,7 +130,7 @@ if (str == F("SENSORS\r")){
 //- - - - - - - - - - - 
 
 //- - - - - - - - - - - 
-char buf2[9];                    // for now, code will be kept at a maximum of 8 channels (4 humidities)
+char buf2[9];                                          // for now, code will be kept at a maximum of 8 channels (4 humidities)
 if (str == F("HUMIDITIES\r")){
   Serial.println();
   Serial.println(humidities); 
@@ -138,15 +139,15 @@ if (str == F("HUMIDITIES\r")){
   Serial.println();
   
   const int BUFFER_SIZE = 9;
-  Serial.setTimeout(30000);      //maximum time the Serial.ReadBytesUntil() function will wait out.
-  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);  //Read the data the user has input. (Array has 16 characters (16 channels) plus the null character to terminate the array. Total is 16+1)
+  Serial.setTimeout(30000);                             //maximum time the Serial.ReadBytesUntil() function will wait out.
+  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);      //Read the data the user has input. (Array has 16 characters (16 channels) plus the null character to terminate the array. Total is 16+1)
   Serial.println(buf2);
 
-  score = 0;                               // score is initialized at 0 - we dont know if the buffer content is good
+  score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
   if (sizeof(buf2) ==9){                       // if new string has the expected length...
      score = 1;                                // the buffer gets a perfect score
-     for(int i=0; i<8; i++){                  // and a chance to get its content verified 
-         ////////if ((buf[i] != 'T')&&(buf[i] != 'P')){           // ... if character is something else than a  'T' or 'P', ...
+     for(int i=0; i<8; i++){                   // and a chance to get its content verified 
+         ////////if ((buf[i] != 'T')&&(buf[i] != 'P')){      // ... if character is something else than a  'T' or 'P', ...
          if((buf2[i] != 'A')&&
          (buf2[i] != 'B')&&
          (buf2[i] != 'C')&&
@@ -156,7 +157,7 @@ if (str == F("HUMIDITIES\r")){
          (buf2[i] != '2')&&
          (buf2[i] != '3')&&
          (buf2[i] != '4'))
-          score = 0;                                      // ... the buffer loses its perfect score 
+          score = 0;                                         // ... the buffer loses its perfect score 
          }
      }
 
@@ -165,7 +166,7 @@ if (str == F("HUMIDITIES\r")){
              for(int i=0; i<9; i++){
               humidities[i] = buf2[i];                      // we can substitute the sensor variable content
               }
-            EEPROM.put(50, humidities);                 // and write the new definition to the dedicated EEPROM address.
+            EEPROM.put(50, humidities);                    // and write the new definition to the dedicated EEPROM address.
          }
      else{                                          //otherwise it means the user send too short definition or bad character
        Serial.println(F("Bad input"));              // otherwise the input was bad....         

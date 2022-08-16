@@ -1,6 +1,7 @@
 
 //-------------------------------------------------------------------
 // FONCTION: soilFunc
+// PURPOSE: convert the gypsum block resistance to a soil water content value, with temperature compensation.
 // INPUT: none
 // OUTPUT: none
 

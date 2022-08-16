@@ -1,7 +1,8 @@
 //-------------------------------------------------------------------
 // FONCTION: initRTC
+// PURPOSE: initialize the Real-Time-Clock on the RDL PCB.
 // INPUT: none
-// OUTPUT: text
+// OUTPUT: none
 
 int initRTC(){
     delay(100);                 //give time to RTC to start after receiving Vcc supply 

@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: illuminance
-// Sort the humidities by analyzing the 'humidities' vector and creating couples (dry & wet). arrayH vector in the format ("db1,wb1,db2,wb2,db3,wb3,db4,wb4")
-// INPUT: no input because the inputs are global variables
-// OUTPUT: None because sortedHum (global variable) is modified
+// PURPOSE: Sort the humidities by analyzing the 'humidities' vector and creating couples (dry & wet). arrayH vector in the format ("db1,wb1,db2,wb2,db3,wb3,db4,wb4")
+// INPUT: none
+// OUTPUT: nnone
 
 int sortHum(){
     

@@ -1,7 +1,6 @@
-
-
 //-------------------------------------------------------------------
 // FONCTION: voltFunc
+// PURPOSE: measure and display the voltage tension value at the corresponding terminal
 // INPUT: none
 // OUTPUT: none
 

@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: readEEPROM
+// PURPOSE: Read RDL parameters from the EEPROM memory, if possible
 // INPUT: none
 // OUTPUT: none
 

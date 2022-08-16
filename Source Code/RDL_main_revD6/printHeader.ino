@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: printHeader
+// PURPOSE: Display the title of each active column
 // INPUT: none
 // OUTPUT: none
 

@@ -285,12 +285,12 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     if (SoilDisplay ==1){     //optional print of the soil water content values, based on fixed channels.
       Serial.print("*");
       spacing2("*",12); 
-      soilFunc();     //run function 
+      soilFunc();             //run function 
 
     }
 
     if (VoltDisplay==1){
-      voltFunc();       //run function
+      voltFunc();             //run function
 
     }
     

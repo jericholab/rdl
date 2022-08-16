@@ -1,11 +1,12 @@
 //-------------------------------------------------------------------
 // FONCTION: i2cSensors
+// PURPOSE: read the digital sensors connected to the i2c pins of the arduino.
 // INPUT: none
 // OUTPUT: none
 
 int i2cSensors(){
 
-//AM2301b digital humidity and temperature sensor
+//example with the AM2301b digital humidity and temperature sensor
 
     sensors_event_t humidity, temp;                              //define two events (objects)
       
@@ -18,7 +19,7 @@ if(AHT_present == 1){
 }
 
 else{
-    Serial.print("0.00");                              //print the temperature
+    Serial.print("0.00");                               //print the temperature
     spacing2("0.00",12); 
     Serial.print("0.00");                               //print the relative humidity
     spacing2("0.00",12);

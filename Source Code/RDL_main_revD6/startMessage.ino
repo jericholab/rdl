@@ -1,7 +1,8 @@
 //-------------------------------------------------------------------
 // FONCTION: startMessage
+// PURPOSE: Print to serial monitor some informations about the RDL parameters
 // INPUT: none
-// OUTPUT: text
+// OUTPUT: none
 
 int startMessage(){
 

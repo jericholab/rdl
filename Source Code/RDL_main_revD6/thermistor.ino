@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
-// FONCTION NAME:thermistor
+// FONCTION NAME: thermistor
+// PURPOSE: measure the resistance value of a thermistor probe and convert it to temperature, based on applicable calibration coefficients.
 // INPUT: thermistorpin, seriesresistor, A, B, C
 // OUTPUT: ohm value (ohm) and temperature value (oC) in a structure
 

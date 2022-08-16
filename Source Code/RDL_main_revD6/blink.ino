@@ -1,6 +1,7 @@
 
 //-------------------------------------------------------------------
 // FONCTION: blink
+// PURPOSE: blink the LED light of the Arduino board
 // INPUT: duration of blinking effect, number of blinks
 // OUTPUT: none
 int blink(int duration, int times)

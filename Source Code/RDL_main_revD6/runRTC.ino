@@ -1,7 +1,8 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: runRTC
-// INPUT: None.
-// OUTPUT: None.
+// PURPOSE: ask the Real-Time Clock chip to provide the present time
+// INPUT: none
+// OUTPUT: none
 
 int runRTC(){
 

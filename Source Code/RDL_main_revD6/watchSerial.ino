@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: watchSerial
+// PURPOSE: watch the serial monitor buffer of the microcontroller for possible incoming user command inputs.
 // INPUT: none
 // OUTPUT: none
 

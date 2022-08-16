@@ -1,5 +1,6 @@
 //-------------------------------------------------------------------
-// FONCTION: spacing2 (FOR STRINGS)
+// FONCTION: spacing2 (for String variables)
+// PURPOSE: add the correct amount of space after a String to keep the columns aligned
 // INPUT: item (item to display), space(number of characters of the area in total)
 // OUTPUT: none
 int spacing2(String item, int space)

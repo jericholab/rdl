@@ -1,6 +1,7 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: illuminance
-// INPUT: resistance (ohm)
+// PURPOSE: measure the photoresistor connected to the active channel and calculate an illuminance value
+// INPUT: channel
 // OUTPUT: illuminance (lux)
 
 struct STRUCT1 illuminance(int channel)   //this creates a function called illuminance that is a member of the class SRUCT1, that is a struct data type.
