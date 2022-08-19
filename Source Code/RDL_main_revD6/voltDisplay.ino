@@ -16,6 +16,7 @@ int voltFunc(){
       Serial.print("*");
       spacing2("*",12);      
       Serial.print(voltage);         //print out the value you read.
+      spacing(voltage,12);      
 }
   
       

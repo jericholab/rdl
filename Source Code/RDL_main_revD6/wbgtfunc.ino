@@ -1,6 +1,6 @@
 
 //-------------------------------------------------------------------
-// FONCTION: WBGTfunc
+// FONCTION: wbgtFunc
 // PURPOSE: Calculate the Wet Bulb Globe Temperature (WBGT) comfort index from the available raw data
 // INPUT: none
 // OUTPUT: none

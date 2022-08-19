@@ -15,6 +15,6 @@ int soilFunc(){
       //Serial.print(soil_T); //optional printing of the raw temperature value (temperature compensation)
       //spacing2("*",12); //optional printing
       Serial.print(soilWater,3);   //print with 3 decimals  
-      spacing(soilWater,12);     
+      spacing(soilWater,11);     //13 instead of 12 because a third decimal is printed but the spacing() function assumes 2.
 
 }

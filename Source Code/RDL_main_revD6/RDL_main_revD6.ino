@@ -22,11 +22,12 @@ int timeDisplay=1;                     // optional display of timestamp (1 = yes
 int idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 int tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 int ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
-int i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
+int humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+int WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 1;                   // optional display of soil water content values (1 = yes, 0 = no)
-int VoltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
+int VoltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)
+int ControlSignal=1;                   // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -154,6 +155,9 @@ void setup(void) {
     digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
     pinMode(A1, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
+
+    pinMode(9, OUTPUT);                               // define pin 9 as an output pin to allow sending a control signal
+
 
     initRTC();                                      // call function to initialize Real Time Clock 
 
@@ -291,6 +295,11 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
 
     if (VoltDisplay==1){
       voltFunc();             //run function
+    }
+
+
+    if (ControlSignal==1){
+      controlFunc();             //run function
 
     }
     

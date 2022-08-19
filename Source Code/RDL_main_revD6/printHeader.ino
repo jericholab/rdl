@@ -87,6 +87,12 @@ int printHeader(){
               Serial.print(F("Voltage"));
               spacing2("Voltage",12);
             }
+        if (ControlSignal == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              Serial.print(F("Control"));
+              spacing2(F("Control"),12);
+            }
             
       Serial.println();
       Serial.println();
