@@ -52,8 +52,8 @@ int Seriesresistor = 10000;            // (ohms) the value of the series resisto
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
-#include "RTClib.h"                    // library required for the Real-Time Clock (RTC)
-#include <Adafruit_AHTX0.h>            // include the required library
+#include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
+#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidit sensor. Can be installed via the Library Manager.
 Adafruit_AHTX0 aht;                    // define the aht variable
 RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
 int R_MUX = 70;                        // Internal resistance of the multiplexer (ohms)

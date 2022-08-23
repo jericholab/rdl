@@ -66,7 +66,7 @@ int printHeader(){
               spacing2("*",12);
               Serial.print(F("i2c_C"));
               spacing2("i2c_C",12);
-              Serial.print(F("i2c_HR"));
+              Serial.print(F("i2c_RH"));
               spacing2("i2c_HR",12);
             }
         if (WBGTDisplay == 1){
