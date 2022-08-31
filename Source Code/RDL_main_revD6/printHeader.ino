@@ -15,10 +15,12 @@ int printHeader(){
         }
         
         if (timeDisplay == 1){
-          Serial.print(F("Date"));
-          spacing2("Date",12);
-          Serial.print(F("Time"));
-          spacing2("Time",12);
+          String dateText = F("Date");
+          Serial.print(dateText);
+          spacing2(dateText,12);
+          String timeText = F("Time");
+          Serial.print(timeText);
+          spacing2(timeText,12);
         }
     
         if (idDisplay ==1){        
@@ -64,34 +66,40 @@ int printHeader(){
         if (i2cDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              Serial.print(F("i2c_C"));
-              spacing2("i2c_C",12);
-              Serial.print(F("i2c_RH"));
-              spacing2("i2c_HR",12);
+              String i2cText1 = F("i2c_C");
+              Serial.print(i2cText1);
+              spacing2(i2cText1,12);
+              String i2cText2 = F("i2c_RH");
+              Serial.print(i2cText2);
+              spacing2(i2cText2,12);
             }
         if (WBGTDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              Serial.print(F("WBGT"));
-              spacing2("WBGT",12);
+              String WBGTText = F("WBGT");
+              Serial.print(WBGTText);
+              spacing2(WBGTText,12);
             }
         if (SoilDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              Serial.print(F("Soil"));
-              spacing2("Soil",12);
+              String soilText = F("Soil");
+              Serial.print(soilText);
+              spacing2(soilText,12);              
             }
         if (VoltDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              Serial.print(F("Voltage"));
-              spacing2("Voltage",12);
+              String voltageText = F("Voltage");
+              Serial.print(voltageText);
+              spacing2(voltageText,12);
             }
         if (ControlSignal == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              Serial.print(F("Control"));
-              spacing2(F("Control"),12);
+              String controlText = F("Control");
+              Serial.print(controlText);
+              spacing2(controlText,12);
             }
             
       Serial.println();
