@@ -91,7 +91,7 @@ for i=bit_min:bit_max
   vector_temperatureC_0=vector_temperatureK-273.15;
 endfor
 % - - - - - - - - - - - - - - - - - - - - - - 
-% Initialize a matrix to store the results(bit, resistance, voltage, temperature, resolution, etc)
+% Initialize a matrix to store the results (bit, resistance, voltage, temperature, resolution, etc)
 
 matResults0=vector_ADC_0;   %create matrix column by column;
 matResults0(:,2)=vector_resistance_0;  %add column
@@ -102,12 +102,15 @@ matResults0(:,4)=vector_temperatureC_0;
 % Cut out a piece of matResults() to only have the 0-100C (vlookup)
 % Then transform the rest of the code to call this newmatrix
 
+cutOutActive = 1;   %if active (1), matResults is a portion of matResults0. if inactive, both matrices are equivalent.
 minT_display= 0;   %minimum temperature of interest to display in graphs
 maxT_display= 100;  %maximum temperature of interest to display in graphs
 size = length(matResults0);
+lower_bound =1;  %initialize value to full matrix
+upper_bound = size;  %initialize value to full matrix
 
-lower_bound =1;  %initialize value
-upper_bound = 1;  %initialize value
+if (cutOutActive == 1)
+ 
 for i = 1:size
    if(matResults0(i,4)>maxT_display)
      lower_bound = i;
@@ -120,7 +123,9 @@ for (i = 1:size)
   if(matResults0(reverseIndex,4) < minT_display)
     upper_bound = reverseIndex;
   endif
-endfor
+endfor 
+  
+endif
 
 matResults = matResults0(lower_bound:upper_bound,:);  %selecting subset of the full matrix
 %matResults = matResults0(66:783,:);  %selecting subset of the full matrix %%%%%%MANUAL TEST 0 - 100C
@@ -174,7 +179,7 @@ x4 = vector_temperatureC(1:end-1);
 res_T = x4-x3;  %temperature resolution vector
 
 subplot(2,3,2); 
-%semilogy(x3, res_T,'-o')  %plot temperature resolution as a function of temperature
+%semilogy(x3, res_T,'-o')  %plot with a log scale
 plot(x3, res_T,'-o')  %plot temperature resolution as a function of temperature
 grid on;
 title('Fig.2. Temperature measurement resolution as a function of temperature')
@@ -289,7 +294,7 @@ hold on;
 %Figure (6): Plotting uncertainty results
 subplot(2,3,6); 
 plot(M(:,1),M(:,2),'-')
-%semilogy(M(:,1),M(:,2),'-')
+%semilogy(M(:,1),M(:,2),'-') %plot with a log scale axis
 title('Fig.6. Measurement uncertainty components as a function of temperature')
 xlabel('Temperature (oC)')
 ylabel('Uncertainty (oC))')
