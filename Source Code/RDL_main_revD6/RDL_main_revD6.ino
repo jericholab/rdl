@@ -15,19 +15,18 @@
 #define __FILENAME__ ((word1)<(word2)? (__FILENAME_WIN__) : (__FILENAME_LINUX__))  // Linux and Windows do not use the same character. so the preprocessor compares the two lengths and pick the string that worked.
 
 ////////// USER PARAMETERS //////////// 
-/////////////////////////////////////// 
 
 int generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 int headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 int timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 int idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-int tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
-int ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-int humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+int tDisplay=0;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
+int ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-int WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
-int SoilDisplay = 1;                   // optional display of soil water content values (1 = yes, 0 = no)
-int VoltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)
+int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
+int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
+int VoltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -54,13 +53,16 @@ int Seriesresistor = 10000;            // (ohms) the value of the series resisto
 long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidit sensor. Can be installed via the Library Manager.
-Adafruit_AHTX0 aht;                    // define the aht variable
+//#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidity sensor. Can be installed via the Library Manager.
+#include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
+Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
+//Adafruit_AHTX0 aht;                    // define the aht variable  //OLD CODE FOR AHT sensors
 RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
 int R_MUX = 70;                        // Internal resistance of the multiplexer (ohms)
 #define NUMSAMPLES 1                   // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
-int AHT_present = 0;                   //initialize the variable that will indicate if a sensor is present
+// int AHT_present = 0;                   //initialize the variable that will indicate if a sensor is present
+int SHT4_present = 0;                   //initialize the variable that will indicate if a sensor is present
 int score;                             // define the variable "score" for evaluation of user input algorithm
 //-------------------------------------------------------------------
 
@@ -163,8 +165,11 @@ void setup(void) {
     initRTC();                                      // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
-      if(aht.begin()){                                //if the humidity sensor can be initialized...
-        AHT_present = 1;                              
+//      if(aht.begin()){                                //if the humidity sensor can be initialized...
+//        AHT_present = 1;                              
+//      }
+      if(sht4.begin()){                                //if the AHT40 humidity sensor can be initialized...
+        SHT4_present = 1;                              
       }
     }
     
