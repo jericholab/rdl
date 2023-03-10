@@ -14,7 +14,8 @@
 #define word2 strlen(__FILENAME_LINUX__)
 #define __FILENAME__ ((word1)<(word2)? (__FILENAME_WIN__) : (__FILENAME_LINUX__))  // Linux and Windows do not use the same character. so the preprocessor compares the two lengths and pick the string that worked.
 
-////////// USER PARAMETERS ////////////  
+////////// USER PARAMETERS //////////// 
+/////////////////////////////////////// 
 
 int generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 int headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
