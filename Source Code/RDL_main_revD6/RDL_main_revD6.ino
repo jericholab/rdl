@@ -27,6 +27,7 @@ int i2cDisplay = 1;                    // optional display of i2c sensor values 
 int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
 int VoltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
+int terosDisplay = 1;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -301,6 +302,10 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
 
     if (VoltDisplay==1){
       voltFunc();             //run function
+    }
+
+    if (terosDisplay==1){
+      terosFunc();             //run function
     }
 
 

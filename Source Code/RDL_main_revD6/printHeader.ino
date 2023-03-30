@@ -94,6 +94,18 @@ int printHeader(){
               Serial.print(voltageText);
               spacing2(voltageText,12);
             }
+
+        if (terosDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String terosText1 = F("Teros_V");
+              Serial.print(terosText1);
+              spacing2(terosText1,12);
+              String terosText2 = F("Teros_VWC");
+              Serial.print(terosText2);
+              spacing2(terosText2,12);
+            }
+            
         if (ControlSignal == 1){
               Serial.print(F("*"));
               spacing2("*",12);
