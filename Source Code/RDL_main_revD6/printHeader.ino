@@ -87,12 +87,17 @@ int printHeader(){
               Serial.print(soilText);
               spacing2(soilText,12);              
             }
-        if (VoltDisplay == 1){
+        if (voltDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              String voltageText = F("Voltage");
+//              String voltageText = F("Voltage");
+//              Serial.print(voltageText);
+//              spacing2(voltageText,12);
+              String voltageText = F("Current (A)");
               Serial.print(voltageText);
-              spacing2(voltageText,12);
+              //spacing2(voltageText,12);
+              spacing2("0.000",12);
+
             }
 
         if (terosDisplay == 1){
