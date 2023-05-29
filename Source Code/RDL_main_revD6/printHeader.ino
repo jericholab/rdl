@@ -72,6 +72,15 @@ int printHeader(){
               String i2cText2 = F("i2c_RH");
               Serial.print(i2cText2);
               spacing2(i2cText2,12);
+
+              Serial.print(F("*"));   //DOUBLING THE COLUMNS FOR THE SECOND SHT40
+              spacing2("*",12);
+              //String i2cText1 = F("i2c_C");
+              Serial.print(i2cText1);
+              spacing2(i2cText1,12);
+              //String i2cText2 = F("i2c_RH");
+              Serial.print(i2cText2);
+              spacing2(i2cText2,12);
             }
         if (WBGTDisplay == 1){
               Serial.print(F("*"));
@@ -110,6 +119,15 @@ int printHeader(){
               Serial.print(terosText2);
               spacing2(terosText2,12);
             }
+
+         if (strainDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String terosText1 = F("Strain_Raw");
+              Serial.print(terosText1);
+              spacing2(terosText1,12);
+
+            }    
             
         if (ControlSignal == 1){
               Serial.print(F("*"));
