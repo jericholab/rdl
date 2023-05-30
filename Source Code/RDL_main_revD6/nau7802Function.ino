@@ -7,13 +7,13 @@
 
 void nau7802Function() {
 
-  while (! nau.available()) {
-    delay(1);
+  int32_t val = -1;
+  
+  if(strainDevice == 1){
+    val = nau.read();
   }
-
-  Serial.print("*");
-  spacing2("*",12); 
-  int32_t val = nau.read();
-  Serial.print(val);
-  Serial.print("   ");
+    Serial.print("*");
+    spacing2("*",12); 
+    Serial.print(val);
+    Serial.print("   ");
   }

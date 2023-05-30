@@ -146,6 +146,7 @@ struct STRUCT1 {float o; float t; };   // define a new structure class called 'S
 struct STRUCT2 {float a;};               // define a new structure class called 'STRUCT2 that will enable the relhum function
 unsigned long timePassed;              //initialize variable to keep track of time passed between each measurement
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
+bool strainDevice;                      //define a boolean that indicates the presence of a strain device
 
 ////// SETUP ////////
 
@@ -176,9 +177,6 @@ void setup(void) {
     initRTC();                                      // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
-//      if(aht.begin()){                                //if the humidity sensor can be initialized...
-//        AHT_present = 1;                              
-//      }
       if(sht4.begin()){                                //if the AHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
@@ -195,6 +193,8 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
+    strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+
 if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
     Serial.println();
     Serial.println();
@@ -204,10 +204,10 @@ if (headerDisplay == 1){          // it is necessary to deactivate the startMess
     startMessage();    // print informations after startup
     printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
 }
-    //printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
+    
     sortHum();           // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
 
-    nau7802_init();      // initialize the nau7802 sensor    //////// TEST
+    
     
 }
 //------------------------------------------------------------- 

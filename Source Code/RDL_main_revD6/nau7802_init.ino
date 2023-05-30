@@ -5,16 +5,17 @@
 // INPUT: xxxxxxxxxxxxxxxxx 
 // OUTPUT: none
 
-void nau7802_init() {
+bool nau7802_init() {
   
 
   //Serial.println("NAU7802");
-  if (! nau.begin()) {
+  if (! nau.begin()) {                              //if device is not found, we skip the initialization
+    Serial.println();
     Serial.println("Failed to find NAU7802");
+    delay(1000);
   }
-  //Serial.println("Found NAU7802");
-
-  nau.setLDO(NAU7802_3V0);   //ORIGINAL line
+  else{                                               //otherwise, we initialize with the NAU7802 library
+    
   //Serial.print("LDO voltage set to ");
   switch (nau.getLDO()) {
     case NAU7802_4V5: break; // Serial.println("4.5V"); break; //
@@ -68,5 +69,13 @@ void nau7802_init() {
     delay(1000);
   }
   //Serial.println("Calibrated system offset");
+  //Serial.println("Found NAU7802");
+  nau.setLDO(NAU7802_3V0);   //ORIGINAL line
+  bool value = 1;
+  return value;
 
+  
   }
+  }
+  
+  
