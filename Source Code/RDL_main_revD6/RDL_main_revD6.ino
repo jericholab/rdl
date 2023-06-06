@@ -24,7 +24,7 @@ int tDisplay=1;                        // optional display of temperature/illumi
 int ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-int WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
+int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
 int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
@@ -147,6 +147,7 @@ struct STRUCT2 {float a;};               // define a new structure class called 
 unsigned long timePassed;              //initialize variable to keep track of time passed between each measurement
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
 bool strainDevice;                      //define a boolean that indicates the presence of a strain device
+uint8_t addr;                           // define an address variable for i2c multiplexer channel selection   ////// temp test
 
 ////// SETUP ////////
 
@@ -193,7 +194,13 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
+    addr = 2;
+    i2c_select(addr);    // TEST     // Choose channel 1
+    Wire.beginTransmission(addr);
     strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+    Wire.endTransmission(addr);
+
+    
 
 if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
     Serial.println();
@@ -297,9 +304,9 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       // SENSOR 0 - Channel 0
       Serial.print("*");   
       spacing2("*",12);
-      uint8_t addr = 0;
+      addr = 0;
       Wire.begin();    // TEST
-      tcaselect(addr);    // TEST     // Choose channel 0
+      i2c_select(addr);    // TEST     // Choose channel 0
       Wire.beginTransmission(addr);
       i2cSensors(); 
       Wire.endTransmission(addr);
@@ -307,7 +314,7 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       Serial.print("*");   
       spacing2("*",12);
       addr = 1;
-      tcaselect(addr);    // TEST     // Choose channel 1
+      i2c_select(addr);    // TEST     // Choose channel 1
       Wire.beginTransmission(addr);
       i2cSensors(); 
       Wire.endTransmission(addr);
@@ -335,7 +342,17 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     }
 
     if (strainDisplay==1){      ///////////////////////////////// TEST. WIP.
+
+      //SENSOR 1 - Channel 1
+//      Serial.print("*");   
+//      spacing2("*",12);
+      addr = 2;
+      i2c_select(addr);    // TEST     // Choose channel 1
+      Wire.beginTransmission(addr);
       nau7802Function();             //run function
+      Wire.endTransmission(addr);
+      
+      
     }
 
     if (ControlSignal==1){

@@ -6,7 +6,8 @@
 // OUTPUT: none
 
 bool nau7802_init() {
-  
+
+
 
   //Serial.println("NAU7802");
   if (! nau.begin()) {                              //if device is not found, we skip the initialization
