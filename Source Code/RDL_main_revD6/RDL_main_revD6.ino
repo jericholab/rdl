@@ -56,16 +56,14 @@ long baudRate = 57600;                // (bps) data rate at which data is transm
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
 
-#include <Adafruit_NAU7802.h>         // TEST
+#include <Adafruit_NAU7802.h>         // 
 Adafruit_NAU7802 nau;
 
-#include "Wire.h"   //TEST 
-#define TCAADDR 0x70   //TEST   (TCA ADDRESS)
- 
-                            // TEST
+#include "Wire.h"                      // library required to control the I2C multiplexer
+#define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 
 //#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidity sensor. Can be installed via the Library Manager.
-#include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
+#include "Adafruit_SHT4x.h"              // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
 //Adafruit_AHTX0 aht;                    // define the aht variable  //OLD CODE FOR AHT sensors
 RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
@@ -178,7 +176,7 @@ void setup(void) {
     initRTC();                                      // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
-      if(sht4.begin()){                                //if the AHT40 humidity sensor can be initialized...
+      if(sht4.begin()){                                //if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
     }
@@ -194,11 +192,14 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
-    addr = 2;
-    i2c_select(addr);    // TEST     // Choose channel 1
-    Wire.beginTransmission(addr);
-    strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-    Wire.endTransmission(addr);
+    if (strainDisplay ==1){
+      addr = 2;
+      i2c_select(addr);    // TEST     // Choose channel 1
+      Wire.beginTransmission(TCAADDR);     //TEST ////////////////
+      strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+      Wire.endTransmission();  
+      }
+    
 
     
 
@@ -305,19 +306,24 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       Serial.print("*");   
       spacing2("*",12);
       addr = 0;
-      Wire.begin();    // TEST
       i2c_select(addr);    // TEST     // Choose channel 0
-      Wire.beginTransmission(addr);
+      delay(100);    ////// TEST // Delay to allow better communication after channel change
+//      while(!sht4.begin())
+//      {
+//        /* There was a problem detecting the HMC5883 ... check your connections */
+//        //Serial.println("Ooops, no SHT4X detected ... Check your wiring!");
+//        delay(2000);
+//      }
+      
       i2cSensors(); 
-      Wire.endTransmission(addr);
+      //Wire.endTransmission();
       //SENSOR 1 - Channel 1
       Serial.print("*");   
       spacing2("*",12);
       addr = 1;
       i2c_select(addr);    // TEST     // Choose channel 1
-      Wire.beginTransmission(addr);
+      delay(100);    ////// TEST // Delay to allow better communication after channel change
       i2cSensors(); 
-      Wire.endTransmission(addr);
     }
 
     if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
@@ -346,11 +352,12 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       //SENSOR 1 - Channel 1
 //      Serial.print("*");   
 //      spacing2("*",12);
-      addr = 2;
-      i2c_select(addr);    // TEST     // Choose channel 1
-      Wire.beginTransmission(addr);
-      nau7802Function();             //run function
-      Wire.endTransmission(addr);
+      //addr = 2;   //NAU7802   /////TEMP TEST
+//      addr = 1;  //SHT40    /////TEMP TEST
+//      i2c_select(addr);    // TEST     // Choose channel 1
+////      Wire.beginTransmission(addr);     ///////////////////////// ChatGPT suggest that I should not be using the same address for Wire.beginTransmission than i2c_select... (#define TCAADDR 0x70)
+//      nau7802Function();             //run function
+////      Wire.endTransmission();
       
       
     }
