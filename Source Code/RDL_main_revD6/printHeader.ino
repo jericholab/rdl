@@ -128,6 +128,16 @@ int printHeader(){
               spacing2(terosText1,12);
 
             }    
+         if (pHDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String pHText1 = F("pH1");
+              Serial.print(pHText1);
+              spacing2(pHText1,12);
+              String pHText2 = F("pH1_T");
+              Serial.print(pHText2);
+              spacing2(pHText2,12);
+            }    
             
         if (ControlSignal == 1){
               Serial.print(F("*"));

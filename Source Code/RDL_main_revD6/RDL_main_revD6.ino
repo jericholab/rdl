@@ -28,7 +28,8 @@ int WBGTDisplay = 0;                   // optional display of WBGT values (1 = y
 int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
 int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
-int strainDisplay = 1;                  // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int strainDisplay = 0;                  // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int pHDisplay = 1;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -53,24 +54,22 @@ long readInterval0 = 2000;             // (ms) Temporary storage variable for re
 int Seriesresistor = 10000;            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
+
+//LIBRARIES INCLUDED
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-
-#include <Adafruit_NAU7802.h>         // 
-Adafruit_NAU7802 nau;
-
+#include <Adafruit_NAU7802.h>          // library required for the NAU7802 chip used for strain gauge cell measurements
 #include "Wire.h"                      // library required to control the I2C multiplexer
-#define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
+#include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
+#include "DFRobot_PH.h"                // library required for the pH meter.
 
-//#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidity sensor. Can be installed via the Library Manager.
-#include "Adafruit_SHT4x.h"              // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
+Adafruit_NAU7802 nau;
+#define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
-//Adafruit_AHTX0 aht;                    // define the aht variable  //OLD CODE FOR AHT sensors
 RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
 int R_MUX = 70;                        // Internal resistance of the multiplexer (ohms)
 #define NUMSAMPLES 1                   // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
-// int AHT_present = 0;                   //initialize the variable that will indicate if a sensor is present
 int SHT4_present = 0;                   //initialize the variable that will indicate if a sensor is present
 int score;                             // define the variable "score" for evaluation of user input algorithm
 //-------------------------------------------------------------------
@@ -147,6 +146,11 @@ void(* resetFunc) (void) = 0;            // define a reset function for the ardu
 bool strainDevice;                      //define a boolean that indicates the presence of a strain device
 uint8_t addr;                           // define an address variable for i2c multiplexer channel selection   ////// temp test
 
+#define PH_PIN A2                          // define the analog pin for the pH meter input
+float voltage,phValue,temperature = 25;    // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
+DFRobot_PH ph;                             // load pH meter library under shorter name 'ph'
+
+
 ////// SETUP ////////
 
 void setup(void) {
@@ -199,24 +203,26 @@ void setup(void) {
       strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
       Wire.endTransmission();  
       }
-    
 
+   if (pHDisplay == 1){
+    ph.begin();      ///// this is the function call that outputs unrequired text ("_acidVoltage:2032.44")
     
+   }      
 
-if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
-    Serial.println();
-    Serial.println();
-    Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL)"));
-    Serial.print(F("Code version: "));
-    Serial.println(__FILENAME__);
-    startMessage();    // print informations after startup
-    printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
-}
+    if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
+        Serial.println();
+        Serial.println();
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL)"));
+        Serial.print(F("Code version: "));
+        Serial.println(__FILENAME__);
+        startMessage();    // print informations after startup
+        printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
+    }
     
     sortHum();           // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
 
-    
-    
+
+
 }
 //------------------------------------------------------------- 
 
@@ -357,9 +363,11 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
 //      i2c_select(addr);    // TEST     // Choose channel 1
 ////      Wire.beginTransmission(addr);     ///////////////////////// ChatGPT suggest that I should not be using the same address for Wire.beginTransmission than i2c_select... (#define TCAADDR 0x70)
 //      nau7802Function();             //run function
-////      Wire.endTransmission();
-      
-      
+////      Wire.endTransmission();      
+    }
+
+    if (pHDisplay==1){
+      pHFunc();             //run function
     }
 
     if (ControlSignal==1){
