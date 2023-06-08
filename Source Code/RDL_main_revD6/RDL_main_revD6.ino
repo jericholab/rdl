@@ -28,8 +28,8 @@ int WBGTDisplay = 0;                   // optional display of WBGT values (1 = y
 int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
 int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
-int strainDisplay = 0;                  // optional display of strain gauge cell values (1 = yes, 0 = no) 
-int pHDisplay = 1;                     // optional display of pH meter values (1 = yes, 0 = no)
+int strainDisplay = 1;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -356,14 +356,16 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     if (strainDisplay==1){      ///////////////////////////////// TEST. WIP.
 
       //SENSOR 1 - Channel 1
-//      Serial.print("*");   
-//      spacing2("*",12);
-      //addr = 2;   //NAU7802   /////TEMP TEST
-//      addr = 1;  //SHT40    /////TEMP TEST
-//      i2c_select(addr);    // TEST     // Choose channel 1
-////      Wire.beginTransmission(addr);     ///////////////////////// ChatGPT suggest that I should not be using the same address for Wire.beginTransmission than i2c_select... (#define TCAADDR 0x70)
-//      nau7802Function();             //run function
-////      Wire.endTransmission();      
+////      Serial.print("*");   
+////      spacing2("*",12);
+      addr = 2;   //NAU7802   /////TEMP TEST
+      //addr = 1;  //SHT40    /////TEMP TEST
+      i2c_select(addr);    // TEST     // Choose channel 1
+//      Wire.beginTransmission(addr);     ///////////////////////// ChatGPT suggest that I should not be using the same address for Wire.beginTransmission than i2c_select... (#define TCAADDR 0x70)
+      Wire.beginTransmission(TCAADDR);
+      nau7802Function();             //run function
+      Wire.endTransmission();      
+      i2c_select(0);    // TEST     // Choose channel 1 TEST ////////////////
     }
 
     if (pHDisplay==1){
