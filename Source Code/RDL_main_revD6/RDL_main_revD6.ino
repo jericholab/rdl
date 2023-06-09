@@ -25,9 +25,10 @@ int ohmDisplay = 0;                    // optional display of probes resistance 
 int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
-int SoilDisplay = 0;                   // optional display of soil water content values (1 = yes, 0 = no)
-int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)
-int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
+int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
+int currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
+int terosDisplay = 1;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
 int strainDisplay = 1;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 int pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
@@ -135,6 +136,9 @@ float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};         // de
 String str;                            // define str in the general scope of the program
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
+#define VOLT_PIN A1                    // Analog signal pin for voltage readings
+#define PH_PIN A2                      // Define the analog pin for the pH meter input
+#define TEROS_PIN A3                   // Analog signal pin for soil meter
 #define S0 2                           // Digital Pin 2 // Multiplexer #1 is controlled by 4 I/O pins
 #define S1 3                           // Digital Pin 3 // Multiplexer #1 is controlled by 4 I/O pins
 #define S2 4                           // Digital Pin 4 // Multiplexer #1 is controlled by 4 I/O pins   
@@ -146,7 +150,7 @@ void(* resetFunc) (void) = 0;            // define a reset function for the ardu
 bool strainDevice;                      //define a boolean that indicates the presence of a strain device
 uint8_t addr;                           // define an address variable for i2c multiplexer channel selection   ////// temp test
 
-#define PH_PIN A2                          // define the analog pin for the pH meter input
+
 float voltage,phValue,temperature = 25;    // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
 DFRobot_PH ph;                             // load pH meter library under shorter name 'ph'
 
@@ -172,7 +176,7 @@ void setup(void) {
     pinMode(11, OUTPUT);                               // define pin 14 as an output pin.
     digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
-    pinMode(A1, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
+    pinMode(VOLT_PIN, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
 
     pinMode(9, OUTPUT);                               // define pin 9 as an output pin to allow sending a control signal
 
@@ -205,7 +209,7 @@ void setup(void) {
       }
 
    if (pHDisplay == 1){
-    ph.begin();      ///// this is the function call that outputs unrequired text ("_acidVoltage:2032.44")
+    ph.begin();      ///// this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.
     
    }      
 
@@ -345,8 +349,11 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     }
 
     if (voltDisplay==1){
-      //voltFunc();
-      rmsFunc();
+      voltFunc();    
+      
+    }
+    if (currentDisplay==1){
+      rmsFunc();    
     }
 
     if (terosDisplay==1){

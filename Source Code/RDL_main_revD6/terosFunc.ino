@@ -10,7 +10,7 @@ int terosFunc(){
   
   delay (100); //wait 1000ms
   
-  int sensorValue = analogRead(A2);  // read the input on analog pin 0:
+  int sensorValue = analogRead(TEROS_PIN);  // read the input on analog pin 0:
 
   digitalWrite(9, LOW);                           //set pin D9 to HIGH (VCC 5V)
   
@@ -24,7 +24,6 @@ int terosFunc(){
 
   float VWC = 4.824E-10 * pow(voltage1,3) - 2.278E-06*pow(voltage1,2) + 3.898E-03*voltage1 - 2.154;
   Serial.print(VWC,3);  //mVolts
-  //Serial.println();
-
+  spacing(VWC,12);
   
   }

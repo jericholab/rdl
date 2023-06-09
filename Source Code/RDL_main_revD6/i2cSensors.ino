@@ -28,7 +28,7 @@ if(SHT4_present == 1){
 }
 
 else{
-    Serial.print("0.00");                               //print the temperature
+    Serial.print("0.00");                               //print the temperature    //////////// Text can be sent to Flash memory with a single variable
     spacing2("0.00",12); 
     Serial.print("0.00");                               //print the relative humidity
     spacing2("0.00",12);

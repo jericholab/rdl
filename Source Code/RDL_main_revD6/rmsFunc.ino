@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: rmsFunc
-// PURPOSE: measure and display the voltage tension value at the corresponding terminal
+// PURPOSE: calculates the True RMS current value of the Hall effect sensor
 // INPUT: none
 // OUTPUT: none
 
