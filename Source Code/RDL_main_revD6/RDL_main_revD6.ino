@@ -28,8 +28,8 @@ int WBGTDisplay = 0;                   // optional display of WBGT values (1 = y
 int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
 int currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
-int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
-int strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int terosDisplay = 1;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+int strainDisplay = 1;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 int pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
