@@ -15,7 +15,7 @@ int voltFunc(){
       float voltage = sensorValue * (V_ref / 1023.0);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V)
       Serial.print("*");
       spacing2("*",12);      
-      Serial.print(voltage);         //print out the value you read.
+      Serial.print(voltage,3);         //print out the value you read.
       spacing(voltage,12);      
 }
   
