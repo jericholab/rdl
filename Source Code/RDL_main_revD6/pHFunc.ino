@@ -23,9 +23,9 @@ int pHFunc(){
       Serial.print("*"); 
       spacing2("*",12);   
       Serial.print(phValue,2);  // pH value
-      spacing(phValue,11); 
+      spacing(phValue,12); 
       Serial.print(temperature,1); //temperature 
-      spacing(temperature,11); 
+      spacing(temperature,12); 
         
         
         

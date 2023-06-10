@@ -19,11 +19,12 @@ int terosFunc(){
   Serial.print("*");
   spacing2("*",12);      
   float voltage1 = sensorValue * (V_ref / 1023.0) * 1000;  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5000mV)
-  Serial.print(voltage1,3);  //mVolts
-  Serial.print("   ");
+  Serial.print(voltage1,2);  //mVolts
+  spacing(voltage1,12);
+
 
   float VWC = 4.824E-10 * pow(voltage1,3) - 2.278E-06*pow(voltage1,2) + 3.898E-03*voltage1 - 2.154;
   Serial.print(VWC,3);  //mVolts
-  spacing(VWC,12);
+  spacing(VWC,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
   
   }

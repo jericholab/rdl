@@ -102,16 +102,12 @@ int printHeader(){
               String voltageText = F("Voltage");
               Serial.print(voltageText);
               spacing2(voltageText,12);
-//              String voltageText = F("Current (A)");
-//              Serial.print(voltageText);
-//              spacing2(voltageText,12);
-              //spacing2("0.000",12);
             }
 
         if (currentDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              String voltageText = F("Current (A)");
+              String voltageText = F("Amps");
               Serial.print(voltageText);
               spacing2(voltageText,12);
               //spacing2("0.000",12);
@@ -120,7 +116,7 @@ int printHeader(){
         if (terosDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Teros_V");
+              String terosText1 = F("Teros_mV");
               Serial.print(terosText1);
               spacing2(terosText1,12);
               String terosText2 = F("Teros_VWC");
@@ -131,7 +127,7 @@ int printHeader(){
          if (strainDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Strain_Raw");
+              String terosText1 = F("Strain");
               Serial.print(terosText1);
               spacing2(terosText1,12);
 
