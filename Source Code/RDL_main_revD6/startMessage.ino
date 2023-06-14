@@ -30,5 +30,14 @@ int startMessage(){
     Serial.println(humidities);
     Serial.println(F("For a list of commands, type 'help'"));
     Serial.print(F("Extension wire for channels 1 to 8 (ohms): "));
+
+    if (headerDisplay == 1){
+        for(int i=0; i<8; i++){
+              Serial.print(R_wire[i],0);
+              Serial.print(F(" ,"));
+        }
+        Serial.println();
+
+    }
 }
 //-------------------------------------------------------------------

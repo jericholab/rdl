@@ -5,14 +5,8 @@
 // OUTPUT: none
 
 int printHeader(){
-        if (headerDisplay == 1){
-        for(int i=0; i<8; i++){
-              Serial.print(R_wire[i],0);
-              Serial.print(F(" ,"));
-        }
+
         Serial.println();
-        Serial.println();
-        }
         
         if (timeDisplay == 1){
           String dateText = F("Date");
