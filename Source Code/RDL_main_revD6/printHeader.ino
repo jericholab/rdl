@@ -5,14 +5,8 @@
 // OUTPUT: none
 
 int printHeader(){
-        if (headerDisplay == 1){
-        for(int i=0; i<8; i++){
-              Serial.print(R_wire[i],0);
-              Serial.print(F(" ,"));
-        }
+
         Serial.println();
-        Serial.println();
-        }
         
         if (timeDisplay == 1){
           String dateText = F("Date");
@@ -72,6 +66,15 @@ int printHeader(){
               String i2cText2 = F("i2c_RH");
               Serial.print(i2cText2);
               spacing2(i2cText2,12);
+
+              Serial.print(F("*"));   //DOUBLING THE COLUMNS FOR THE SECOND SHT40
+              spacing2("*",12);
+              //String i2cText1 = F("i2c_C");
+              Serial.print(i2cText1);
+              spacing2(i2cText1,12);
+              //String i2cText2 = F("i2c_RH");
+              Serial.print(i2cText2);
+              spacing2(i2cText2,12);
             }
         if (WBGTDisplay == 1){
               Serial.print(F("*"));
@@ -90,26 +93,49 @@ int printHeader(){
         if (voltDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-//              String voltageText = F("Voltage");
-//              Serial.print(voltageText);
-//              spacing2(voltageText,12);
-              String voltageText = F("Current (A)");
+              String voltageText = F("Voltage");
               Serial.print(voltageText);
-              //spacing2(voltageText,12);
-              spacing2("0.000",12);
+              spacing2(voltageText,12);
+            }
 
+        if (currentDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String voltageText = F("Amps");
+              Serial.print(voltageText);
+              spacing2(voltageText,12);
+              //spacing2("0.000",12);
             }
 
         if (terosDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Teros_V");
+              String terosText1 = F("Teros_mV");
               Serial.print(terosText1);
               spacing2(terosText1,12);
               String terosText2 = F("Teros_VWC");
               Serial.print(terosText2);
               spacing2(terosText2,12);
             }
+
+         if (strainDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String terosText1 = F("Strain");
+              Serial.print(terosText1);
+              spacing2(terosText1,12);
+
+            }    
+         if (pHDisplay == 1){
+              Serial.print(F("*"));
+              spacing2("*",12);
+              String pHText1 = F("pH1");
+              Serial.print(pHText1);
+              spacing2(pHText1,12);
+              String pHText2 = F("pH1_T");
+              Serial.print(pHText2);
+              spacing2(pHText2,12);
+            }    
             
         if (ControlSignal == 1){
               Serial.print(F("*"));

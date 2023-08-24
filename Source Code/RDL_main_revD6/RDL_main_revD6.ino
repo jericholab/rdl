@@ -14,7 +14,7 @@
 #define word2 strlen(__FILENAME_LINUX__)
 #define __FILENAME__ ((word1)<(word2)? (__FILENAME_WIN__) : (__FILENAME_LINUX__))  // Linux and Windows do not use the same character. so the preprocessor compares the two lengths and pick the string that worked.
 
-////////// USER PARAMETERS //////////// 
+////////// USER PARAMETERS ////////////
 
 int generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 int headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
@@ -22,12 +22,15 @@ int timeDisplay=1;                     // optional display of timestamp (1 = yes
 int idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 int tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 int ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-int humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
-int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-int WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
-int SoilDisplay = 1;                   // optional display of soil water content values (1 = yes, 0 = no)
-int voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)
-int terosDisplay = 1;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+int i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
+int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
+int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
+int currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
+int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+int strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int pHDisplay = 1;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -42,6 +45,7 @@ int WBGT_wet = 4;                      // defining which channel has the wet bul
 int WBGT_globe = 3;                    // defining which channel has the globe probe of the WBGT index (1 = C1, 2 = C2, etc.)
 int sortedHum[]={-1,-1,-1,-1,-1,-1,-1,-1};   // initiating the array of integers that will hold the sorted humidity channels (later the array (global variable) is modified by sortHum())
 unsigned long time1 = 0;               // initialize variable to control read cycles
+unsigned long time2 = 0;               // initialize variable to control header print cycles
 int numberC=16;                        // default number of active channels. Must be an integer between 1 and 8.
 int sensors_present=0;                 // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'sensors'.
 int humidities_present=0;              // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'humidities'.
@@ -49,20 +53,26 @@ int numberC10 = numberC;               // (ms) Temporary storage variable for qu
 int units = 0;                         // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
+long headerInterval= 1800000;          // (ms) Interval at which the header (sensors identification and units) is printed out (1800000 = 30min)  
 int Seriesresistor = 10000;            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
+
+//LIBRARIES INCLUDED
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-//#include <Adafruit_AHTX0.h>            // library required for the AM2301b humidity sensor. Can be installed via the Library Manager.
+#include <Adafruit_NAU7802.h>          // library required for the NAU7802 chip used for strain gauge cell measurements
+#include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
+#include "DFRobot_PH.h"                // library required for the pH meter.
+
+Adafruit_NAU7802 nau;
+#define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
-//Adafruit_AHTX0 aht;                    // define the aht variable  //OLD CODE FOR AHT sensors
 RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
 int R_MUX = 70;                        // Internal resistance of the multiplexer (ohms)
 #define NUMSAMPLES 1                   // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
-// int AHT_present = 0;                   //initialize the variable that will indicate if a sensor is present
 int SHT4_present = 0;                   //initialize the variable that will indicate if a sensor is present
 int score;                             // define the variable "score" for evaluation of user input algorithm
 //-------------------------------------------------------------------
@@ -128,6 +138,10 @@ float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};         // de
 String str;                            // define str in the general scope of the program
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
+#define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
+#define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
+#define PH_PIN A2                      // Define the analog pin for the pH meter input
+#define TEROS_PIN A3                   // Analog signal pin for soil meter
 #define S0 2                           // Digital Pin 2 // Multiplexer #1 is controlled by 4 I/O pins
 #define S1 3                           // Digital Pin 3 // Multiplexer #1 is controlled by 4 I/O pins
 #define S2 4                           // Digital Pin 4 // Multiplexer #1 is controlled by 4 I/O pins   
@@ -135,7 +149,15 @@ long readCycle2 = 0;                   // initialization of tag for live data (r
 struct STRUCT1 {float o; float t; };   // define a new structure class called 'STRUCT1 that will enable the thermistor function
 struct STRUCT2 {float a;};               // define a new structure class called 'STRUCT2 that will enable the relhum function
 unsigned long timePassed;              //initialize variable to keep track of time passed between each measurement
+unsigned long timePassedHeader;              //initialize variable to keep track of time passed between each measurement
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
+bool strainDevice;                      //define a boolean that indicates the presence of a strain device
+uint8_t addr;                           // define an address variable for i2c multiplexer channel selection   ////// temp test
+
+
+float voltage,phValue,temperature = 25;    // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
+DFRobot_PH ph;                             // load pH meter library under shorter name 'ph'
+
 
 ////// SETUP ////////
 
@@ -158,7 +180,7 @@ void setup(void) {
     pinMode(11, OUTPUT);                               // define pin 14 as an output pin.
     digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
-    pinMode(A1, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
+    pinMode(VOLT_PIN, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
 
     pinMode(9, OUTPUT);                               // define pin 9 as an output pin to allow sending a control signal
 
@@ -166,17 +188,14 @@ void setup(void) {
     initRTC();                                      // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
-//      if(aht.begin()){                                //if the humidity sensor can be initialized...
-//        AHT_present = 1;                              
-//      }
-      if(sht4.begin()){                                //if the AHT40 humidity sensor can be initialized...
+      if(sht4.begin()){                                //if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
     }
     
     readEEPROM();                                     // call function to read the EEPROM memory to see if there are some parameters stored
 
-   timePassed= readInterval; // initializing reading timer at readInterval to force a first reading when entering loop()    /////////////// TEST 
+   timePassed= readInterval;                          // initializing reading timer at readInterval to force a first reading when entering loop()
 
 
     pinMode(13,OUTPUT);                               // board Led 'L' is controlled by pin 13. Pin 13 is set to Output mode
@@ -185,16 +204,33 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
-if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
-    Serial.println();
-    Serial.println();
-    Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL)"));
-    Serial.print(F("Code version: "));
-    Serial.println(__FILENAME__);
-    startMessage();    // print informations after startup
-}
-    printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
-    sortHum();         // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
+    if (strainDisplay ==1){
+      addr = 2;
+      i2c_select(addr);    // TEST     // Choose channel 1
+      Wire.beginTransmission(TCAADDR);  
+      strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+      Wire.endTransmission();  
+      }
+
+   if (pHDisplay == 1){
+    ph.begin();      ///// this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
+    
+   }      
+
+    if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
+        Serial.println();
+        Serial.println();
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL)"));
+        Serial.print(F("Code version: "));
+        Serial.println(__FILENAME__);
+        startMessage();    // print informations after startup
+        printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
+    }
+    
+    sortHum();           // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
+
+
+
 }
 //------------------------------------------------------------- 
 
@@ -280,35 +316,62 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     }
 
     if (i2cDisplay == 1){
+      // SENSOR 0 - Channel 0
       Serial.print("*");   
       spacing2("*",12);
+      addr = 0;
+      i2c_select(addr);    // TEST     // Choose channel 0
+      delay(100);    ////// TEST // Delay to allow better communication after channel change
+      
       i2cSensors(); 
-    
+      //Wire.endTransmission();
+      //SENSOR 1 - Channel 1
+      Serial.print("*");   
+      spacing2("*",12);
+      addr = 1;
+      i2c_select(addr);    // TEST     // Choose channel 1
+      delay(100);    ////// TEST // Delay to allow better communication after channel change
+      i2cSensors(); 
     }
 
     if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
       Serial.print("*");
       spacing2("*",12);
       wbgtFunc();             //run function to calculate and display the WBGT value
-      
     }
 
     if (SoilDisplay ==1){     //optional print of the soil water content values, based on fixed channels.
       Serial.print("*");
       spacing2("*",12); 
       soilFunc();             //run function 
-
     }
 
     if (voltDisplay==1){
-      //voltFunc();
-      rmsFunc();
+      voltFunc();    
+      
+    }
+    if (currentDisplay==1){
+      rmsFunc();    
     }
 
     if (terosDisplay==1){
       terosFunc();             //run function
     }
 
+    if (strainDisplay==1){   
+
+      //SENSOR 1 - Channel 1
+      addr = 2;   //NAU7802   /////TEMP TEST
+      i2c_select(addr);    // TEST     // Choose channel 1
+      Wire.beginTransmission(TCAADDR);
+      nau7802Function();             //run function
+      Wire.endTransmission();      
+      i2c_select(0);    // TEST
+    }
+
+    if (pHDisplay==1){
+      pHFunc();             //run function
+    }
 
     if (ControlSignal==1){
       controlFunc();             //run function
@@ -318,8 +381,13 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     Serial.println();          //new line for the next measurements
 }
 
+if (timePassedHeader >= headerInterval){                 // if enough time has passed, printHeader
+    printHeader();
+    time2=millis();                                 // each time a reading is taken, time1 is reset     
+}
 watchSerial(); //  Watching for incoming commands from the serial port
 
 // this block must be positionned right before the decision to read or not the group of thermistors (timePassed>= ReadInterval)
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
+timePassedHeader=millis()-time2;                  // time elapsed since last header printing
 }  //end of main loop()

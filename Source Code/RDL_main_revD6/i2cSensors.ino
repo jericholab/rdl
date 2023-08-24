@@ -20,7 +20,6 @@ sht4.setHeater(SHT4X_NO_HEATER);  //set to 'no heat'
 sensors_event_t humidity, temp;  //define two events (objects)
 
 if(SHT4_present == 1){
-    //aht.getEvent(&humidity, &temp);                            //populate temp and humidity objects with fresh data
     sht4.getEvent(&humidity, &temp);                             //populate temp and humidity objects with fresh data
     Serial.print(temp.temperature);                              //print the temperature
     spacing(temp.temperature,12); 
@@ -29,7 +28,7 @@ if(SHT4_present == 1){
 }
 
 else{
-    Serial.print("0.00");                               //print the temperature
+    Serial.print("0.00");                               //print the temperature    //////////// Text can be sent to Flash memory with a single variable
     spacing2("0.00",12); 
     Serial.print("0.00");                               //print the relative humidity
     spacing2("0.00",12);
