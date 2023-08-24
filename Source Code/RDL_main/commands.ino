@@ -73,7 +73,7 @@ if (str == F("KELVIN\r")){
     if (str == F("HELP\r")){
     Serial.println();
     Serial.println(F("Possible commands:")); 
-    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, COEFF, INTERVAL, QUANTITY, SENSORS, HUMIDITIES, RESISTANCE"));
+    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QUANTITY, SENSORS, HUMIDITIES, RESISTANCE"));
     Serial.println();
     delay(2000);
     }        
@@ -90,21 +90,21 @@ if (str == F("EEPROM-ERASE\r")){
 
 
 //- - - - - - - - - - - 
-char buf[17];
+char buf[9];
 if (str == F("SENSORS\r")){
   Serial.println();
   Serial.println(sensors);     // current sensors definition
   Serial.println();
   Serial.println(text2);       // print question to user
   Serial.println();
-  const int BUFFER_SIZE = 16;
+  const int BUFFER_SIZE = 8;
   Serial.setTimeout(30000);                        //maximum time the Serial.ReadBytesUntil() function will wait out.
-  Serial.readBytesUntil('\r', buf , BUFFER_SIZE);  //Read the data the user has input. (Array has 16 characters (16 channels) plus the null character to terminate the array. Total is 16+1)
+  Serial.readBytesUntil('\r', buf , BUFFER_SIZE);  //Read the data the user has input. (Array has 8 characters (8 channels) plus the null character to terminate the array. Total is 8+1)
   Serial.println(buf);
   score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
-  if (sizeof(buf) ==17){                       // if new string has the expected length...
+  if (sizeof(buf) ==9){                       // if new string has the expected length...
      score = 1;                                // the buffer gets a perfect score
-     for(int i=0; i<16; i++){                  // and a chance to get its content verified 
+     for(int i=0; i<8; i++){                  // and a chance to get its content verified 
          if ((buf[i] != 'T')&&(buf[i] != 'P')){           // ... if character is something else than a  'T' or 'P', ...
           score = 0;                                      // ... the buffer loses its perfect score 
          }
@@ -112,7 +112,7 @@ if (str == F("SENSORS\r")){
      }
      if(score == 1){                                    // if the final score is good
              Serial.println(F("Good input"));             
-             for(int i=0; i<17; i++){
+             for(int i=0; i<9; i++){
               sensors[i] = buf[i];                      // we can substitute the sensor variable content
               }
             EEPROM.put(20, sensors);                    // and write the new definition to the dedicated EEPROM address.
@@ -140,7 +140,7 @@ if (str == F("HUMIDITIES\r")){
   
   const int BUFFER_SIZE = 9;
   Serial.setTimeout(30000);                             //maximum time the Serial.ReadBytesUntil() function will wait out.
-  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);      //Read the data the user has input. (Array has 16 characters (16 channels) plus the null character to terminate the array. Total is 16+1)
+  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);      //Read the data the user has input. (Array has 8 characters (8 channels) plus the null character to terminate the array. Total is 8+1)
   Serial.println(buf2);
 
   score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
@@ -181,35 +181,35 @@ if (str == F("HUMIDITIES\r")){
 
 //- - - - - - - - - - - 
 
-if (str == F("COEFF\r")){
-    char space1[]="     ";
-    blink(200,2);
-    Serial.println();
-    Serial.println(F("Thermistors coefficients:"));
-    Serial.print(F("#"));
-    Serial.print(space1);
-    Serial.print(space1);
-    Serial.print(F("A"));
-    Serial.print(space1);
-    Serial.print(F("B"));
-    Serial.print(space1);
-    Serial.print(F("C"));
-    Serial.println(space1);
-    for(int i=0; i<16; i++){
-          Serial.print(i+1);
-          Serial.print(space1);
-          Serial.print(space1);
-          Serial.print(arrayA[i],20);  //prints the 'A' coefficients with 20 decimals
-          Serial.print(space1);
-          Serial.print(arrayB[i],20);  //prints the 'A' coefficients with 20 decimals
-          Serial.print(space1);
-          Serial.print(arrayC[i],20);  //prints the 'A' coefficients with 20 decimals
-          Serial.println();
-    }
-    Serial.println();
-    Serial.println();
-    delay(2000);                               // after printing out the EEPROM content, wait two seconds before starting measurements again
-}
+//if (str == F("COEFF\r")){
+//    char space1[]="     ";
+//    blink(200,2);
+//    Serial.println();
+//    Serial.println(F("Thermistors coefficients:"));
+//    Serial.print(F("#"));
+//    Serial.print(space1);
+//    Serial.print(space1);
+//    Serial.print(F("A"));
+//    Serial.print(space1);
+//    Serial.print(F("B"));
+//    Serial.print(space1);
+//    Serial.print(F("C"));
+//    Serial.println(space1);
+//    for(int i=0; i<16; i++){
+//          Serial.print(i+1);
+//          Serial.print(space1);
+//          Serial.print(space1);
+//          Serial.print(arrayA[i],20);  //prints the 'A' coefficients with 20 decimals
+//          Serial.print(space1);
+//          Serial.print(arrayB[i],20);  //prints the 'A' coefficients with 20 decimals
+//          Serial.print(space1);
+//          Serial.print(arrayC[i],20);  //prints the 'A' coefficients with 20 decimals
+//          Serial.println();
+//    }
+//    Serial.println();
+//    Serial.println();
+//    delay(2000);                               // after printing out the EEPROM content, wait two seconds before starting measurements again
+//}
 
 
 if (str == F("INTERVAL\r")){  //if word "interval" is received, enter a while loop until user sends desired measurement interval.
@@ -237,12 +237,12 @@ if (str == F("QUANTITY\r")){  //if word "quantity" is received, enter a while lo
   Serial.println();
   Serial.print(F("Present quantity: "));
   Serial.println(numberC);
-  Serial.println(F("How many probes do you want to use ? (From 1 to 16) (You have twenty seconds to answer)"));
+  Serial.println(F("How many probes do you want to use ? (From 1 to 8) (You have twenty seconds to answer)"));
   long timer10 = millis();
   while ((Serial.available() == 0) && ((millis() - timer10)< 30000)){
     numberC10 = Serial.parseInt();  //Read the data the user has input. If no valid digits are read, function defaults to zero.
   }
-  if ((numberC10 > 0)&&(numberC10<=16)){              // if new value between 1 and 16... 
+  if ((numberC10 > 0)&&(numberC10<=8)){              // if new value between 1 and 8... 
     numberC = numberC10;                             // ... then we can now use that value now
     EEPROM.put(8, numberC);                          // writes the new rate to EEPROM. 
   }
