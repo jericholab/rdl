@@ -18,17 +18,16 @@ int readEEPROM(){
       numberC = numberC_ROM;}                         // ... use that stored value.
 
 //- - - - -      
-    char sensors_ROM[17];                            // Initialize variable
-    //int sensors_present;                             // Define variable in larger scope of function      ////// TEMP TEST COMMENT
+    char sensors_ROM[9];                            // Initialize variable
     EEPROM.get(20, sensors_ROM);                      // Read EEPROM address that could contain readInterval and store to temporary variable
-    for(int i=0; i<16; i++)    
+    for(int i=0; i<8; i++)    
       {
           if (sensors_ROM[i]!=0){                     // if the content of the variable is different then 0,
              sensors_present=1;                      // then at least one sensor is probably defined
           }
       }
     if (sensors_present==1){
-      for(int i=0; i<(17); i++){
+      for(int i=0; i<(9); i++){
         sensors[i] = sensors_ROM[i];                 //In the Arduino language, you must substitute character by character the array
       }
     }

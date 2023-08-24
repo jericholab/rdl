@@ -27,17 +27,17 @@ int i2cDisplay = 0;                    // optional display of i2c sensor values 
 int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
-int currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
+int currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
 int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
-int strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
-int pHDisplay = 1;                     // optional display of pH meter values (1 = yes, 0 = no)
+int strainDisplay = 1;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
+int pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 int ControlSignal = 0;                 // optional activation of the signal control functions
 int noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
-char sensors[17]="TTTTTTTTTTTTTTTT";            // define array of 16 characters to indicate the type of sensor in each channel  (T=thermistor, P=photoresistor) . Factory default.
-char sensors_temp[17]="TTTTTTTTTTTTTTTT";       // initiating the temporary holder
+char sensors[9]="TTTTTTTT";            // define array of 16 characters to indicate the type of sensor in each channel  (T=thermistor, P=photoresistor) . Factory default.
+char sensors_temp[9]="TTTTTTTT";       // initiating the temporary holder
 char humidities[9]="ABCD1234";         // define array of 8 elements to indicate the type of sensor in each channel  (letters=dry bulb, numbers = wet bulb). ///////// To be updated.
 char humidities_temp[9]="00000000";    // initiating the temporary holder
 int WBGT_dry = 1;                      // defining which channel has the dry bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
@@ -54,7 +54,7 @@ int units = 0;                         // default temperature units are Celcius 
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
 long headerInterval= 1800000;          // (ms) Interval at which the header (sensors identification and units) is printed out (1800000 = 30min)  
-int Seriesresistor = 10000;            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
+int Seriesresistor = 4700;            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
 
@@ -69,7 +69,7 @@ long baudRate = 57600;                // (bps) data rate at which data is transm
 Adafruit_NAU7802 nau;
 #define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
-RTC_DS1307 rtc;                        // define the RTC model number used by the RTClib.h
+RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
 int R_MUX = 70;                        // Internal resistance of the multiplexer (ohms)
 #define NUMSAMPLES 1                   // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
@@ -85,14 +85,14 @@ char C5_ID[] = "T05";
 char C6_ID[] = "T06";
 char C7_ID[] = "T07";
 char C8_ID[] = "T08";
-char C9_ID[] = "T09";
-char C10_ID[] = "T10";
-char C11_ID[] = "T11";
-char C12_ID[] = "T12";
-char C13_ID[] = "T13";
-char C14_ID[] = "T14";
-char C15_ID[] = "T15";
-char C16_ID[] = "T16";
+//char C9_ID[] = "T09";
+//char C10_ID[] = "T10";
+//char C11_ID[] = "T11";
+//char C12_ID[] = "T12";
+//char C13_ID[] = "T13";
+//char C14_ID[] = "T14";
+//char C15_ID[] = "T15";
+//char C16_ID[] = "T16";
 
 //-------------------------------------------------------------------
 
@@ -105,28 +105,31 @@ float GEN_C =  -5.3213022916E-12;
 // COEFFICIENTS MATRIX (COPY/PASTE FROM THE OCTAVE SCRIPT OUTPUT TEXT FILE) (8 decimals minimum required)
 // Example: First line and first column is the coefficient A of the Steinhart-Hart model for channel 1. 8 decimals required.
 
-float C[16][3] = {
-{1.2610084065E-03, 2.1114631980E-04, 1.9023374978E-07},  
-{1.2675806791E-03, 2.0979557309E-04, 1.9822805307E-07},
-{1.2638846806E-03, 2.1055130024E-04, 1.9382524717E-07},
-{1.2718419861E-03, 2.0908957579E-04, 1.9934840352E-07},
-{1.2670354615E-03, 2.0990013899E-04, 1.9774405298E-07},
-{1.2461782151E-03, 2.1381439152E-04, 1.8265011582E-07},
-{1.2534484825E-03, 2.1247717154E-04, 1.8637129521E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
-};
+//float C[16][3] = {
+//{1.2610084065E-03, 2.1114631980E-04, 1.9023374978E-07},  
+//{1.2675806791E-03, 2.0979557309E-04, 1.9822805307E-07},
+//{1.2638846806E-03, 2.1055130024E-04, 1.9382524717E-07},
+//{1.2718419861E-03, 2.0908957579E-04, 1.9934840352E-07},
+//{1.2670354615E-03, 2.0990013899E-04, 1.9774405298E-07},
+//{1.2461782151E-03, 2.1381439152E-04, 1.8265011582E-07},
+//{1.2534484825E-03, 2.1247717154E-04, 1.8637129521E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//{1.2592342994E-03, 2.1205448461E-04, 1.8599202135E-07},
+//};
 
-float arrayA[] = {C[0][0], C[1][0], C[2][0], C[3][0], C[4][0], C[5][0], C[6][0], C[7][0], C[8][0], C[9][0], C[10][0], C[11][0], C[12][0], C[13][0], C[14][0], C[15][0]};         // declare array and store values for coefficient A
-float arrayB[] = {C[0][1], C[1][1], C[2][1], C[3][1], C[4][1], C[5][1], C[6][1], C[7][1], C[8][1], C[9][1], C[10][1], C[11][1], C[12][1], C[13][1], C[14][1], C[15][1]};         // declare array and store values for coefficient B
-float arrayC[] = {C[0][2], C[1][2], C[2][2], C[3][2], C[4][2], C[5][2], C[6][2], C[7][2], C[8][2], C[9][2], C[10][2], C[11][2], C[12][2], C[13][2], C[14][2], C[15][2]};         // declare array and store values for coefficient C
+//float arrayA[] = {C[0][0], C[1][0], C[2][0], C[3][0], C[4][0], C[5][0], C[6][0], C[7][0], C[8][0], C[9][0], C[10][0], C[11][0], C[12][0], C[13][0], C[14][0], C[15][0]};         // declare array and store values for coefficient A
+//float arrayB[] = {C[0][1], C[1][1], C[2][1], C[3][1], C[4][1], C[5][1], C[6][1], C[7][1], C[8][1], C[9][1], C[10][1], C[11][1], C[12][1], C[13][1], C[14][1], C[15][1]};         // declare array and store values for coefficient B
+//float arrayC[] = {C[0][2], C[1][2], C[2][2], C[3][2], C[4][2], C[5][2], C[6][2], C[7][2], C[8][2], C[9][2], C[10][2], C[11][2], C[12][2], C[13][2], C[14][2], C[15][2]};         // declare array and store values for coefficient C
+float arrayA[16];
+float arrayB[16];
+float arrayC[16];
 
 int samples[NUMSAMPLES];           // define vector for sampling purpose of the thermistor() function  
 float arrayV[16];                  // define array to store values of all probes before Serial print 
@@ -221,8 +224,8 @@ void setup(void) {
         Serial.println();
         Serial.println();
         Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL)"));
-        Serial.print(F("Code version: "));
-        Serial.println(__FILENAME__);
+        Serial.print(F("Code compiled on: "));
+        Serial.println(F(__DATE__));
         startMessage();    // print informations after startup
         printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
     }
