@@ -25,7 +25,6 @@ int ohmDisplay = 0;                    // optional display of probes resistance 
 int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
-int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
 int currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
 int terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
@@ -61,16 +60,12 @@ long baudRate = 57600;                // (bps) data rate at which data is transm
 //LIBRARIES INCLUDED
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-
-//#include <Adafruit_NAU7802.h>          // library required for the NAU7802 chip used for strain gauge cell measurements
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702//TEST 2023-08-24
-
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "DFRobot_PH.h"                // library required for the pH meter.
 
 NAU7802 nau;                           //Create instance of the NAU7802 class  //TEST 2023-08-24
-//Adafruit_NAU7802 nau;
 
 #define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
@@ -181,27 +176,29 @@ void setup(void) {
       }
     }
     
-    Serial.begin(baudRate);                           // initialize serial monitor at the specified baud rate (e.g. 9600) 
-    analogReference(EXTERNAL);                        // tells the MPU to use the external voltage as a reference (value used at the top of the ADC range)
+    Serial.begin(baudRate);                            // initialize serial monitor at the specified baud rate (e.g. 9600) 
+    analogReference(EXTERNAL);                         // tells the MPU to use the external voltage as a reference (value used at the top of the ADC range)
 
     pinMode(12, OUTPUT);                               // define pin 12 as an output pin.
     digitalWrite(12, HIGH);                            // toggle pin 12 to HIGH value in order to supply RTC clock and I2C with a supply voltage (VCC15)
 
-    pinMode(11, OUTPUT);                               // define pin 14 as an output pin.
+    pinMode(11, OUTPUT);                               // define pin 11 as an output pin.
     digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+
+    pinMode(10, OUTPUT);                               // define pin 10 as an output pin.
+    digitalWrite(10, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
-    pinMode(VOLT_PIN, INPUT);                               // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
+    pinMode(VOLT_PIN, INPUT);                          // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
 
-    pinMode(9, OUTPUT);                               // define pin 9 as an output pin to allow sending a control signal
+    pinMode(9, OUTPUT);                                // define pin 9 as an output pin to allow sending a control signal
 
 
-    initRTC();                                      // call function to initialize Real Time Clock 
+    initRTC();                                         // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
       Wire.setClock(500);
 
-      
-      if(sht4.begin()){                                //if the SHT40 humidity sensor can be initialized...
+      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
 
@@ -260,11 +257,12 @@ void loop(void) {
 
 if (timePassed >= readInterval)                 // if enough time has passed, read the channels       
 {
-  
-    digitalWrite(11, LOW);                          // toggle pin to LOW value in order turn on the MUX  (D11)
     time1=millis();                                 // each time a reading is taken, time1 is reset     
     readCycle2=readCycle2 + 1;                      // increment the read cycle number at each turn     
+    
+    if (tDisplay == 1){
 
+    digitalWrite(11, LOW);                          // toggle pin to LOW value in order turn on the THERMISTOR MUX  (D11)
     for (int i=0; i< (numberC); i++) {              
       
       setMultiplexer(i);                            // select the multiplexer channel
@@ -284,9 +282,11 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
         struct STRUCT1 lux1 = illuminance(channel);
         arrayV[i] = lux1.t;           // storing illuminance to array of values
         arrayR[i] = lux1.o;           // storing resistances (ohm) to array
-      }   
+        }   
+      }
+    digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid self-heating effect and MUX consumption)        
     }
-    digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid self-heating effect and MUX consumption)
+    
     
     if (timeDisplay == 1){
         runRTC();                                       // display timestamp 
@@ -361,12 +361,6 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       Serial.print("*");
       spacing2("*",12);
       wbgtFunc();             //run function to calculate and display the WBGT value
-    }
-
-    if (SoilDisplay ==1){     //optional print of the soil water content values, based on fixed channels.
-      Serial.print("*");
-      spacing2("*",12); 
-      soilFunc();             //run function 
     }
 
     if (voltDisplay==1){
