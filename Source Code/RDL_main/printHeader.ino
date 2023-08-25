@@ -83,13 +83,13 @@ int printHeader(){
               Serial.print(WBGTText);
               spacing2(WBGTText,12);
             }
-        if (SoilDisplay == 1){
-              Serial.print(F("*"));
-              spacing2("*",12);
-              String soilText = F("Soil");
-              Serial.print(soilText);
-              spacing2(soilText,12);              
-            }
+//        if (SoilDisplay == 1){
+//              Serial.print(F("*"));
+//              spacing2("*",12);
+//              String soilText = F("Soil");
+//              Serial.print(soilText);
+//              spacing2(soilText,12);              
+//            }
         if (voltDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
