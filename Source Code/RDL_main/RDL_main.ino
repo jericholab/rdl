@@ -23,7 +23,7 @@ int idDisplay=1;                       // optional display of identification num
 int tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 int ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 int humDisplay = 0;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
-int i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+int i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 int WBGTDisplay = 0;                   // optional display of WBGT values (1 = yes, 0 = no)
 int SoilDisplay = 0;                   // optional display of soil water content values (gypsum matrix) (1 = yes, 0 = no)
 int voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
@@ -61,12 +61,17 @@ long baudRate = 57600;                // (bps) data rate at which data is transm
 //LIBRARIES INCLUDED
 #include <EEPROM.h>                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-#include <Adafruit_NAU7802.h>          // library required for the NAU7802 chip used for strain gauge cell measurements
+
+//#include <Adafruit_NAU7802.h>          // library required for the NAU7802 chip used for strain gauge cell measurements
+#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702//TEST 2023-08-24
+
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "DFRobot_PH.h"                // library required for the pH meter.
 
-Adafruit_NAU7802 nau;
+NAU7802 nau;                           //Create instance of the NAU7802 class  //TEST 2023-08-24
+//Adafruit_NAU7802 nau;
+
 #define TCAADDR 0x70                   //(TCA ADDRESS, used by i2c_select())
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
@@ -166,6 +171,8 @@ DFRobot_PH ph;                             // load pH meter library under shorte
 
 void setup(void) {
 
+    Serial.println();   //create space after reset of the Arduino
+    
     if (generic == 1){                  //if generic thermistor coefficient active, make the substitution in the coefficient arrays.
       for (int i=0; i< 16; i++) { 
         arrayA[i]= GEN_A;  //attribute generic value
@@ -191,9 +198,14 @@ void setup(void) {
     initRTC();                                      // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
+      Wire.setClock(500);
+
+      
       if(sht4.begin()){                                //if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
+
+      Wire.setClock(100000);
     }
     
     readEEPROM();                                     // call function to read the EEPROM memory to see if there are some parameters stored
@@ -207,12 +219,17 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
+//    TEMPORARY COMMENTED (Applies to multiplexed strain devices)
+//    if (strainDisplay ==1){
+//      addr = 2;
+//      i2c_select(addr);    // TEST     // Choose channel 1
+//      Wire.beginTransmission(TCAADDR);  
+//      strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+//      Wire.endTransmission();  
+//      }
+
     if (strainDisplay ==1){
-      addr = 2;
-      i2c_select(addr);    // TEST     // Choose channel 1
-      Wire.beginTransmission(TCAADDR);  
       strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-      Wire.endTransmission();  
       }
 
    if (pHDisplay == 1){
@@ -319,6 +336,8 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     }
 
     if (i2cDisplay == 1){
+
+      Wire.setClock(500);
       // SENSOR 0 - Channel 0
       Serial.print("*");   
       spacing2("*",12);
@@ -335,6 +354,7 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       i2c_select(addr);    // TEST     // Choose channel 1
       delay(100);    ////// TEST // Delay to allow better communication after channel change
       i2cSensors(); 
+      Wire.setClock(100000);
     }
 
     if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
