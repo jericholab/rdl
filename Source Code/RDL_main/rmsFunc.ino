@@ -6,7 +6,7 @@
 
 int rmsFunc(){
 
-       //voltFunc();    // LINE CAN BE ACTIVATED TO DETERMINE THE SENSOR OFFSET (FOR EXAMPLE, IT COULD BE 2.532 (VOLT) WHEN NO LOAD)
+      //voltFunc();    // LINE CAN BE ACTIVATED TO DETERMINE THE SENSOR OFFSET (FOR EXAMPLE, IT COULD BE 2.532 (VOLT) WHEN NO LOAD)
       
       analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
       delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
@@ -34,7 +34,9 @@ int rmsFunc(){
       spacing2("*",12);      
       Serial.print(rms_value,3);         //print out the value you read. Test with 3 decimals
       //spacing(rms_value,12); 
-      spacing2("0.000",12);     
+      //spacing2("0.000",12);  
+      spacing(rms_value,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
+   
 
       analogReference(EXTERNAL);                 //put the analog reference back to 3.3V
       for (int i= 1; i<5; i++){

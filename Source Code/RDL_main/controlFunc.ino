@@ -18,7 +18,7 @@ else{
 
 //return value;
 
-Serial.print("*");
+Serial.print(F("*"));
 spacing2("*",12);      
 Serial.print(value);         //print out the value you read.
 }

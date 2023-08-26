@@ -83,20 +83,27 @@ int printHeader(){
               Serial.print(WBGTText);
               spacing2(WBGTText,12);
             }
-//        if (SoilDisplay == 1){
+
+//        if (voltDisplay == 1){
 //              Serial.print(F("*"));
 //              spacing2("*",12);
-//              String soilText = F("Soil");
-//              Serial.print(soilText);
-//              spacing2(soilText,12);              
+//              String voltageText = F("Voltage");
+//              Serial.print(voltageText);
+//              spacing2(voltageText,12);
 //            }
-        if (voltDisplay == 1){
-              Serial.print(F("*"));
-              spacing2("*",12);
-              String voltageText = F("Voltage");
-              Serial.print(voltageText);
-              spacing2(voltageText,12);
+
+       if (voltDisplay == 1){
+            Serial.print(F("*"));
+            spacing2("*",12);
+            for (int i=1; i<(numberC+1); i++){
+              Serial.print(F("V"));
+              if(i<10){
+                Serial.print('0');      // T08, T09, T10, etc.
+              }
+              Serial.print(i);
+              spacing2("Vii",12);
             }
+        }
 
         if (currentDisplay == 1){
               Serial.print(F("*"));

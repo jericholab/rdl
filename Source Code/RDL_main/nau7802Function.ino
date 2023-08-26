@@ -18,7 +18,7 @@ void nau7802Function() {
 //    val = nau.getWeight(allowNegativeWeights, samplesToTake); //Once you've set zero offset and cal factor, you can ask the library to do the calculations for you.
   }
     
-    Serial.print("*");
+    Serial.print(F("*"));
     spacing2("*",12); 
     Serial.print(val);
     spacing(val,12); 

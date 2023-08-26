@@ -22,8 +22,6 @@ int startMessage(){
     Serial.print(F("Current interval: " ));
     Serial.print(readInterval);
     Serial.println(F(" ms"));  
-    Serial.print(F("Number of probes: "));
-    Serial.println(numberC);
     Serial.print(F("Sensors: "));
     Serial.println(sensors);
     Serial.print(F("Humidities: "));

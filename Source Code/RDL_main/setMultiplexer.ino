@@ -10,7 +10,7 @@ int setMultiplexer(int channel)
 digitalWrite(S0, bitRead(channel, 0));
 digitalWrite(S1, bitRead(channel, 1));
 digitalWrite(S2, bitRead(channel, 2));          
-digitalWrite(S3, bitRead(channel, 3));
+//digitalWrite(S3, bitRead(channel, 3));
 
 }
 //------------------------------------------------------------------
