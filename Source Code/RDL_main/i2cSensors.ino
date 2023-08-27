@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int i2cSensors(){
+void i2cSensors(){
 
 sht4.setPrecision(SHT4X_LOW_PRECISION);   //set to low precision measurement, quick
 //sht4.setPrecision(SHT4X_MEDIUM_PRECISION);   //set to medium precision measurement, 

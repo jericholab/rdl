@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int runRTC(){
+void runRTC(){
 
    DateTime now = rtc.now();
 

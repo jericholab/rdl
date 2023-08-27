@@ -4,7 +4,8 @@
 // INPUT: desired multiplexer channel as an integer, from 0 to 15
 // RETURN: none
 
-int setMultiplexer(int channel)
+void setMultiplexer(int channel)
+
 {
 // uses the first four bits of the channel number to set the channel select pins
 digitalWrite(S0, bitRead(channel, 0));

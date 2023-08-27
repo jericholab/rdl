@@ -5,7 +5,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int pHFunc(){
+void pHFunc(){
 
 
       analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals

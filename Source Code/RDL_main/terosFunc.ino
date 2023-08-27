@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int terosFunc(){
+void terosFunc(){
   
   digitalWrite(9, HIGH);                           //set pin D9 to HIGH (VCC 5V)
   

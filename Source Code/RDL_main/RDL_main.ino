@@ -16,20 +16,20 @@
 
 ////////// USER PARAMETERS ////////////
 
-bool generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
+//bool generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
-bool i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-bool WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
+bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+//bool humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+bool i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+//bool WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
 bool voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 1;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 1;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
-bool pHDisplay = 1;                     // optional display of pH meter values (1 = yes, 0 = no)
+bool currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+bool strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
+bool pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool noiseControl = 0;                  // optional delay when noise filter desired (1 = yes, 0 = no)
 
@@ -37,29 +37,27 @@ bool noiseControl = 0;                  // optional delay when noise filter desi
 
 char sensors[9]="TTTTTTTT";            // define array of 8 characters to indicate the type of sensor in each channel  (T=thermistor, P=photoresistor) . Factory default.
 char sensors_temp[9]="TTTTTTTT";       // initiating the temporary holder
-char humidities[9]="ABCD1234";         // define array of 8 elements to indicate the type of sensor in each channel  (letters=dry bulb, numbers = wet bulb).
-char humidities_temp[9]="00000000";    // initiating the temporary holder
-//int WBGT_dry = 1;                    // defining which channel has the dry bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
-#define WBGT_dry 1                   // defining which channel has the dry bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
-//int WBGT_wet = 4;                      // defining which channel has the wet bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
-#define WBGT_wet 4                      // defining which channel has the wet bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
-uint8_t WBGT_globe = 3;                    // defining which channel has the globe probe of the WBGT index (1 = C1, 2 = C2, etc.)
-#define WBGT_globe 3                   // defining which channel has the globe probe of the WBGT index (1 = C1, 2 = C2, etc.)
-int sortedHum[]={-1,-1,-1,-1,-1,-1,-1,-1};   // initiating the array of integers that will hold the sorted humidity channels (later the array (global variable) is modified by sortHum())
+//char humidities[9]="ABCD1234";         // define array of 8 elements to indicate the type of sensor in each channel  (letters=dry bulb, numbers = wet bulb).
+//char humidities_temp[9]="00000000";    // initiating the temporary holder
+//#define WBGT_dry 1                   // defining which channel has the dry bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
+//#define WBGT_wet 4                      // defining which channel has the wet bulb of the WBGT index  (1 = C1, 2 = C2, etc.)
+//uint8_t WBGT_globe = 3;                    // defining which channel has the globe probe of the WBGT index (1 = C1, 2 = C2, etc.)
+//#define WBGT_globe 3                   // defining which channel has the globe probe of the WBGT index (1 = C1, 2 = C2, etc.)
+//int sortedHum[]={-1,-1,-1,-1,-1,-1,-1,-1};   // initiating the array of integers that will hold the sorted humidity channels (later the array (global variable) is modified by sortHum())
 unsigned long time1 = 0;               // initialize variable to control read cycles
 unsigned long time2 = 0;               // initialize variable to control header print cycles
 uint8_t numberC=8;                        // default number of active thermistor channels. Must be an integer between 1 and 8.
 uint8_t numberV =8;                     // default number of active voltage channels. Must be an integer between 1 and 8.
 bool sensors_present=0;                 // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'sensors'.
-bool humidities_present=0;              // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'humidities'.
-int numberC10 = numberC;               // (ms) Temporary storage variable for quantity of channels used
+//bool humidities_present=0;              // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'humidities'.
+uint8_t numberC10 = numberC;               // (ms) Temporary storage variable for quantity of thermistor channels used
+uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for quantity of voltage channels used 
 uint8_t units = 0;                         // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-long headerInterval= 1800000;          // (ms) Interval at which the header (sensors identification and units) is printed out (1800000 = 30min)  
-int Seriesresistor = 4700;            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
+#define headerInterval 1800000          // (ms) Interval at which the header (sensors identification and units) is printed out (1800000 = 30min)  
+#define Seriesresistor 4700            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
-//long baudRate = 57600;                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
 #define baudRate 57600                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
 
 //LIBRARIES INCLUDED
@@ -93,7 +91,6 @@ float arrayV[16];                  // define array to store values of all probes
 float arrayR[16];                  // define array to store resistances of all probes before Serial print
 float arrayH[16];                  // define array to store humidities of all couples before Serial print
 
-//float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};         // define array to store the extension wire values
 float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0};         // define array to store the extension wire values
 
 String str;                            // define str in the general scope of the program
@@ -103,6 +100,10 @@ long readCycle2 = 0;                   // initialization of tag for live data (r
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
 #define PH_PIN A2                      // Define the analog pin for the pH meter input
 #define TEROS_PIN A3                   // Analog signal pin for soil meter
+#define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip
+#define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
+#define enable_V_MUX 10               // Define the Nano digital pin that enables/disables the Voltages multiplexer
+
 #define S0 2                           // Digital Pin 2 // Multiplexer #1 is controlled by 4 I/O pins
 #define S1 3                           // Digital Pin 3 // Multiplexer #1 is controlled by 4 I/O pins
 #define S2 4                           // Digital Pin 4 // Multiplexer #1 is controlled by 4 I/O pins   
@@ -126,6 +127,7 @@ void setup(void) {
 
     Serial.println();   //create space after reset of the Arduino
     Serial.begin(baudRate);                            // initialize serial monitor at the specified baud rate (e.g. 9600) 
+    readEEPROM();                                     // call function to read the EEPROM memory to see if there are some parameters stored
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         Serial.println(); Serial.println(); 
@@ -133,21 +135,21 @@ void setup(void) {
         Serial.print(F("Compiled: "));
         Serial.println(F(__DATE__));
         startMessage();    // print informations after startup
-        //printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
     }
     
     analogReference(EXTERNAL);                         // tells the MPU to use the external voltage as a reference (value used at the top of the ADC range)
 
-    pinMode(12, OUTPUT);                               // define pin 12 as an output pin.
-    digitalWrite(12, HIGH);                            // toggle pin 12 to HIGH value in order to supply RTC clock and I2C with a supply voltage (VCC15)
+    pinMode(RTC_supply, OUTPUT);                               // define pin 12 as an output pin.
+    digitalWrite(RTC_supply, HIGH);                            // toggle pin 12 to HIGH value in order to supply RTC clock and I2C with a supply voltage (VCC15)
 
-    pinMode(11, OUTPUT);                               // define pin 11 as an output pin.
-    digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+    pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
+    digitalWrite(enable_T_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
 
-    pinMode(10, OUTPUT);                               // define pin 10 as an output pin.
-    digitalWrite(10, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+    pinMode(enable_V_MUX, OUTPUT);                               // define pin 10 as an output pin.
+    //digitalWrite(enable_V_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+    digitalWrite(enable_V_MUX, LOW);   /////// TEST 2023-08-26
     
-    pinMode(VOLT_PIN, INPUT);                          // Set A1 as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
+    pinMode(VOLT_PIN, INPUT);                          // Set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
 
     pinMode(9, OUTPUT);                                // define pin 9 as an output pin to allow sending a control signal
 
@@ -164,7 +166,7 @@ void setup(void) {
       Wire.setClock(100000);
     }
     
-    readEEPROM();                                     // call function to read the EEPROM memory to see if there are some parameters stored
+
 
    timePassed= readInterval;                          // initializing reading timer at readInterval to force a first reading when entering loop()
 
@@ -193,7 +195,7 @@ void setup(void) {
     
    }      
 
-    sortHum();           // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
+//    sortHum();           // this function is run once at setup to determine what are the channels humidity couples (dry and wet)
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
@@ -226,7 +228,7 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
 
     if (tDisplay == 1){
   
-      digitalWrite(11, LOW);                          // toggle pin to LOW value in order turn on the THERMISTOR MUX  (D11)
+      digitalWrite(enable_T_MUX, LOW);                          // toggle pin to LOW value in order turn on the THERMISTOR MUX
       for (int i=0; i< (numberC); i++) {              
         
           setMultiplexer(i);                            // select the multiplexer channel
@@ -238,22 +240,13 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
             }
           int channel = i+1;                            //channel being measured
           if(sensors[i]=='T'){        //if sensor on channel is a thermoresistor
-            //struct STRUCT1 valeurs = thermistor(arrayA[i], arrayB[i], arrayC[i],channel);   //call 'thermistor' function and store results in a structure
-            //GEN_A
             struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C,channel);   //call 'thermistor' function and store results in a structure
             arrayV[i] = valeurs.t;                        // storing temperature to array
             arrayR[i] = valeurs.o;                        // storing resistances (ohm) to array       
-                }
-//          if(sensors[i]=='P'){            //if sensor on channel is a photoresistor
-//            struct STRUCT1 lux1 = illuminance(channel);
-//            arrayV[i] = lux1.t;           // storing illuminance to array of values
-//            arrayR[i] = lux1.o;           // storing resistances (ohm) to array
-//            }   
+                }  
           }
-        digitalWrite(11, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid self-heating effect and MUX consumption)        
-     }
-    
-    if (tDisplay == 1){
+        digitalWrite(enable_T_MUX, HIGH);                  // toggle pin to HIGH value in order turn off MUX while not used (avoid self-heating effect and MUX consumption)        
+
           for (int i=0; i< (numberC); i++) {               // print all probes temperature with a loop
             Serial.print(arrayV[i],2);                     // print value from array with 2 decimals  
             spacing(arrayV[i], 12);
@@ -269,27 +262,27 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     }
     }
 
-    if (humDisplay == 1){
-      Serial.print(F("*"));
-      spacing2("*",12); 
-      for (int i=0; i<4; i++){
-        int db_channel=sortedHum[2*i];
-        int wb_channel=sortedHum[2*i+1];
-        if (db_channel!=-1){                                   //if there is a humidity probe defined by the user, then calculate the relative humidity
-           arrayH[i]=relhum(arrayV[db_channel],arrayV[wb_channel],1013, units);
-        }
-        if (arrayH[i]>100){     //if value is non-physical, print an easily distinguishable value
-          arrayH[i]=111;
-          }
-        if (arrayH[i]<0){       //if value is non-physical, print an easily distinguishable value
-          arrayH[i]=0;  
-        }
-      }
-      for (int i=0; i<4; i++){
-      Serial.print(arrayH[i]);         //print relative humidity.
-      spacing(arrayH[i],12);
-      }
-    }
+//    if (humDisplay == 1){
+//      Serial.print(F("*"));
+//      spacing2("*",12); 
+//      for (int i=0; i<4; i++){
+//        int db_channel=sortedHum[2*i];
+//        int wb_channel=sortedHum[2*i+1];
+//        if (db_channel!=-1){                                   //if there is a humidity probe defined by the user, then calculate the relative humidity
+//           arrayH[i]=relhum(arrayV[db_channel],arrayV[wb_channel],1013, units);
+//        }
+//        if (arrayH[i]>100){     //if value is non-physical, print an easily distinguishable value
+//          arrayH[i]=111;
+//          }
+//        if (arrayH[i]<0){       //if value is non-physical, print an easily distinguishable value
+//          arrayH[i]=0;  
+//        }
+//      }
+//      for (int i=0; i<4; i++){
+//      Serial.print(arrayH[i]);         //print relative humidity.
+//      spacing(arrayH[i],12);
+//      }
+//    }
 
     if (i2cDisplay == 1){
 
@@ -307,25 +300,24 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
       Serial.print("*");   
       spacing2("*",12);
       addr = 1;
-      i2c_select(addr);    // TEST     // Choose channel 1
-      delay(100);    ////// TEST // Delay to allow better communication after channel change
+      i2c_select(addr);         // Choose channel 1
+      delay(100);               // Delay to allow better communication after channel change
       i2cSensors(); 
       Wire.setClock(100000);
     }
 
-    if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
-      Serial.print("*");
-      spacing2("*",12);
-      wbgtFunc();             //run function to calculate and display the WBGT value
-    }
+//    if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
+//      Serial.print("*");
+//      spacing2("*",12);
+//      wbgtFunc();             //run function to calculate and display the WBGT value
+//    }
 
     if (voltDisplay==1){
-      voltMainFunc();
-      //voltFunc();    
+      voltMainFunc();   
       
     }
     if (currentDisplay==1){
-      rmsFunc();    
+      currentFunc();    
     }
 
     if (terosDisplay==1){

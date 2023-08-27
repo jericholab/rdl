@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int voltFunc(){
+void voltFunc(){
       analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
       delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
       int sensorValue;               //variable declaration
@@ -16,6 +16,7 @@ int voltFunc(){
     
       Serial.print(voltage,2);         //print out the value you read.
       spacing(voltage,12);      
+
 }
   
       

@@ -4,10 +4,10 @@
 // INPUT: none
 // OUTPUT: none
 
-int commands(){
+void commands(){
 
   char text1[]="Switching temperature units to";
-  char text2[]="What new definition do you want ?  (You have 30 seconds to answer)";  
+  char text2[]="What new definition do you want ?  (You have 30 seconds)";  
   char text3[]="New definition:   ";
 
 if (str == F("RESET\r")){          
@@ -48,32 +48,11 @@ if (str == F("KELVIN\r")){
     resetFunc(); //reset the arduino
 }
 
-//if (str == F("RESISTANCE\r")){              ////////////////////////////////////////////////////////// Section is Work In Progress, not ready yet
-//    blink(200,2);
-//    Serial.println();
-//    Serial.println(F("Print resistance values? (Y/y/N/n)"));
-//    long timer10 = millis();
-//    char answer;
-//    while ((Serial.available() == 0) && ((millis() - timer10)< 30000)){
-//      answer = Serial.parseInt();  //Read the data the user has input. If no valid digits are read, the function defaults to zero.
-//    }
-//    Serial.println(answer);
-//    if (answer = 'Y'){
-//    ohmDisplay = 1;
-//      }
-//    if (answer = 'N'){
-//    ohmDisplay = 0;
-//      }
-//      
-//    EEPROM.put(100, ohmDisplay);                 // write the parameter value to EEPROM specific address
-//    delay(1000);                                 // after printing out the EEPROM content, wait two seconds before starting measurements again
-//    resetFunc();  //reset the arduino
-//}
-
     if (str == F("HELP\r")){
     Serial.println();
     Serial.println(F("Possible commands:")); 
-    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QUANTITY, SENSORS, HUMIDITIES, RESISTANCE"));
+    //Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, SENSORS, HUMIDITIES, RESISTANCE"));
+    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, SENSORS"));
     Serial.println();
     delay(2000);
     }        
@@ -131,54 +110,54 @@ if (str == F("SENSORS\r")){
 //- - - - - - - - - - - 
 
 //- - - - - - - - - - - 
-char buf2[9];                                          // for now, code will be kept at a maximum of 8 channels (4 humidities)
-if (str == F("HUMIDITIES\r")){
-  Serial.println();
-  Serial.println(humidities); 
-  Serial.println();
-  Serial.println(text2);
-  Serial.println();
-  
-  #define BUFFER_SIZE 8
-  Serial.setTimeout(30000);                             //maximum time the Serial.ReadBytesUntil() function will wait out.
-  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);      //Read the data the user has input. (Array has 8 characters (8 channels) plus the null character to terminate the array. Total is 8+1)
-  Serial.println(buf2);
-
-  score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
-  if (sizeof(buf2) ==9){                       // if new string has the expected length...
-     score = 1;                                // the buffer gets a perfect score
-     for(int i=0; i<8; i++){                   // and a chance to get its content verified 
-         ////////if ((buf[i] != 'T')&&(buf[i] != 'P')){      // ... if character is something else than a  'T' or 'P', ...
-         if((buf2[i] != 'A')&&
-         (buf2[i] != 'B')&&
-         (buf2[i] != 'C')&&
-         (buf2[i] != 'D')&&
-         (buf2[i] != '0')&&
-         (buf2[i] != '1')&&
-         (buf2[i] != '2')&&
-         (buf2[i] != '3')&&
-         (buf2[i] != '4'))
-          score = 0;                                         // ... the buffer loses its perfect score 
-         }
-     }
-
-     if(score == 1){                                // if the final score is good
-             Serial.println(F("Good input"));             
-             for(int i=0; i<9; i++){
-              humidities[i] = buf2[i];                      // we can substitute the sensor variable content
-              }
-            EEPROM.put(50, humidities);                    // and write the new definition to the dedicated EEPROM address.
-         }
-     else{                                          //otherwise it means the user send too short definition or bad character
-       Serial.println(F("Bad input"));              // otherwise the input was bad....         
-     }
-        
-    Serial.print(text3);
-    Serial.println(humidities);
-    Serial.println();
-    delay(3000);
-    resetFunc(); //reset the arduino
-    }
+//char buf2[9];                                          // for now, code will be kept at a maximum of 8 channels (4 humidities)
+//if (str == F("HUMIDITIES\r")){
+//  Serial.println();
+//  Serial.println(humidities); 
+//  Serial.println();
+//  Serial.println(text2);
+//  Serial.println();
+//  
+//  #define BUFFER_SIZE 8
+//  Serial.setTimeout(30000);                             //maximum time the Serial.ReadBytesUntil() function will wait out.
+//  Serial.readBytesUntil('\r', buf2 , BUFFER_SIZE);      //Read the data the user has input. (Array has 8 characters (8 channels) plus the null character to terminate the array. Total is 8+1)
+//  Serial.println(buf2);
+//
+//  score = 0;                                   // score is initialized at 0 - we dont know if the buffer content is good
+//  if (sizeof(buf2) ==9){                       // if new string has the expected length...
+//     score = 1;                                // the buffer gets a perfect score
+//     for(int i=0; i<8; i++){                   // and a chance to get its content verified 
+//         ////////if ((buf[i] != 'T')&&(buf[i] != 'P')){      // ... if character is something else than a  'T' or 'P', ...
+//         if((buf2[i] != 'A')&&
+//         (buf2[i] != 'B')&&
+//         (buf2[i] != 'C')&&
+//         (buf2[i] != 'D')&&
+//         (buf2[i] != '0')&&
+//         (buf2[i] != '1')&&
+//         (buf2[i] != '2')&&
+//         (buf2[i] != '3')&&
+//         (buf2[i] != '4'))
+//          score = 0;                                         // ... the buffer loses its perfect score 
+//         }
+//     }
+//
+//     if(score == 1){                                // if the final score is good
+//             Serial.println(F("Good input"));             
+//             for(int i=0; i<9; i++){
+//              humidities[i] = buf2[i];                      // we can substitute the sensor variable content
+//              }
+//            EEPROM.put(50, humidities);                    // and write the new definition to the dedicated EEPROM address.
+//         }
+//     else{                                          //otherwise it means the user send too short definition or bad character
+//       Serial.println(F("Bad input"));              // otherwise the input was bad....         
+//     }
+//        
+//    Serial.print(text3);
+//    Serial.println(humidities);
+//    Serial.println();
+//    delay(3000);
+//    resetFunc(); //reset the arduino
+//    }
 
 //- - - - - - - - - - - 
 
@@ -203,9 +182,9 @@ if (str == F("INTERVAL\r")){  //if word "interval" is received, enter a while lo
   printHeader();
 }
 
-if (str == F("QUANTITY\r")){  //if word "quantity" is received, enter a while loop until user sends desired quantity of probes.
+if (str == F("QTY-T\r")){  //if word "quantity" is received, enter a while loop until user sends desired quantity of probes.
   Serial.println();
-  Serial.print(F("Present quantity: "));
+  Serial.print(F("Present qty thermistors: "));
   Serial.println(numberC);
   Serial.println(F("How many probes needed ? (1 to 8) (You have twenty seconds)"));
   long timer10 = millis();
@@ -218,6 +197,26 @@ if (str == F("QUANTITY\r")){  //if word "quantity" is received, enter a while lo
   }
   Serial.print(F("New quantity is "));
   Serial.println(numberC);
+  Serial.println();
+  delay(1000);
+  resetFunc(); //reset the arduino
+}
+
+if (str == F("QTY-V\r")){  //if word "quantity" is received, enter a while loop until user sends desired quantity of probes.
+  Serial.println();
+  Serial.print(F("Present qty voltages: "));
+  Serial.println(numberV);
+  Serial.println(F("How many probes needed ? (1 to 8) (You have twenty seconds)"));
+  long timer10 = millis();
+  while ((Serial.available() == 0) && ((millis() - timer10)< 30000)){
+    numberV10 = Serial.parseInt();  //Read the data the user has input. If no valid digits are read, function defaults to zero.
+  }
+  if ((numberV10 > 0)&&(numberC10<=8)){              // if new value between 1 and 8... 
+    numberV = numberV10;                             // ... then we can now use that value now
+    EEPROM.put(9, numberV);                          // writes the new rate to EEPROM. 
+  }
+  Serial.print(F("New quantity is "));
+  Serial.println(numberV);
   Serial.println();
   delay(1000);
   resetFunc(); //reset the arduino

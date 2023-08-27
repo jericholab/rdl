@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int rmsFunc(){
+void currentFunc(){
 
       //voltFunc();    // LINE CAN BE ACTIVATED TO DETERMINE THE SENSOR OFFSET (FOR EXAMPLE, IT COULD BE 2.532 (VOLT) WHEN NO LOAD)
       

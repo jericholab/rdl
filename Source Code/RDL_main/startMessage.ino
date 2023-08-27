@@ -4,30 +4,30 @@
 // INPUT: none
 // OUTPUT: none
 
-int startMessage(){
+void startMessage(){
 
-    Serial.println(F("Starting device...Starting live transmission of data...   "));
-    Serial.print(F("Temperatures in "));
+    Serial.println(F("Starting device..."));
+    Serial.print(F("Temperatures: "));
     if (units == 0){
-          Serial.print(F("Celcius"));
+          Serial.print(F("°C"));
     }
     if (units == 1){
-      Serial.print(F("Fahrenheit"));
+      Serial.print(F("°F"));
     }
     if (units == 2){
-      Serial.print(F("Kelvin"));
+      Serial.print(F("K"));
     }
 
-    Serial.println(F(". Resistances in Ohms."));
-    Serial.print(F("Current interval: " ));
+    Serial.println(F(". Resistances: Ohms."));
+    Serial.print(F("Interval target: " ));
     Serial.print(readInterval);
     Serial.println(F(" ms"));  
-    Serial.print(F("Sensors: "));
-    Serial.println(sensors);
-    Serial.print(F("Humidities: "));
-    Serial.println(humidities);
-    Serial.println(F("For a list of commands, type 'help'"));
-    Serial.print(F("Extension wire for channels 1 to 8 (ohms): "));
+//    Serial.print(F("Sensors: "));
+//    Serial.println(sensors);
+//    Serial.print(F("Humidities: "));
+//    Serial.println(humidities);
+    Serial.println(F("For list of commands, type 'help'"));
+    Serial.print(F("Extension wire, channels 1 to 8 (ohms): "));
 
     if (headerDisplay == 1){
         for(int i=0; i<8; i++){
