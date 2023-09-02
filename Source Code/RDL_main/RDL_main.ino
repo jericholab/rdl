@@ -20,14 +20,14 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=0;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
+bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 //bool humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 bool i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 //bool WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
 bool voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional display of teros 10 meter reading values (1 = yes, 0 = no) 
+bool terosDisplay = 1;                  // optional display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 bool pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
@@ -76,8 +76,8 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define R_MUX 70                       // Internal resistance of the multiplexer (ohms)
 #define NUMSAMPLES 1                   // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
-bool SHT4_present = 0;                   //initialize the variable that will indicate if a sensor is present
-bool score;                             // define the variable "score" for evaluation of user input algorithm
+bool SHT4_present = 0;                 //initialize the variable that will indicate if a sensor is present
+bool score;                            // define the variable "score" for evaluation of user input algorithm
 //-------------------------------------------------------------------
 
 // STEINHART-HART GENERIC COEFFICIENTS FOR 10K (B25/50 = 3950K) NTC THERMISTORS
@@ -99,7 +99,8 @@ long readCycle2 = 0;                   // initialization of tag for live data (r
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
 #define PH_PIN A2                      // Define the analog pin for the pH meter input
-#define TEROS_PIN A3                   // Analog signal pin for soil meter
+//#define TEROS_PIN A3                   // Analog signal pin for soil meter  //Test 2023-08-27
+#define TEROS_PIN A1                   // Analog signal pin for soil meter
 #define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10               // Define the Nano digital pin that enables/disables the Voltages multiplexer
@@ -177,7 +178,7 @@ void setup(void) {
     pinMode(S2, OUTPUT);
     pinMode(S3, OUTPUT);
 
-//    TEMPORARY COMMENTED (Applies to multiplexed strain devices)
+//    TEMPORARY COMMENTED (Applies to multiplexed i2c strain devices)
 //    if (strainDisplay ==1){
 //      addr = 2;
 //      i2c_select(addr);    // TEST     // Choose channel 1
@@ -214,9 +215,6 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
     time1=millis();                                 // each time a reading is taken, time1 is reset     
     readCycle2=readCycle2 + 1;                      // increment the read cycle number at each turn     
     
-
-      
-    
     if (timeDisplay == 1){
         runRTC();                                       // display timestamp 
     }
@@ -226,7 +224,7 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
         spacing(readCycle2, 15);                        // 15 characters instead of 12 are considered because the variable readCycle2 is LONG type, without the two decimals and dot of the FLOAT type
     }
 
-    if (tDisplay == 1){
+    if (tDisplay == 1 or ohmDisplay == 1){
   
       digitalWrite(enable_T_MUX, LOW);                          // toggle pin to LOW value in order turn on the THERMISTOR MUX
       for (int i=0; i< (numberC); i++) {              
@@ -247,20 +245,24 @@ if (timePassed >= readInterval)                 // if enough time has passed, re
           }
         digitalWrite(enable_T_MUX, HIGH);                  // toggle pin to HIGH value in order turn off MUX while not used (avoid self-heating effect and MUX consumption)        
 
+      if (tDisplay == 1){
           for (int i=0; i< (numberC); i++) {               // print all probes temperature with a loop
             Serial.print(arrayV[i],2);                     // print value from array with 2 decimals  
             spacing(arrayV[i], 12);
           }  
+      }
+        
+      if (ohmDisplay == 1){
+          Serial.print("*"); 
+          spacing2("*",12);         
+              for (int i=0; i< (numberC); i++) {
+                Serial.print(arrayR[i],0);                      // print all probes resistance with a loop (optionnal)¸, without printing the decimals
+                spacing(arrayR[i], 14);                         //the large resistance values to display require more spacing (14) than the rest (12) because the usual two decimals are not printed
+        }
+        }
     }
     
-    if (ohmDisplay == 1){
-      Serial.print("*"); 
-      spacing2("*",12);         
-          for (int i=0; i< (numberC); i++) {
-            Serial.print(arrayR[i],0);                      // print all probes resistance with a loop (optionnal)¸, without printing the decimals
-            spacing(arrayR[i], 14);                         //the large resistance values to display require more spacing (14) than the rest (12) because the usual two decimals are not printed
-    }
-    }
+
 
 //    if (humDisplay == 1){
 //      Serial.print(F("*"));

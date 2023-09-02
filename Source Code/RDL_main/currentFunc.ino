@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-// FONCTION: rmsFunc
+// FONCTION: currentFunc
 // PURPOSE: calculates the true RMS current value of the Hall effect sensor
 // INPUT: none
 // OUTPUT: none

@@ -8,11 +8,11 @@ void controlFunc(){
   int value;
   
   if(arrayV[0]<arrayV[1]){
-    digitalWrite(9, HIGH);                            // /////////////// TEMPORARY TEST  
+    digitalWrite(9, HIGH);                            /// SAMPLE TEST OF CONDITIONAL DIGITAL OUTPUT SIGNAL CONTROL
     value = 1;
   }
   else{
-    digitalWrite(9, LOW);                            // /////////////// TEMPORARY TEST  
+    digitalWrite(9, LOW);
     value = 0;
   }
   
@@ -20,5 +20,5 @@ void controlFunc(){
   
   Serial.print(F("*"));
   spacing2("*",12);      
-  Serial.print(value);         //print out the value you read.
+  Serial.print(value);         //print out the control signal.
 }
