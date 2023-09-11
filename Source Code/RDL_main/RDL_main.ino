@@ -16,17 +16,16 @@
 
 ////////// USER PARAMETERS ////////////
 
-//bool generic=1;                         // use of generic thermistor coefficients (generic = 1) or custom coefficients for calibrated thermistors (generic = 0)
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 //bool humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
 bool i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 //bool WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
 bool voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 bool pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
@@ -76,10 +75,12 @@ Adafruit_ADS1015 ads1015;              //Create an instance of ADS1015
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
 #define R_MUX 70                       // Internal resistance of the multiplexer (ohms)
-#define NUMSAMPLES 100                   // how many samples to take and average at each reading (smooth the noise)
-float V_ref = 5;                       // calibration value for voltage measurements with channel A1 (exact value of the VCC supply must be measured with multimeter for improved accuracy)
-bool SHT4_present = 0;                 //initialize the variable that will indicate if a sensor is present
+#define NUMSAMPLES 10                   // how many samples to take and average at each reading (smooth the noise)
+float V_ref = 5;                       // calibration value for voltage measurements with channel A1
+bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
 bool score;                            // define the variable "score" for evaluation of user input algorithm
+long HighSpeedClock = 100;             //value for high speed i2c bus clock (Hz). Default is 100,000.
+long LowSpeedClock = 100;              //value for low speed i2c bus clock (Hz)
 //-------------------------------------------------------------------
 
 // STEINHART-HART GENERIC COEFFICIENTS FOR 10K (B25/50 = 3950K) NTC THERMISTORS
@@ -160,13 +161,13 @@ void setup(void) {
     initRTC();                                         // call function to initialize Real Time Clock 
 
     if (i2cDisplay == 1){
-      Wire.setClock(500);
+      Wire.setClock(LowSpeedClock);
 
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              
       }
 
-      Wire.setClock(100000);
+      Wire.setClock(HighSpeedClock);
     }
 
       ads1015.begin();                                 // initialize the ADS1015 chip
@@ -290,7 +291,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
     if (i2cDisplay == 1){
 
-      Wire.setClock(500);
+      Wire.setClock(LowSpeedClock);
       // SENSOR 0 - Channel 0
       Serial.print("*");   
       spacing2("*",12);
@@ -307,7 +308,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
       i2c_select(addr);         // Choose channel 1
       delay(100);               // Delay to allow better communication after channel change
       i2cSensors(); 
-      Wire.setClock(100000);
+      Wire.setClock(HighSpeedClock);
     }
 
 //    if (WBGTDisplay ==1){     //optional print of the Wet Bulb Globe Temperature (WBGT) based on fixed channels.
@@ -318,7 +319,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
     if (voltDisplay==1){
       voltMainFunc();   
-      
     }
     if (currentDisplay==1){
       currentFunc();    

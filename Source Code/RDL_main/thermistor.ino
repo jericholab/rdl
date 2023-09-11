@@ -18,7 +18,8 @@ struct STRUCT1 thermistor(float A, float B, float C, int channel)   //this creat
     average=ADCrange - 1;
   }
   //float ohmvalue = Seriesresistor/(1023 / average - 1);        // ohms // convert the ADC average value to resistance
-  float ohmvalue = Seriesresistor/(ADCrange / average - 1);        // ohms // convert the ADC average value to resistance
+  float voltage = average * 0.003;                               // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/4096 = 0.003)   
+  float ohmvalue = Seriesresistor * voltage /(3.3-voltage);      // (ADC logic voltage (6.144V) is not the same as the ARef voltage now (3.3V), so the voltages reappear in the equations.
   ohmvalue = ohmvalue - R_MUX - R_wire[(channel-1)];           // ohms //remove electric resistance of multiplexer and extension wire.
   float steinhart;                                             // define steinhart as a placeholder floating number
   steinhart = log(ohmvalue);                                   // log(x) means natural logarithm in Arduino 
