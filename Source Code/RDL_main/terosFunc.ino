@@ -26,5 +26,4 @@ void terosFunc(){
   float VWC = 4.824E-10 * pow(voltage1,3) - 2.278E-06*pow(voltage1,2) + 3.898E-03*voltage1 - 2.154;
   Serial.print(VWC,3);  //mVolts
   spacing(VWC,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
-  
   }

@@ -6,10 +6,21 @@
 
 void i2cSensors(){
 
-sht4.setPrecision(SHT4X_LOW_PRECISION);   //set to low precision measurement, quick
+//sht4.setPrecision(SHT4X_LOW_PRECISION);   //set to low precision measurement, quick
 //sht4.setPrecision(SHT4X_MEDIUM_PRECISION);   //set to medium precision measurement, 
-//sht4.setPrecision(SHT4X_HIGH_PRECISION);   //set to high precision measurement, slow
-sht4.setHeater(SHT4X_NO_HEATER);  //set to 'no heat'
+sht4.setPrecision(SHT4X_HIGH_PRECISION);   //set to high precision measurement, slow
+
+if (SHT40_heatPulse ==0){
+  sht4.setHeater(SHT4X_MED_HEATER_1S);  //set to 'med heat for 1 second' (first dose)
+  sht4.setHeater(SHT4X_MED_HEATER_1S);  //set to 'med heat for 1 second' (second dose)
+  SHT40_heatPulse = 1;  //change value to 1.
+  Serial.print("&");  //indicate the heating happened with an 'ampersand' sign
+}
+else{
+  sht4.setHeater(SHT4X_NO_HEATER);  //set to 'no heat'  
+}
+
+//sht4.setHeater(SHT4X_NO_HEATER);  //set to 'no heat'
 //sht4.setHeater(SHT4X_HIGH_HEATER_1S);  //set to 'high heat for 1 second'
 //sht4.setHeater(SHT4X_HIGH_HEATER_100MS);  
 //sht4.setHeater(SHT4X_MED_HEATER_1S);  

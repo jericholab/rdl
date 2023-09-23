@@ -21,11 +21,11 @@ bool timeDisplay=1;                     // optional display of timestamp (1 = ye
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-//bool humDisplay = 1;                    // optional calculations and display of relative humidities (1 = yes, 0 = no)
+//bool humDisplay = 1;                  // optional calculations and display of relative humidities (1 = yes, 0 = no)
 bool i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
-//bool WBGTDisplay = 1;                   // optional display of WBGT values (1 = yes, 0 = no)
-bool voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
+//bool WBGTDisplay = 1;                 // optional display of WBGT values (1 = yes, 0 = no)
+bool voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 bool pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
@@ -81,6 +81,7 @@ bool SHT4_present = 0;                 // initialize the variable that will indi
 bool score;                            // define the variable "score" for evaluation of user input algorithm
 long HighSpeedClock = 100;             //value for high speed i2c bus clock (Hz). Default is 100,000.
 long LowSpeedClock = 100;              //value for low speed i2c bus clock (Hz)
+bool SHT40_heatPulse = 0;              // temporary test to see if I can send a single pulse of heat and then turn this value to '1' to avoid heat at every loop
 //-------------------------------------------------------------------
 
 // STEINHART-HART GENERIC COEFFICIENTS FOR 10K (B25/50 = 3950K) NTC THERMISTORS
@@ -164,7 +165,7 @@ void setup(void) {
       Wire.setClock(LowSpeedClock);
 
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-        SHT4_present = 1;                              
+        SHT4_present = 1;                         
       }
 
       Wire.setClock(HighSpeedClock);

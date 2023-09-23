@@ -16,7 +16,7 @@ void currentFunc(){
 //      int n = 5;                                   //size of the sample to be collected
       int i;                                                        //  integer for loop iteration
       float rms_value = 0;                                                 // initialize average value
-      float V_offset = 2.44;                             // offset value (no load) to calibrate the sensor
+      float V_offset = 2.831;                             // offset value (no load) to calibrate the sensor
 //      float V_ref = 5;                                    // Analog reference
 //      for (i=0; i< n; i++)                                  // take N samples in a row, with a slight delay    
 //      {
