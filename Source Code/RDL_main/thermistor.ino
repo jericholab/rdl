@@ -7,7 +7,9 @@
 struct STRUCT1 thermistor(float A, float B, float C, int channel)   //this creates a function called thermistor that is a member of the class STRUCT1
 {
   uint16_t i;                                                   // unsigned integer (16 bit) for loop iteration (between 0 and 65,535)
-  float average;                                               // create a new variable to store sample average
+  long average;  //test 2023-09-22 to try to accelerate loop sums
+  
+  //float average;                                               // create a new variable to store sample average
   average = 0;  
   for (i=0; i< NUMSAMPLES; i++)                                // take N samples in a row, with a slight delay
   {

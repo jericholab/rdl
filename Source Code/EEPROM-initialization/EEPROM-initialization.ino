@@ -5,7 +5,7 @@
 // 2. things to write on EEPROM:
 //   units CELCIUS  (EEPROM address = 0)
 //   interval 1000 [ms]  (EEPROM address = 4)
-//   quantities: 16 [probes] (EEPROM address = 8)
+//   quantities: 8 [probes] (EEPROM address = 8)
 //   sensors: TTTTTTTTTTTTTTTT  (EEPROM address = 20) (Not yet implemented)
 //   humidities A100 0000 0000 0000  (EEPROM address = 30) (Not yet implemented)
 // 3. the end
@@ -24,7 +24,7 @@ void setup() {
 EEPROM.put(0, 0);   // Units are celcius
 long readInterval = 1000;  //interval of measurements
 EEPROM.put(4, readInterval);
-int numberC=16;   //number of sensors
+int numberC=8;   //number of sensors
 EEPROM.put(8, numberC); 
 Serial.println("All done") ; 
 }

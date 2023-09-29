@@ -23,16 +23,15 @@ void currentFunc(){
 //        float value = analogRead(CURRENT_PIN);
 //        float amps = value * (V_ref / 1023.0);                  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V)
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
-      //analogReference(DEFAULT);                    //put the analog reference back to 5V to allow reading 0-5V signals
       delay(100);                                    //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
       setMultiplexer(0);                             // select the multiplexer channel                   
       delay(100);
       Serial.print("*");
       spacing2("*",12); 
-      float amps = voltFunc();                      // TEMP TEST USING ADS1015 call
-      Serial.print("*");
-      spacing2("*",12);      
-      Serial.print(amps,3);         //print out the value you read. Test with 3 decimals
+      float amps = voltFunc(); 
+      //Serial.print("*");
+     // spacing2("*",12);      
+      //Serial.print(amps,3);         //print out the value you read. Test with 3 decimals
       
       float amps2 = (amps - V_offset) * 50/1.5;                      // Finalize conversion to instantaneous amps
 //      rms_value += pow(amps2,2);                           // sum of the squared sample values
@@ -44,13 +43,13 @@ void currentFunc(){
 //      Serial.print(amps2,3);         //print out the value you read. Test with 3 decimals
 
       //rms_value = sqrt(rms_value / n);                                // rms function
-      Serial.print("*");
-      spacing2("*",12);      
-      //Serial.print(rms_value,3);         //print out the value you read. Test with 3 decimals
+//      Serial.print("*");
+//      spacing2("*",12);      
       Serial.print(amps2,3);         //print out the value you read. Test with 3 decimals
       //spacing(rms_value,12); 
       //spacing2("0.000",12);  
-      spacing(rms_value,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
+      //spacing(rms_value,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
+      spacing(amps2,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
    
 
 //      analogReference(EXTERNAL);                 //put the analog reference back to 3.3V
