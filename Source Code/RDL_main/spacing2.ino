@@ -3,7 +3,8 @@
 // PURPOSE: add the correct amount of space after a String to keep the columns aligned
 // INPUT: item (item to display), space(number of characters of the area in total)
 // OUTPUT: none
-int spacing2(String item, int space)
+
+void spacing2(String item, int space)
 {          
       String temp10= String(item);
       int temp11 = temp10.length();

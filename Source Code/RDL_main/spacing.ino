@@ -4,7 +4,7 @@
 // INPUT: item (item to display), space(number of characters of the area in total)
 // OUTPUT: none
 
-int spacing(float item, int space)
+void spacing(float item, int space)
 {          
       String temp10= String(item);   //the String() function will keep two decimals from the float by default. Be careful if you print more or less than 2 decimals.
       int temp11 = temp10.length();

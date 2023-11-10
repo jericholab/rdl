@@ -5,7 +5,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int pHFunc(){
+void pHFunc(){
 
 
       analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
@@ -15,17 +15,15 @@ int pHFunc(){
         sensorValue = analogRead(PH_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
       }
       
-      //temperature = readTemperature();         // read your temperature sensor to execute temperature compensation
       voltage = analogRead(PH_PIN)/1024.0*5000;  // read the voltage while assuming a 5000mV voltage reference
-      phValue = ph.readPH(voltage,temperature);  // convert voltage to pH with temperature compensation
+      phValue = ph.readPH(voltage,25);  // convert voltage to pH with temperature compensation disabled (fixed value of 25C)
       analogReference(EXTERNAL);     //put the analog reference back to 3.3V  
       //Serial.print(voltage,2);  //raw value from ADC based on probe voltage
       Serial.print("*"); 
       spacing2("*",12);   
       Serial.print(phValue,2);  // pH value
       spacing(phValue,12); 
-      Serial.print(temperature,1); //temperature 
-      spacing(temperature,12); 
+
         
         
         

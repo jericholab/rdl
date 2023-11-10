@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 
-int readEEPROM(){
+void readEEPROM(){
 
     units =  EEPROM.read(0);                          // read EEPROM in case, temperature units were previously defined
     long readInterval_ROM;                            // define readInterval_ROM before using it to store data extracted from EEPROM, if any
@@ -16,6 +16,10 @@ int readEEPROM(){
     int numberC_ROM = EEPROM.read(8);
     if (numberC_ROM !=0){                              // If numberC present ...
       numberC = numberC_ROM;}                         // ... use that stored value.
+
+    int numberV_ROM = EEPROM.read(9);
+    if (numberV_ROM !=0){                              // If numberC present ...
+      numberV = numberV_ROM;}                         // ... use that stored value.
 
 //- - - - -      
     char sensors_ROM[9];                            // Initialize variable
@@ -41,21 +45,23 @@ int readEEPROM(){
          }
       
   //- - - - - 
-  char humidities_ROM[9];                              //initialize variable
-  //int humidities_present;                             // Define variable in larger scope of function    
-  EEPROM.get(50, humidities_ROM);                      // Read EEPROM address that could contain humidities and store to temporary variable
-        for(int i=0; i<8; i++)
-      {
-         if (humidities_ROM[i]!=0){
-          humidities_present=1;        
-         }
-      }
-    if (humidities_present==1){
-          for(int i=0; i<8; i++){
-      {
-         humidities[i] = humidities_ROM[i];                 //In the Arduino language, you must substitute character by character the array
-      }
-    }
-    }
+//  char humidities_ROM[9];                              //initialize variable
+//  EEPROM.get(50, humidities_ROM);                      // Read EEPROM address that could contain humidities and store to temporary variable
+//        for(int i=0; i<8; i++)
+//      {
+//         if (humidities_ROM[i]!=0){
+//          humidities_present=1;        
+//         }
+//      }
+//    if (humidities_present==1){
+//          for(int i=0; i<8; i++){
+//      {
+//         humidities[i] = humidities_ROM[i];                 //In the Arduino language, you must substitute character by character the array
+//      }
+//    }
+//    }
 }
+
+  //- - - - - 
+
 // -----------------------------------------

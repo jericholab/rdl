@@ -1,45 +1,62 @@
 //-------------------------------------------------------------------
-// FONCTION: rmsFunc
+// FONCTION: currentFunc
 // PURPOSE: calculates the true RMS current value of the Hall effect sensor
 // INPUT: none
 // OUTPUT: none
 
-int rmsFunc(){
-
-       //voltFunc();    // LINE CAN BE ACTIVATED TO DETERMINE THE SENSOR OFFSET (FOR EXAMPLE, IT COULD BE 2.532 (VOLT) WHEN NO LOAD)
+void currentFunc(){
       
-      analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
-      delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
-      int sensorValue;               //variable declaration
-      for (int i= 1; i<5; i++){
-        sensorValue = analogRead(CURRENT_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
-      }
+//      analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
+//      delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
+//      int sensorValue;               //variable declaration
+//      for (int i= 1; i<5; i++){
+//        sensorValue = analogRead(CURRENT_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
+//      }
       
-      int n = 200;                                   //size of the sample to be collected (too high number can freeze the Nano (stack overflow))
+//      int n = 5;                                   //size of the sample to be collected
       int i;                                                        //  integer for loop iteration
       float rms_value = 0;                                                 // initialize average value
-      float V_offset = 2.532;                             // offset value (no load) to calibrate the sensor
-      float V_ref = 5;                                    // Analog reference
-      for (i=0; i< n; i++)                                  // take N samples in a row, with a slight delay    
-      {
-        float value = analogRead(CURRENT_PIN);
-        float amps = value * (V_ref / 1023.0);                  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V)
-        amps= (amps - V_offset) * 50/1.5;                      // Finalize conversion to instantaneous amps
-        rms_value += pow(amps,2);                           // sum of the squared sample values
-        delay(1);                                           // delay (ms) for proper sampling of the signal
-      }
-
-      rms_value = sqrt(rms_value / n);                                // rms function
+      float V_offset = 2.831;                             // offset value (no load) to calibrate the sensor
+//      float V_ref = 5;                                    // Analog reference
+//      for (i=0; i< n; i++)                                  // take N samples in a row, with a slight delay    
+//      {
+//        float value = analogRead(CURRENT_PIN);
+//        float amps = value * (V_ref / 1023.0);                  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V)
+      digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
+      //analogReference(DEFAULT);                    //put the analog reference back to 5V to allow reading 0-5V signals
+      delay(100);                                    //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
+      setMultiplexer(0);                             // select the multiplexer channel                   
+      delay(100);
+      Serial.print("*");
+      spacing2("*",12); 
+      float amps = voltFunc();                      // TEMP TEST USING ADS1015 call
       Serial.print("*");
       spacing2("*",12);      
-      Serial.print(rms_value,3);         //print out the value you read. Test with 3 decimals
-      //spacing(rms_value,12); 
-      spacing2("0.000",12);     
+      Serial.print(amps,3);         //print out the value you read. Test with 3 decimals
+      
+      float amps2 = (amps - V_offset) * 50/1.5;                      // Finalize conversion to instantaneous amps
+//      rms_value += pow(amps2,2);                           // sum of the squared sample values
+//      delay(1);                                           // delay (ms) for proper sampling of the signal
+//      }
 
-      analogReference(EXTERNAL);                 //put the analog reference back to 3.3V
-      for (int i= 1; i<5; i++){
-        sensorValue = analogRead(CURRENT_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
-      }
+//      Serial.print("*");
+//      spacing2("*",12);      
+//      Serial.print(amps2,3);         //print out the value you read. Test with 3 decimals
+
+      //rms_value = sqrt(rms_value / n);                                // rms function
+      Serial.print("*");
+      spacing2("*",12);      
+      //Serial.print(rms_value,3);         //print out the value you read. Test with 3 decimals
+      Serial.print(amps2,3);         //print out the value you read. Test with 3 decimals
+      //spacing(rms_value,12); 
+      //spacing2("0.000",12);  
+      spacing(rms_value,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
+   
+
+//      analogReference(EXTERNAL);                 //put the analog reference back to 3.3V
+//      for (int i= 1; i<5; i++){
+//        sensorValue = analogRead(CURRENT_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
+//      }
 
 
 //////////

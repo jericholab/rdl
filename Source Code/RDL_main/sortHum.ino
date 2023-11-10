@@ -4,34 +4,34 @@
 // INPUT: none
 // OUTPUT: nnone
 
-int sortHum(){
-    
-    for (int i=0; i<sizeof(humidities); i++){      
-      if (humidities[i]=='A'){
-        sortedHum[0]= i;
-      }
-      if (humidities[i]=='B'){
-        sortedHum[2]= i;
-      }
-      if (humidities[i]=='C'){
-        sortedHum[4]= i;
-      }
-      if (humidities[i]=='D'){
-        sortedHum[6]= i;
-      }
-      if (humidities[i]=='1'){
-        sortedHum[1]= i;
-      }
-      if (humidities[i]=='2'){
-        sortedHum[3]= i;
-      }
-      if (humidities[i]=='3'){
-        sortedHum[5]= i;
-      }
-      if (humidities[i]=='4'){
-        sortedHum[7]= i;
-      }
-    }
-}
+//void sortHum(){
+//    
+//    for (int i=0; i<sizeof(humidities); i++){      
+//      if (humidities[i]=='A'){
+//        sortedHum[0]= i;
+//      }
+//      if (humidities[i]=='B'){
+//        sortedHum[2]= i;
+//      }
+//      if (humidities[i]=='C'){
+//        sortedHum[4]= i;
+//      }
+//      if (humidities[i]=='D'){
+//        sortedHum[6]= i;
+//      }
+//      if (humidities[i]=='1'){
+//        sortedHum[1]= i;
+//      }
+//      if (humidities[i]=='2'){
+//        sortedHum[3]= i;
+//      }
+//      if (humidities[i]=='3'){
+//        sortedHum[5]= i;
+//      }
+//      if (humidities[i]=='4'){
+//        sortedHum[7]= i;
+//      }
+//    }
+//}
 
 //-------------------------------------------------------------------
