@@ -7,20 +7,46 @@
 struct STRUCT1 thermistor(float A, float B, float C, int channel)   //this creates a function called thermistor that is a member of the class STRUCT1
 {
   uint16_t i;                                                   // unsigned integer (16 bit) for loop iteration (between 0 and 65,535)
-  float average;                                               // create a new variable to store sample average
+  //long average;  //test 2023-09-22 to try to accelerate loop sums
+  float average;       /////////// I should find a way to make the sampling using 'Long' average but later transform to float to allow math operations (see below)/////////
+  float ohmvalue;  //initialize variable
+
+  //float average;                                               // create a new variable to store sample average
   average = 0;  
   for (i=0; i< NUMSAMPLES; i++)                                // take N samples in a row, with a slight delay
   {
-   average += ads1015.readADC_SingleEnded(0);                   //read channel 0 of ADS1015 and add to temporary sum
+   if (readMode ==0){
+     average += analogRead(THERMISTORPIN);                       //read Nano ADC channel
+   }
+   if (readMode ==1){
+     average += ads1015.readADC_SingleEnded(0);                   //read channel 0 of ADS1015 and add to temporary sum 
+   }
+   
   }
   average /= NUMSAMPLES;
   if(average==ADCrange){                                           // avoid division by zero for ohmvalue
     average=ADCrange - 1;
   }
-  //float ohmvalue = Seriesresistor/(1023 / average - 1);        // ohms // convert the ADC average value to resistance
-  float voltage = average * 0.003;                               // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/4096 = 0.003)   
-  float ohmvalue = Seriesresistor * voltage /(3.3-voltage);      // (ADC logic voltage (6.144V) is not the same as the ARef voltage now (3.3V), so the voltages reappear in the equations.
+  
+  
+  
+  if (readMode ==0){
+
+    ohmvalue = Seriesresistor/(1023 / average - 1);        // ohms // convert the ADC average value to resistance
+
+  }
+  if (readMode ==1){
+    float voltage = average * 0.003;                               // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/4096 = 0.003) 
+    if (voltage>3.3){
+      voltage=3.2999;    //cap voltage reading at 3.3V to avoid NaN print out.
+    }
+    ohmvalue = Seriesresistor * voltage /(3.3-voltage);      // (ADC logic voltage (6.144V) is not the same as the ARef voltage now (3.3V), so the voltages reappear in the equations.
+  }
+
   ohmvalue = ohmvalue - R_MUX - R_wire[(channel-1)];           // ohms //remove electric resistance of multiplexer and extension wire.
+
+  //Serial.println(ohmvalue); 
+  
   float steinhart;                                             // define steinhart as a placeholder floating number
   steinhart = log(ohmvalue);                                   // log(x) means natural logarithm in Arduino 
   steinhart = A + B * steinhart + C*steinhart*steinhart*steinhart;  //using 'a*a*a' to avoid exponential operations (would require loading library 'math.h')
