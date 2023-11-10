@@ -7,24 +7,30 @@
 
 void pHFunc(){
 
-
-      analogReference(DEFAULT);      //put the analog reference back to 5V to allow reading 0-5V signals
-      delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
+//      delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
       int sensorValue;               //variable declaration
-      for (int i= 1; i<5; i++){
-        sensorValue = analogRead(PH_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
-      }
-      
-      voltage = analogRead(PH_PIN)/1024.0*5000;  // read the voltage while assuming a 5000mV voltage reference
-      phValue = ph.readPH(voltage,25);  // convert voltage to pH with temperature compensation disabled (fixed value of 25C)
-      analogReference(EXTERNAL);     //put the analog reference back to 3.3V  
-      //Serial.print(voltage,2);  //raw value from ADC based on probe voltage
-      Serial.print("*"); 
-      spacing2("*",12);   
-      Serial.print(phValue,2);  // pH value
-      spacing(phValue,12); 
+//      for (int i= 1; i<5; i++){
+//        sensorValue = analogRead(PH_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
+//      }
 
-        
+      digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
+      delay(100);                                    //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
+      setMultiplexer(5);                             // select the multiplexer channel                   
+      delay(100);
+      Serial.print("*");
+      spacing2("*",12); 
+      float voltage = voltFunc();  // read the voltage while assuming a 5000mV voltage reference
+      Serial.print(voltage);  //////temporary test  
+      spacing(voltage,12);     
+      Serial.print(ph.readPH(voltage,25)); // temporary test  
+
+      //spacing(phValue,12); 
+      //voltage = analogRead(PH_PIN)/1024.0*5000;  // read the voltage while assuming a 5000mV voltage reference
+      //float phValue = ph.readPH(voltage,25);  // temporary commented //convert voltage to pH with temperature compensation disabled (fixed value of 25C)
+      //float voltage = voltFunc();
+      //float voltage = voltFunc();
+      //float voltage = voltFunc();
+      //float voltage = voltFunc();
         
         
     //ph.calibration(voltage,temperature);           // calibration process by Serail CMD   ////////// TEMPORARILY COMMENTED UNTIL I READ ABOUT IT.
