@@ -22,10 +22,10 @@ bool idDisplay=1;                       // optional display of identification nu
 bool tDisplay=1;                        // optional display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 //bool humDisplay = 1;                  // optional calculations and display of relative humidities (1 = yes, 0 = no)
-bool i2cDisplay = 0;                    // optional display of i2c sensor values (1 = yes, 0 = no)
+bool i2cDisplay = 1;                    // optional display of i2c sensor values (1 = yes, 0 = no)
 //bool WBGTDisplay = 1;                 // optional display of WBGT values (1 = yes, 0 = no)
-bool voltDisplay = 0;                   // optional display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional display of True RMS current values (1 = yes, 0 = no)  
+bool voltDisplay = 1;                   // optional display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional display of strain gauge cell values (1 = yes, 0 = no) 
 bool pHDisplay = 0;                     // optional display of pH meter values (1 = yes, 0 = no)
@@ -45,7 +45,7 @@ char sensors_temp[9]="TTTTTTTT";       // initiating the temporary holder
 //int sortedHum[]={-1,-1,-1,-1,-1,-1,-1,-1};   // initiating the array of integers that will hold the sorted humidity channels (later the array (global variable) is modified by sortHum())
 unsigned long time1 = 0;               // initialize variable to control read cycles
 unsigned long time2 = 0;               // initialize variable to control header print cycles
-uint8_t numberC=8;                        // default number of active thermistor channels. Must be an integer between 1 and 8.
+uint8_t numberC=8;                       // default number of active thermistor channels. Must be an integer between 1 and 8.
 uint8_t numberV =8;                     // default number of active voltage channels. Must be an integer between 1 and 8.
 bool sensors_present=0;                 // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'sensors'.
 //bool humidities_present=0;              // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'humidities'.
@@ -76,13 +76,14 @@ Adafruit_ADS1015 ads1015;              //Create an instance of ADS1015
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  // define the sht4 variable
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
 #define R_MUX 70                       // Internal resistance of the multiplexer (ohms)
-#define NUMSAMPLES 100                   // how many samples to take and average at each reading (smooth the noise)
+#define NUMSAMPLES 100                 // how many samples to take and average at each reading (smooth the noise)
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
 bool score;                            // define the variable "score" for evaluation of user input algorithm
-long HighSpeedClock = 100;             //value for high speed i2c bus clock (Hz). Default is 100,000.
-long LowSpeedClock = 100;              //value for low speed i2c bus clock (Hz)
+long HighSpeedClock = 100;             // value for high speed i2c bus clock (Hz). Default is 100,000.
+long LowSpeedClock = 100;              // value for low speed i2c bus clock (Hz)
 bool SHT40_heatPulse = 0;              // temporary test to see if I can send a single pulse of heat and then turn this value to '1' to avoid heat at every loop
+bool readMode =1;                      // option between Nano ADC read (readMode =0) and ADS1015 read (readMode =1).
 //-------------------------------------------------------------------
 
 // STEINHART-HART GENERIC COEFFICIENTS FOR 10K (B25/50 = 3950K) NTC THERMISTORS
@@ -103,8 +104,8 @@ long readCycle2 = 0;                   // initialization of tag for live data (r
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
-#define PH_PIN A2                      // Define the analog pin for the pH meter input
-//#define TEROS_PIN A3                   // Analog signal pin for soil meter  //Test 2023-08-27
+#define PH_PIN A1                      // Define the analog pin for the pH meter input
+//#define TEROS_PIN A3                 // Analog signal pin for soil meter  //Test 2023-08-27
 #define TEROS_PIN A1                   // Analog signal pin for soil meter
 #define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
@@ -139,7 +140,9 @@ void setup(void) {
         Serial.println(); Serial.println(); 
         Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE1"));
         Serial.print(F("Compiled: "));
-        Serial.println(F(__DATE__));
+        Serial.print(F(__DATE__));
+        Serial.print(F("  "));
+        Serial.println(F(__TIME__));
         startMessage();    // print informations after startup
     }
     
@@ -153,7 +156,7 @@ void setup(void) {
 
     pinMode(enable_V_MUX, OUTPUT);                               // define pin 10 as an output pin.
     //digitalWrite(enable_V_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
-    digitalWrite(enable_V_MUX, LOW);   /////// TEST 2023-08-26
+    digitalWrite(enable_V_MUX, LOW);                    /////// TEST 2023-08-26
     
     pinMode(VOLT_PIN, INPUT);                          // Set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
 

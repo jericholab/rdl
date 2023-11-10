@@ -105,7 +105,7 @@ void printHeader(){
               String terosText1 = F("Teros_mV");
               Serial.print(terosText1);
               spacing2(terosText1,12);
-              String terosText2 = F("Teros_VWC");
+              String terosText2 = F("VWC_m3/m3");
               Serial.print(terosText2);
               spacing2(terosText2,12);
             }
