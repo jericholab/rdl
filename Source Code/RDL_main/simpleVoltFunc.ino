@@ -1,10 +1,10 @@
 //-------------------------------------------------------------------
-// FONCTION: voltMainFunc
-// PURPOSE: Operate the 3 MUX to enable reading channels associated with analog sensors
+// FONCTION: simpleVoltFunc
+// PURPOSE: Provides a simple voltage reading from all available channels.
 // INPUT: none
 // OUTPUT: none
 
-void voltMainFunc(){
+void simpleVoltFunc(){
   
       float value;                                              //local variable declaration
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
@@ -15,11 +15,11 @@ void voltMainFunc(){
       for (int i=0; i< (numberV); i++) {   
         setMultiplexer(i);                            // select the multiplexer channel                   
         delay(100);
-        value=voltFunc();                             // storing voltages 
+        bool readMode = 1;
+        value=getVoltFunc(readMode);                             // storing voltages 
         Serial.print(value,2);
-        spacing(value,12);
+        spacing1(value,12);
       }
-      //digitalWrite(enable_V_MUX, HIGH);                         // toggle pin to HIGH value in order turn off the V_MUX     
 }
   
       

@@ -1,11 +1,11 @@
 
 //-------------------------------------------------------------------
-// FONCTION NAME: nau7802Function
-// PURPOSE: Obtain a measurement from the strain gauge cell
+// FONCTION NAME: strainFunc
+// PURPOSE: Obtain a measurement from the selected strain gauge load cell
 // INPUT: none
 // OUTPUT: none
 
-void nau7802Function() {
+void strainFunc() {
 
   float val = -1.00;
   
@@ -19,8 +19,8 @@ void nau7802Function() {
   }
     
     Serial.print(F("*"));
-    spacing2("*",12); 
+    spacing2(F("*"),12); 
     Serial.print(val);
-    spacing(val,12); 
+    spacing1(val,12); 
     
   }

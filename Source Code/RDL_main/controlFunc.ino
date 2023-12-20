@@ -1,24 +1,21 @@
 //-------------------------------------------------------------------
-// FONCTION NAME: controlSignal
-// PURPOSE: update the control signal (code example: if temperature is warmer inside than outside start the fan)
+// FONCTION NAME: controlFunc
+// PURPOSE: Update the control signal (code example: if temperature is warmer inside than outside start the fan)
 // INPUT: none
-// OUTPUT: binary value (0,1)
+// OUTPUT: none
 
 void controlFunc(){
-  int value;
-  
+  int value;                         //initialize variable
   if(arrayV[0]<arrayV[1]){
-    digitalWrite(9, HIGH);                            /// SAMPLE TEST OF CONDITIONAL DIGITAL OUTPUT SIGNAL CONTROL
+    digitalWrite(9, HIGH);           //example function with conditional digital output
     value = 1;
   }
   else{
     digitalWrite(9, LOW);
     value = 0;
   }
-  
-  //return value;
-  
+   
   Serial.print(F("*"));
-  spacing2("*",12);      
-  Serial.print(value);         //print out the control signal.
+  spacing2(F("*"),12);      
+  Serial.print(value);                          //print out the control signal.
 }
