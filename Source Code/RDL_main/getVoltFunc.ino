@@ -1,15 +1,15 @@
 //-------------------------------------------------------------------
 // FONCTION: getVoltFunc
 // PURPOSE: measure and display the voltage tension value at the corresponding terminal
-// INPUT: none
+// INPUT: readMode
 // OUTPUT: voltage
 
 float getVoltFunc(bool readMode){
       
       if (readMode == 1){       //if the ADS115 is selected, 
 
-          //ads1115.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)
-          ads1115.setGain(GAIN_ONE);     // 1x gain   +/- 4.096V  1 bit = 2mV   ///////////// TEST for improved current resolution, but we don't get the 50A range
+          ads1115.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)
+          //ads1115.setGain(GAIN_ONE);     // 1x gain   +/- 4.096V  1 bit = 2mV   // TEST for improved current resolution, but we don't get the full 50A range (0-5V)
           //ads1115.setGain(GAIN_TWO);     // 2x gain   +/- 2.048V  1 bit = 1mV
           // ads1115.setGain(GAIN_FOUR);    // 4x gain   +/- 1.024V  1 bit = 0.5mV
           // ads1115.setGain(GAIN_EIGHT);   // 8x gain   +/- 0.512V  1 bit = 0.25mV
@@ -28,22 +28,18 @@ float getVoltFunc(bool readMode){
            average += analogRead(VOLT_PIN);                        //read Nano ADC channel
           }
         else{
-             average += ads1115.readADC_SingleEnded(1);              //read channel 1 of ads1115 and add to temporary sum ///////////// readVoltFunc should not be channel-specific
+             average += ads1115.readADC_SingleEnded(ADS_V_PIN);              //read channel 1 of ads1115 and add to temporary sum
           }
       }
       average /= NUMSAMPLES;
 
       if (readMode == 0){
-         voltage = average/1023*V_ref;     /////////////  Test //Attempt to convert to voltage
+         voltage = average/1023*V_ref;     //convert ADC value to a voltage
       }
       else{
-         //voltage = average * 0.003;           // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/4096 = 0.003)
-         voltage = average * float(0.002);      // PGA (Programmable Gain) ////////////////////// TEMP TEST 
+         voltage = average * 0.0001875;                               // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/65536 = 0.0001875)
       }
-      
-      //Serial.print(voltage,3);         //print out the value you read.
-      //spacing(voltage,11);  
-          
+      ads1115.setGain(GAIN_TWOTHIRDS);        // Reset to default  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)          
       return voltage;
 }
   

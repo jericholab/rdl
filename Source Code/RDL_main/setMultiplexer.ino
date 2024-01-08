@@ -1,6 +1,6 @@
 //------------------------------------------------------------------
 // FONCTION: setMultiplexer
-// PURPOSE: set the multiplexer to the desired channel to allow reading the speiic channel sensor
+// PURPOSE: set the multiplexer to the desired channel to allow reading the specific channel sensor
 // INPUT: desired multiplexer channel as an integer, from 0 to 7
 // RETURN: none
 

@@ -8,12 +8,6 @@
   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE. */
 
-#define __FILENAME_WIN__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)   //Creates a C macro based on standard macro __FILE__ that prints the filename instead of system path
-#define __FILENAME_LINUX__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)   // Equivalent macro for linux systems
-#define word1 strlen(__FILENAME_WIN__)
-#define word2 strlen(__FILENAME_LINUX__)
-#define __FILENAME__ ((word1)<(word2)? (__FILENAME_WIN__) : (__FILENAME_LINUX__))  // Linux and Windows do not use the same character. so the preprocessor compares the two lengths and pick the string that worked.
-
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
@@ -22,7 +16,7 @@ bool idDisplay=1;                       // optional display of identification nu
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
@@ -43,11 +37,11 @@ uint8_t algo = 2;                       // current sensor mode (0 = average DC, 
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
-#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas library. //////////////////// see Atlas example.
-//#include "Adafruit_ADS1X15_Jericho.h"          // library required for the ADS1115 I2C ADC.
-#include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC. /////////// TEST
+#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed). /////////////// see Atlas example.
+#include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
+#include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 
-// OTHER INITIALIZATIONS
+//OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
 unsigned long time2 = 0;               // initialize variable to control header print cycles
 uint8_t numberC=8;                       // default number of active thermistor channels. Must be an integer between 1 and 8.
@@ -58,22 +52,23 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).   ////////////////  "units" will beome "units_T" to avoid confusion with other variables
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-NAU7802 nau;                           //Create instance of the NAU7802 class       ///////////////// Should only be created if NAU7802 is activated
-
-TwoWire testWire = Wire;
-Adafruit_ADS1115 ads1115();              //Create an instance of ADS1115
-
+NAU7802 nau;                           //Create instance of the NAU7802 class       ///////////////// Should only be created if NAU7802 is activated (save memory space).
+Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
 DFRobot_PH ph;                         // load pH meter library under shorter name 'ph'
 #define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)
-#define NUMSAMPLES 1  //100            // Temporary test. /////Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
+#define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
-long clockSpeed = 31000;                 // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
+long clockSpeed = 50000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
-#define TCAADDR 0x70                   // TCA ADDRESS, used by i2c_select()   ??? If there is more than one TCA9548 on the bus, wouldn't it create a conflict?
+#define TCAADDR 0x70                   // TCA ADDRESS, used by i2c_select()   ??? If there is more than one TCA9548 on the bus, wouldn't it create a conflict????
+Adafruit_PCF8574 pcf1;                 //RDL: create an instance of PCF8574 for the chip dedicated to the high-side MOSFETs
+Adafruit_PCF8574 pcf2;                 //RDL: create an instance of PCF8574 for the chip dedicated to the low-side MOSFETs
+Adafruit_PCF8574 pcf3;                 //I2C SHIELD: create an instance of PCF8574 for the chip dedicated to the high-side MOSFETs  
+Adafruit_PCF8574 pcf4;                 //I2C SHIELD: create an instance of PCF8574 for the chip dedicated to the low-side MOSFETs
 
 //-------------------------------------------------------------------
 
@@ -91,11 +86,9 @@ long readCycle2 = 0;                   // initialization of tag for live data (r
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10                // Define the Nano digital pin that enables/disables the Voltages multiplexer
 
-#define S0 4
-#define S2 2
-//#define S0 2                             // Digital Pin 2 // CD74 Multiplexers are controlled by 3 I/O pins  ////// TEMP TEST
+#define S0 2                             // Digital Pin 2 // CD74 Multiplexers are controlled by 3 I/O pins
 #define S1 3                             // Digital Pin 3 // CD74 Multiplexers are controlled by 3 I/O pins
-//#define S2 4                             // Digital Pin 4 // CD74 Multiplexers are controlled by 3 I/O pins    ////// TEMP TEST
+#define S2 4                             // Digital Pin 4 // CD74 Multiplexers are controlled by 3 I/O pins
 struct STRUCT1 {float o; float t; };     // define a new structure class called 'STRUCT1 that will enable the thermistor function
 unsigned long timePassed = readInterval; // initialize variable to keep track of time passed between each measurement. initializing at readInterval to force a first reading in loop()
 unsigned long timePassedHeader;          // initialize variable to keep track of time passed between each measurement
@@ -105,13 +98,15 @@ uint8_t addr;                            // define an address variable for i2c m
 float voltage,phValue;                   // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
 
 //----------------------
-// DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED
+// DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
-#define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
-#define PH_PIN A2                      // Define the analog pin for the pH meter input
 #define TEROS_PIN A1                   // Analog signal pin for soil meter
+#define PH_PIN A2                      // Define the analog pin for the pH meter input
+#define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
+#define ADS_T_PIN 0                    // ADS1115 channel for thermistor
+#define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
 
 ////// SETUP ////////
@@ -121,11 +116,10 @@ void setup(void) {
     Serial.println();                           //create space after reset of the Arduino
     Serial.begin(baudRate);                     //initialize serial monitor at the specified baud rate (e.g. 9600) 
     readEEPROM();                               //call function to read the EEPROM memory to see if there are some parameters stored
-    //Wire.setClock(clockSpeed);
     
-    if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
+    if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
-        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE2"));
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE3"));
         Serial.print(F("Compiled: "));
         Serial.print(F(__DATE__));
         Serial.print(F("  "));
@@ -156,8 +150,8 @@ void setup(void) {
       }
     } 
 
-    testWire.setClock(clockSpeed);  
-    ads1115.begin(testWire);                                 // initialize the ADS1015 chip
+
+    ads1115.begin();                                 // initialize the ADS1015 chip
     //Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
     ads1115.setGain(GAIN_TWOTHIRDS);                 // set the gain. 2/3x gain +/- 6.144V  1 bit = 3mV (default)  //////// REPETITION. There is also setGain() in the voltFunc.
 
@@ -175,17 +169,50 @@ void setup(void) {
 //      Wire.endTransmission();  
 //      }
 
-    if (strainDisplay ==1){
-      strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-      }
+// TEMPORARY COMMENTED (Applies to non-multiplexed i2c strain devices)
+//    if (strainDisplay ==1){
+//      strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+//      }
 
    if (phDisplay == 1){
-    ph.begin();      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
+     ph.begin();      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
    }      
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
-        printHeader();     // this function prints the header (T1, T2, R1, T2, etc)
+        printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
+
+   if (!pcf1.begin(0x20, &Wire)) {
+    Serial.println("Couldn't find PCF8574 #1");
+    while (1);
+   }
+   if (!pcf2.begin(0x21, &Wire)) {
+    Serial.println("Couldn't find PCF8574 #2");
+    while (1);
+   }
+   for (uint8_t p=0; p<8; p++) {
+     pcf1.pinMode(p, OUTPUT);
+     pcf2.pinMode(p, OUTPUT);
+     pcf1.digitalWrite(p, HIGH); // initialize each LED off 
+     pcf2.digitalWrite(p, LOW); // initialize each LED off  
+   }
+// -------------- SHIELD PCF8574 ACTIVATION----------- //
+  if (!pcf3.begin(0x22, &Wire)) {
+    Serial.println("Couldn't find PCF8574 #3");
+    while (1);
+  }
+  if (!pcf4.begin(0x23, &Wire)) {
+    Serial.println("Couldn't find PCF8574 #4");
+    while (1);
+  }
+  for (uint8_t p=0; p<8; p++) {
+    pcf3.pinMode(p, OUTPUT);
+    pcf4.pinMode(p, OUTPUT);
+    pcf3.digitalWrite(p, HIGH); // initialize each LED off 
+    pcf4.digitalWrite(p, LOW); // initialize each LED off  
+  }
+// -------------------------------------------------- //
+    
 }
 
 ///// MAIN LOOP //////////
@@ -212,7 +239,8 @@ if (timePassed >= readInterval)                     // if enough time has passed
       for (int i=0; i< (numberC); i++) {                      
           setMultiplexer(i);                            // select the multiplexer channel
           int channel = i+1;                            //channel being measured
-          struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C,channel);   //call 'thermistor' function and store results in a structure
+          bool readMode =1;                             // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
+          struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C,channel,readMode );   //call 'thermistor' function and store results in a structure
           arrayV[i] = valeurs.t;                        // storing temperature to array
           arrayR[i] = valeurs.o;                        // storing resistances (ohm) to array       
       }
@@ -254,7 +282,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (voltDisplay==1){
-      simpleVoltFunc();   //run function for simple voltage measurement      //////// THERE IS A PHILOSOPHY CONTRADICTION. simpleVoltFunc runs all channels with MUX, while currentFunc nor terosFunc.
+      simpleVoltFunc();   //run function for simple voltage measurement (all channels required by QTY-V parameter).
     }
 
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
@@ -269,13 +297,13 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
     if (strainDisplay==1){   
 
-      //SENSOR 1 - Channel 1
-      addr = 2;   //NAU7802   /////TEMP TEST
-      i2c_select(addr);    // TEST     // Choose channel 1
-      Wire.beginTransmission(TCAADDR);
-      strainFunc();             //run function for a pre-selected sensor
-      Wire.endTransmission();      
-      i2c_select(0);    // TEST
+//      //SENSOR 1 - Channel 1
+//      addr = 2;   //NAU7802   /////TEMP TEST
+//      i2c_select(addr);    // TEST     // Choose channel 1
+//      //Wire.beginTransmission(TCAADDR);
+//      strainFunc(1);             //run function with Strain sensor connected to channel 1 of shield #1
+//      //Wire.endTransmission();      
+//      i2c_select(0);    // TEST
     }
 
     if (phDisplay==1){

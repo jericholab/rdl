@@ -23,7 +23,7 @@ float currentFunc(uint8_t algo, bool readMode){
     
 
 
-    if (algo == "DC"){
+    if (algo == 0){   //"DC" mode
       
     }
 
@@ -32,7 +32,7 @@ float currentFunc(uint8_t algo, bool readMode){
     //Explanation: since the average value of a half-wave rectified sine wave is approximately 0.637 times the peak value, and its RMS value is about 0.707 times the peak value,
     //we can deduct the RMS value from the average value if we assume a perfect sine wave).
     
-    if (algo == "sine"){
+    if (algo == 1){  // "sine RMS" mode
       for (i=0; i< n; i++)
           { 
             volts = getVoltFunc(readMode)-V_offset;         //Because of the way the abs() function is implemented, avoid using other functions inside the brackets, it may lead to incorrect results.
@@ -44,7 +44,7 @@ float currentFunc(uint8_t algo, bool readMode){
     
           
     // MEASUREMENT WITH TRUE RMS
-    if (algo == "true"){
+    if (algo == 2 ){   //"true RMS " mode
         for (i=0; i< n; i++)
           {
           volts = getVoltFunc(readMode)-V_offset; 
