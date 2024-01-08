@@ -19,14 +19,13 @@ void printHeader(){
     
         if (idDisplay ==1){        
           Serial.print(F("#"));
-          spacing2("#",12);
+          spacing2(F("#"),12);
         }
         
         if (tDisplay == 1){
             for (int i=1; i<(numberC+1); i++){
-              Serial.print(sensors[i-1]);
               if(i<10){
-                Serial.print('0');      // T08, T09, T10, etc.
+                Serial.print("T0");      // T08, T09, T10, etc.
               }
               Serial.print(i);
               spacing2("Tii",12);
@@ -47,17 +46,7 @@ void printHeader(){
               }
             }
 
-//        if (humDisplay == 1){
-//              Serial.print(F("*"));
-//              spacing2("*",12);
-//              for (int i=1; i<(4+1); i++){
-//                Serial.print(F("H"));
-//                Serial.print(i);
-//                spacing2("Ti",12);
-//              }
-//            }
-
-        if (i2cDisplay == 1){
+        if (SHT40Display == 1){
               Serial.print(F("*"));
               spacing2("*",12);
               String i2cText1 = F("i2c_C");
@@ -67,13 +56,6 @@ void printHeader(){
               Serial.print(i2cText2);
               spacing2(i2cText2,12);
             }
-//        if (WBGTDisplay == 1){
-//              Serial.print(F("*"));
-//              spacing2("*",12);
-//              String WBGTText = F("WBGT");
-//              Serial.print(WBGTText);
-//              spacing2(WBGTText,12);
-//            }
 
        if (voltDisplay == 1){
             Serial.print(F("*"));
@@ -118,7 +100,7 @@ void printHeader(){
               spacing2(terosText1,12);
 
             }    
-         if (pHDisplay == 1){
+         if (phDisplay == 1){
               Serial.print(F("*"));
               spacing2("*",12);
               String pHText1 = F("pH1");

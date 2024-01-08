@@ -1,42 +1,79 @@
-
 //-------------------------------------------------------------------
-// FONCTION: pHFunc
+// FONCTION: phFunc
 // PURPOSE: Communicate with the pH meter and provide pH values
 // INPUT: none
 // OUTPUT: none
 
-void pHFunc(){
+// PH METER: PSEUDO CODE OF WHAT NEEDS TO BE DONE (TRANSFER TO SAD LATER)
+// Note: We assume that we have analog pH meters only. An I2C pH meter will be different process.
+// 1. We activate the power supply of the selected analog channel.
+// 2. The function receives as an input the ADC selected for the measurement. (This way we can have one sensor type with ADS and another with Nano ADC)
+// 3. If applicable, change external reference (If we use Nano ADC, thermistor operates on 3.3V and pH on 5V supply.)(If we use ADS1115, the external ref does not matter).
+// 4. If applicable, multiple readings are required to let the PMU/ADC adapt to the new voltage reference
+// 5. Read EEPROM to find calibration data, if available.
+// 6. Delay a few milliseconds to let the sensor stabilize
+// 7. Measure data signal with readVoltFunc(), with the ADC choice as input.
+// 8. Calculate pH value.
+// 9. Print out pH value.
+// 10. If applicable, change back the external reference to 3.3V.
 
-//      delay(10);                     //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
-      int sensorValue;               //variable declaration
-//      for (int i= 1; i<5; i++){
-//        sensorValue = analogRead(PH_PIN);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
-//      }
-
+void phFunc(int channel, bool readMode){
+      
+      // 1. We activate the power supply of the selected analog channel.
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
+      setMultiplexer(5);                             // select the multiplexer channel      
+      
+      // 2. The function receives as an input the ADC selected for the measurement. (This way we can have one sensor type with ADS and another with Nano ADC)
+      // No action needed.
+      
+      // 3. If applicable, change external reference (If we use Nano ADC, thermistor operates on 3.3V and pH on 5V supply.)(If we use ADS1115, the Nano ADC ref does not matter).
+      if (readMode ==0){
+        analogReference(INTERNAL);  
+      }
+      
+      // 4. If applicable, multiple readings are required to let the ADC adapt to the new voltage reference
+      if (readMode ==0){   
+          for (int i= 1; i<5; i++){
+            float sensorValue = analogRead(channel);   // multiple readings are required to let the PMU/ADC adapt to the new voltage reference
+          }
+      }
+
+      // 5. Read EEPROM to find calibration data, if available.
+      // To be written later. For now we will use default values. //////////////////
+
+
+      
+      // 6. Delay a few milliseconds to let the sensor stabilize
       delay(100);                                    //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
-      setMultiplexer(5);                             // select the multiplexer channel                   
-      delay(100);
-      Serial.print("*");
-      spacing2("*",12); 
-      float voltage = voltFunc();  // read the voltage while assuming a 5000mV voltage reference
-      Serial.print(voltage);  //////temporary test  
-      spacing(voltage,12);     
-      Serial.print(ph.readPH(voltage,25)); // temporary test  
+      
+      // 7. Measure data signal with readVoltFunc(), with the ADC choice as input.
+      float voltage = getVoltFunc(channel); 
 
-      //spacing(phValue,12); 
-      //voltage = analogRead(PH_PIN)/1024.0*5000;  // read the voltage while assuming a 5000mV voltage reference
-      //float phValue = ph.readPH(voltage,25);  // temporary commented //convert voltage to pH with temperature compensation disabled (fixed value of 25C)
-      //float voltage = voltFunc();
-      //float voltage = voltFunc();
-      //float voltage = voltFunc();
-      //float voltage = voltFunc();
-        
-        
-    //ph.calibration(voltage,temperature);           // calibration process by Serail CMD   ////////// TEMPORARILY COMMENTED UNTIL I READ ABOUT IT.
+      // 8. Optional printout of the raw voltage measurement
+      bool debug =1;     // normal operation (0) or debug (1) for more information.   
+      if (debug ==1){
+        Serial.print(voltage);  // temporary print out of the raw voltage measurement
+        spacing1(voltage,12);             
+      }
+            
+      // 9. Calculate pH value from the voltage
+      float sensorValue = ph.readPH(voltage,25);     ////// Is this ph() related to DFRobot or Sparkfun?
+            
+      // 10. Print out pH value.
+      Serial.print(sensorValue);
+      
+      // 11. If applicable, change back the external reference to 3.3V.
+      if (readMode ==0){
+        analogReference(EXTERNAL);  
+      }
 
-    ////////////////////
-    // I don't know what is SERAIL CMD. I don't know why calibration is done at every call. I don't know why calibration is done after the measurement
-    // 
-    /////////////////////
+//      delay(100);  // give time for sensor to stabilize after power up
+//      Serial.print("*");
+//      spacing2("*",12); 
+//      float voltage = getVoltFunc(readMode);  // read the voltage while assuming a 5000mV voltage reference
+      
+
+
+
+  
 }

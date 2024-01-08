@@ -6,15 +6,14 @@
 
 void startMessage(){
 
-    Serial.println(F("Starting device..."));
     Serial.print(F("Temperatures: "));
-    if (units == 0){
+    if (units_T == 0){
           Serial.print(F("°C"));
     }
-    if (units == 1){
+    if (units_T == 1){
       Serial.print(F("°F"));
     }
-    if (units == 2){
+    if (units_T == 2){
       Serial.print(F("K"));
     }
 
@@ -22,12 +21,8 @@ void startMessage(){
     Serial.print(F("Interval target: " ));
     Serial.print(readInterval);
     Serial.println(F(" ms"));  
-//    Serial.print(F("Sensors: "));
-//    Serial.println(sensors);
-//    Serial.print(F("Humidities: "));
-//    Serial.println(humidities);
     Serial.println(F("For list of commands, type 'help'"));
-    Serial.print(F("Extension wire, channels 1 to 8 (ohms): "));
+    Serial.print(F("Extension wire, C1 to C8 (ohms): "));
 
     if (headerDisplay == 1){
         for(int i=0; i<8; i++){
