@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: getVoltFunc
-// PURPOSE: measure and display the voltage tension value at the corresponding terminal
+// PURPOSE: measure sample, average and display the voltage tension value at the corresponding terminal
 // INPUT: readMode
 // OUTPUT: voltage
 
@@ -9,13 +9,13 @@ float getVoltFunc(bool readMode){
       if (readMode == 1){       //if the ADS115 is selected, 
 
           ads1115.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)
-          //ads1115.setGain(GAIN_ONE);     // 1x gain   +/- 4.096V  1 bit = 2mV   // TEST for improved current resolution, but we don't get the full 50A range (0-5V)
-          //ads1115.setGain(GAIN_TWO);     // 2x gain   +/- 2.048V  1 bit = 1mV
-          // ads1115.setGain(GAIN_FOUR);    // 4x gain   +/- 1.024V  1 bit = 0.5mV
-          // ads1115.setGain(GAIN_EIGHT);   // 8x gain   +/- 0.512V  1 bit = 0.25mV
-          // ads1115.setGain(GAIN_SIXTEEN); // 16x gain  +/- 0.256V  1 bit = 0.125mV
+          //ads1115.setGain(GAIN_ONE);      // 1x gain   +/- 4.096V  1 bit = 2mV   // GAIN_ONE improves the resolution, but we don't get the full 50A range (0-5V)
+          //ads1115.setGain(GAIN_TWO);      // 2x gain   +/- 2.048V  1 bit = 1mV
+          //ads1115.setGain(GAIN_FOUR);     // 4x gain   +/- 1.024V  1 bit = 0.5mV
+          //ads1115.setGain(GAIN_EIGHT);    // 8x gain   +/- 0.512V  1 bit = 0.25mV
+          //ads1115.setGain(GAIN_SIXTEEN);  // 16x gain  +/- 0.256V  1 bit = 0.125mV
           
-          //ads1115.setDataRate(RATE_ads1115_128SPS);   //slow sample rate
+          //ads1115.setDataRate(RATE_ads1115_128SPS);    //slow sample rate
           //ads1115.setDataRate(RATE_ads1115_1600SPS);   //medium sample rate (default)
           //ads1115.setDataRate(RATE_ads1115_3300SPS);   //fast sample rate
       }
@@ -27,7 +27,8 @@ float getVoltFunc(bool readMode){
         if (readMode ==0){
            average += analogRead(VOLT_PIN);                        //read Nano ADC channel
           }
-        else{
+        if (readMode == 1){
+        //else{
              average += ads1115.readADC_SingleEnded(ADS_V_PIN);              //read channel 1 of ads1115 and add to temporary sum
           }
       }
@@ -39,7 +40,7 @@ float getVoltFunc(bool readMode){
       else{
          voltage = average * 0.0001875;                               // PGA (Programmable Gain) (VREF*2/ADC_RANGE=6.144*2/65536 = 0.0001875)
       }
-      ads1115.setGain(GAIN_TWOTHIRDS);        // Reset to default  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)          
+      ads1115.setGain(GAIN_TWOTHIRDS);                                // Reset to default in case it has been modified  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)          
       return voltage;
 }
   

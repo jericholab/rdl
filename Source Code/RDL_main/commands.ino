@@ -128,5 +128,11 @@ if (str == F("QTY-V\r")){  //if word "quantity" is received, enter a while loop 
   resetFunc(); //reset the arduino
 }
 
+if (str == F("I2CSCAN\r")){
+  i2cScan();  
+  delay(1000);
+}
+
+
 str="";                     // reinitialize string str with empty string. str holds commands incoming from serial monitor. Without this line, buffer is never empty.
 }

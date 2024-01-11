@@ -8,7 +8,7 @@ void simpleVoltFunc(){
       bool readMode = 1;  
       float value;                                              //local variable declaration
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
-      delay(100);                                              //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
+      delay(100);                                               //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
       Serial.print("*");
       spacing2("*",12);  
 

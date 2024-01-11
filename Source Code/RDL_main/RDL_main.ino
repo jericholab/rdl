@@ -1,5 +1,5 @@
 /* RESISTANCE DATA LOGGER (RDL) SOURCE CODE
- * Copyright (c) 2023 Jericho Laboratory Inc.
+ * Copyright (c) 2024 Jericho Laboratory Inc.
  * 
  *THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
@@ -14,15 +14,15 @@ bool headerDisplay=1;                   // optional display of headerprint (1 = 
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
-uint8_t algo = 2;                       // current sensor mode (0 = average DC, 1 = sineRMS, 2 = TrueRMS)
+bool periodicHeader = 0;                // optional activation of a printed header every given interval
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -49,7 +49,7 @@ uint8_t numberV =8;                     // default number of active voltage chan
 bool sensors_present=0;                 // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'sensors'.
 uint8_t numberC10 = numberC;            // (ms) Temporary storage variable for quantity of thermistor channels used
 uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for quantity of voltage channels used 
-uint8_t units_T = 0;                    // default temperature units are Celcius (0).   ////////////////  "units" will beome "units_T" to avoid confusion with other variables
+uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
 NAU7802 nau;                           //Create instance of the NAU7802 class       ///////////////// Should only be created if NAU7802 is activated (save memory space).
@@ -82,7 +82,7 @@ float arrayR[8];                  // define array to store resistances of all pr
 float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0};         // define array to store the thermistor extension wire values
 String str;                            // define str in the general scope of the program
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
-#define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip   //// Verify: Do I still supply RTC with pin 12 ???//////////////
+//#define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip   //// Verify: Do I still supply RTC with pin 12 ???//////////////
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10                // Define the Nano digital pin that enables/disables the Voltages multiplexer
 
@@ -129,31 +129,27 @@ void setup(void) {
     
     analogReference(EXTERNAL);                         // tells the Nano to use the external voltage as a reference (value used at the top of the Nano ADC range)
 
-    pinMode(RTC_supply, OUTPUT);                               // define pin 12 as an output pin.
-    digitalWrite(RTC_supply, HIGH);                            // toggle pin 12 to HIGH value in order to supply RTC clock and I2C with a supply voltage (VCC15)
-
     pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
     digitalWrite(enable_T_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
 
     pinMode(enable_V_MUX, OUTPUT);                      // define pin 10 as an output pin.
-    //digitalWrite(enable_V_MUX, HIGH);                 // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
-    digitalWrite(enable_V_MUX, LOW);                    /////// TEST 2023-08-26
+    digitalWrite(enable_V_MUX, HIGH);                 // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
     pinMode(VOLT_PIN, INPUT);                          //set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
     pinMode(CTRL_PIN, OUTPUT);                         //set pin as an input for voltage readings to allow sending a control signal    //
 
-    initRTC();                                         //initialize the Real Time Clock 
+    Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+    
+    initRTC();                                         //initialize the Real Time Clock
 
-    if (SHT40Display == 1){   ////////////////// It won't be possible/useful to initialize the SHT40 sensors in the future, because each power cut will need reinitialization.
+    if (SHT40Display == 1){   
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-        SHT4_present = 1;                         
+        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
       }
     } 
 
-
     ads1115.begin();                                 // initialize the ADS1015 chip
-    //Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
-    ads1115.setGain(GAIN_TWOTHIRDS);                 // set the gain. 2/3x gain +/- 6.144V  1 bit = 3mV (default)  //////// REPETITION. There is also setGain() in the voltFunc.
+    Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
 
     pinMode(13,OUTPUT);                               // board Led 'L' is controlled by pin 13. Pin 13 is set to Output mode
     pinMode(S0, OUTPUT);                              // Configure pins dedicated to the thermistor multiplexor to 'output'mode (default mode is 'input')
@@ -169,13 +165,18 @@ void setup(void) {
 //      Wire.endTransmission();  
 //      }
 
-// TEMPORARY COMMENTED (Applies to non-multiplexed i2c strain devices)
-//    if (strainDisplay ==1){
-//      strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-//      }
+// TEMPORARY SECTION (Initialization applies to non-multiplexed i2c strain devices)
+    if (strainDisplay ==1){
+      strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+      if (strainDevice ==0){
+        Serial.println();
+        Serial.println(F("Failed to find NAU7802"));
+        delay(500);  
+      }    
+    }
 
    if (phDisplay == 1){
-     ph.begin();      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
+     ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
    }      
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
@@ -184,35 +185,32 @@ void setup(void) {
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
-    while (1);
    }
    if (!pcf2.begin(0x21, &Wire)) {
     Serial.println("Couldn't find PCF8574 #2");
-    while (1);
    }
    for (uint8_t p=0; p<8; p++) {
      pcf1.pinMode(p, OUTPUT);
      pcf2.pinMode(p, OUTPUT);
-     pcf1.digitalWrite(p, HIGH); // initialize each LED off 
-     pcf2.digitalWrite(p, LOW); // initialize each LED off  
+     pcf1.digitalWrite(p, HIGH); // initialize each channel off 
+     pcf2.digitalWrite(p, LOW); // initialize each channel off  
    }
+   
 // -------------- SHIELD PCF8574 ACTIVATION----------- //
   if (!pcf3.begin(0x22, &Wire)) {
     Serial.println("Couldn't find PCF8574 #3");
-    while (1);
   }
   if (!pcf4.begin(0x23, &Wire)) {
     Serial.println("Couldn't find PCF8574 #4");
-    while (1);
   }
   for (uint8_t p=0; p<8; p++) {
     pcf3.pinMode(p, OUTPUT);
     pcf4.pinMode(p, OUTPUT);
-    pcf3.digitalWrite(p, HIGH); // initialize each LED off 
-    pcf4.digitalWrite(p, LOW); // initialize each LED off  
+    pcf3.digitalWrite(p, HIGH); // initialize each channel off 
+    pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
 // -------------------------------------------------- //
-    
+       
 }
 
 ///// MAIN LOOP //////////
@@ -268,9 +266,10 @@ if (timePassed >= readInterval)                     // if enough time has passed
       Serial.print("*");   
       spacing2("*",12);
       addr = 0;
-      i2c_select(addr);    // TEST /////////
+      i2c_select(addr);    // TEST ////////////// STILL A VALID TEST?
       
       SHT40Func(); 
+      
       //Wire.endTransmission();
       //SENSOR 1 - Channel 1
 //      Serial.print("*");   
@@ -282,13 +281,13 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (voltDisplay==1){
-      simpleVoltFunc();   //run function for simple voltage measurement (all channels required by QTY-V parameter).
+      simpleVoltFunc();   //run function for simple voltage measurement (all channels required by the current QTY-V parameter).
     }
 
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
     
     if (currentDisplay==1){
-      currentFunc(0,1);          //run current measurement function  for a pre-selected sensor
+      currentFunc(0,1,1);          //run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).
     }
 
     if (terosDisplay==1){
@@ -296,14 +295,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (strainDisplay==1){   
-
-//      //SENSOR 1 - Channel 1
-//      addr = 2;   //NAU7802   /////TEMP TEST
-//      i2c_select(addr);    // TEST     // Choose channel 1
-//      //Wire.beginTransmission(TCAADDR);
-//      strainFunc(1);             //run function with Strain sensor connected to channel 1 of shield #1
-//      //Wire.endTransmission();      
-//      i2c_select(0);    // TEST
+      strainFunc(1);             //run function with Strain sensor connected to channel 1 of shield #1
     }
 
     if (phDisplay==1){
@@ -312,13 +304,13 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (ControlSignal==1){
-      controlFunc();          //run pH measurement function for a pre-selected sensor
+      controlFunc();
     }
     
     Serial.println();          //new line for the next measurements
 }
 
-if (timePassedHeader >= headerInterval){                 // if enough time has passed, printHeader
+if ((periodicHeader ==1)&&(timePassedHeader >= headerInterval)){                 // if enough time has passed, printHeader
     printHeader();
     time2=millis();                                 // each time a reading is taken, time1 is reset     
 }
@@ -330,4 +322,4 @@ timePassedHeader=millis()-time2;                  // time elapsed since last hea
 }  //end of main loop()
 
 
-//-------------------- end of code
+//-------------------- end

@@ -7,12 +7,12 @@
 
 void strainFunc(int channel) {
 
-  float val = -1.00;           // define a default value.
-  i2c_select(channel);         // select I2C channel and power it up.
+  float val = -1.00;            // define a default value.
+  i2c_select(channel);          // select I2C channel and power it up.
   //Wire.beginTransmission(TCAADDR);
-  strain_init();               // sensor must be initialized after each power up.
-  if(strainDevice == 1){       // if sensor found by strain_init()
-    val = nau.getReading();  //sparkfun's (raw values)
+  strain_init();                // sensor must be initialized after each power up.
+  if(strainDevice == 1){        // if sensor found by strain_init()
+    val = nau.getReading();     //sparkfun's (raw values)
   //Wire.endTransmission();  
 //    Failed attempt to zero, calibrate and display weight:
 //    bool allowNegativeWeights = false;

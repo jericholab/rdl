@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: phFunc
-// PURPOSE: Communicate with the pH meter and provide pH values
+// PURPOSE: Communicate with the DFROBOT pH meter and provide pH values
 // INPUT: none
 // OUTPUT: none
 
