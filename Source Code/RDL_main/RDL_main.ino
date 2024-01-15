@@ -37,7 +37,7 @@ bool periodicHeader = 0;                // optional activation of a printed head
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
-#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed).
+//#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed).
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 
@@ -56,7 +56,7 @@ NAU7802 nau;                           //Create instance of the NAU7802 class
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
-DFRobot_PH ph;                         // load pH meter library under shorter name 'ph'
+//DFRobot_PH ph;                         // load pH meter library under shorter name 'ph'
 #define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
@@ -175,12 +175,10 @@ void setup(void) {
     }
 
    if (phDisplay == 1){
-     ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
+     //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
    }      
 
-    if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
-        printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
-    }
+
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -197,10 +195,10 @@ void setup(void) {
    
 // -------------- SHIELD PCF8574 ACTIVATION----------- //
   if (!pcf3.begin(0x22, &Wire)) {
-    Serial.println("Couldn't find PCF8574 #3");
+    Serial.println("Couldn't find PCF8574 #3 (I2C Shield)");
   }
   if (!pcf4.begin(0x23, &Wire)) {
-    Serial.println("Couldn't find PCF8574 #4");
+    Serial.println("Couldn't find PCF8574 #4 (I2C Shield)");
   }
   for (uint8_t p=0; p<8; p++) {
     pcf3.pinMode(p, OUTPUT);
@@ -209,6 +207,10 @@ void setup(void) {
     pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
 // -------------------------------------------------- //
+
+    if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
+        printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
+    }
        
 }
 
@@ -298,8 +300,13 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (phDisplay==1){
-      bool readMode = 1;                 //option between ADS1115 read (readMode =1) for voltFunc() and Nano ADC read (readMode =0).
-      phFunc(PH_PIN, readMode);          //run pH measurement function for a pre-selected sensor
+
+      //// ANCIENT CODE SECTION FOR ANALOG VERSION OF PH MEASUREMENTS
+      //bool readMode = 1;                 //option between ADS1115 read (readMode =1) for voltFunc() and Nano ADC read (readMode =0).
+      //phFunc(PH_PIN, readMode);          //run pH measurement function for a pre-selected sensor
+      //// CODE SECTION FOR NUMERICAL VERSION OF PH MEASUREMENTS (EZO PH)
+      int pHChannel=1;   //dummy value for now, later the shield channel
+      phFunc(); 
     }
 
     if (ControlSignal==1){

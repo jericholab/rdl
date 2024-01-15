@@ -90,6 +90,9 @@ void printHeader(){
               String terosText2 = F("VWC_m3/m3");
               Serial.print(terosText2);
               spacing2(terosText2,12);
+              String terosText3 = F("Pascal");
+              Serial.print(terosText3);
+              spacing2(terosText3,12);
             }
 
          if (strainDisplay == 1){
