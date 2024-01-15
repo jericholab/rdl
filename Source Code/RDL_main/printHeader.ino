@@ -47,6 +47,9 @@ void printHeader(){
             }
 
         if (SHT40Display == 1){
+          
+          for (int i=0; i<qty_sht40; i++) {
+
               Serial.print(F("*"));
               spacing2("*",12);
               String i2cText1 = F("i2c_C");
@@ -55,7 +58,9 @@ void printHeader(){
               String i2cText2 = F("i2c_RH");
               Serial.print(i2cText2);
               spacing2(i2cText2,12);
-            }
+
+          }     
+        }
 
        if (voltDisplay == 1){
             Serial.print(F("*"));

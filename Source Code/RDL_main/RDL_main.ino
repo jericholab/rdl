@@ -23,8 +23,8 @@ bool strainDisplay = 1;                 // optional measurement and display of s
 bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 1;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_strain[] = {3};         // define array to store the list of shield channels dedicated to strain sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -96,8 +96,9 @@ unsigned long timePassedHeader;          // initialize variable to keep track of
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
 bool strainDevice;                       // define a boolean that indicates the presence of a strain device
 uint8_t addr;                            // define an address variable for i2c multiplexer channel selection
-float voltage,phValue;                   // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
-
+float voltage,phValue;                   // define the variables for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
+int qty_sht40;                           // define the variable that holds the number of sht40 devices connected to the i2c shield
+int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
@@ -157,14 +158,8 @@ void setup(void) {
     pinMode(S1, OUTPUT);
     pinMode(S2, OUTPUT);
 
-//    TEMPORARY COMMENTED (Applies to multiplexed i2c strain devices)
-//    if (strainDisplay ==1){
-//      addr = 2;
-//      i2c_select(addr);    // TEST     // Choose channel 1
-//      Wire.beginTransmission(TCAADDR);  
-//      strainDevice = nau7802_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-//      Wire.endTransmission();  
-//      }
+    qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
+    //qty_strain = sizeof(i2cChannels_strain)-1;
 
 // TEMPORARY SECTION (Initialization applies to non-multiplexed i2c strain devices)
     if (strainDisplay ==1){
@@ -179,8 +174,6 @@ void setup(void) {
    if (phDisplay == 1){
      //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
    }      
-
-
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -265,15 +258,17 @@ if (timePassed >= readInterval)                     // if enough time has passed
        }
 
     if (SHT40Display == 1){
-      addr = 0;         // we choose the channel 0
-      pcf3.digitalWrite(addr, LOW);  // turn LED on by sinking current to ground
-      pcf4.digitalWrite(addr, HIGH);  // turn LED on by sinking current to ground
-      delay(100);
-      i2c_select(addr);    // TEST ////////////// 
-      sht40Func(); 
-      pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-      pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
 
+      for (int i=0; i<qty_sht40; i++) {
+        addr = i2cChannels_sht40[i];     // we choose the channel X
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(100);
+        i2c_select(addr); 
+        sht40Func(); 
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+      }
     }
 
     if (voltDisplay==1){
