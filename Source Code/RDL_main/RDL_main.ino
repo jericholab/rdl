@@ -23,6 +23,9 @@ bool strainDisplay = 1;                 // optional measurement and display of s
 bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 1;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
+int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors
+
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -37,7 +40,6 @@ bool periodicHeader = 0;                // optional activation of a printed head
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
-//#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed).
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 
@@ -102,7 +104,7 @@ float voltage,phValue;                   // define the varaibles for pH meter (v
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
 #define TEROS_PIN A1                   // Analog signal pin for soil meter
-#define PH_PIN A2                      // Define the analog pin for the pH meter input
+//#define PH_PIN A2                      // Define the analog pin for the pH meter input
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
@@ -141,7 +143,7 @@ void setup(void) {
     
     initRTC();                                         //initialize the Real Time Clock
 
-    if (SHT40Display == 1){   
+    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
       }
@@ -263,22 +265,15 @@ if (timePassed >= readInterval)                     // if enough time has passed
        }
 
     if (SHT40Display == 1){
-      // SENSOR 0 - Channel 0
-      Serial.print("*");   
-      spacing2("*",12);
-      addr = 0;
-      i2c_select(addr);    // TEST ////////////// STILL A VALID TEST?
-      
+      addr = 0;         // we choose the channel 0
+      pcf3.digitalWrite(addr, LOW);  // turn LED on by sinking current to ground
+      pcf4.digitalWrite(addr, HIGH);  // turn LED on by sinking current to ground
+      delay(100);
+      i2c_select(addr);    // TEST ////////////// 
       sht40Func(); 
-      
-      //Wire.endTransmission();
-      //SENSOR 1 - Channel 1
-//      Serial.print("*");   
-//      spacing2("*",12);
-//      addr = 1;
-//      i2c_select(addr);         // Choose channel 1
-//      delay(100);               // Delay to allow better communication after channel change
-//      i2cSensors(); 
+      pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+      pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+
     }
 
     if (voltDisplay==1){

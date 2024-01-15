@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: i2cScan
-// PURPOSE: scans all I2C ports to detect all the i2c devices permanently connected to the i2c bus. it then proceeds to scan all i2c sensors behind each i2c mux. writes to EEPROM the list.
+// PURPOSE: Scan all I2C ports to detect all the I2C devices (permanently connected to the i2c bus or multiplexed).
 // INPUT: none
 // OUTPUT: none
 
@@ -20,6 +20,10 @@ void i2cScan(){
     Serial.println("\nTCAScanner ready!");
     
     for (uint8_t t=0; t<8; t++) {
+      pcf3.digitalWrite(t, LOW);  // turn LED on by sinking current to ground
+      pcf4.digitalWrite(t, HIGH);  // turn LED on by sinking current to ground
+      delay(100);
+      
       tcaselect(t);
       Serial.print("TCA Port #"); Serial.println(t);
 
@@ -31,8 +35,11 @@ void i2cScan(){
           Serial.print("Found I2C 0x");  Serial.println(addr,HEX);
         }
       }
+      pcf3.digitalWrite(t, HIGH); // turn LED off by turning off sinking transistor
+      pcf4.digitalWrite(t, LOW); // turn LED off by turning off sinking transistor
     }
-    Serial.println("\ndone");
+      
+       Serial.println("\ndone");
 }
   
       void tcaselect(uint8_t i) {

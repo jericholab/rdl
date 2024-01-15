@@ -58,7 +58,7 @@ void phFunc(){
 
       Serial.print(F("*"));
       spacing2(F("*"),12); 
-      Serial.print(ph_float);              //print the data.
-      spacing1(ph_float,12);
+      Serial.print(ph_float,3);              //print the data.
+      spacing1(ph_float,11);
     } 
 }
