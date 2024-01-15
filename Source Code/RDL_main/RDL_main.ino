@@ -21,23 +21,23 @@ bool currentDisplay = 1;                // optional measurement and display of T
 bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
-bool ControlSignal = 0;                 // optional activation of the signal control functions
+bool ControlSignal = 1;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
 #define headerInterval 1800000          // (ms) Interval at which the header (sensors identification and units) is printed out (1800000 = 30min)  
 #define Seriesresistor 10000            // (ohms) the value of the series resistor for T1 (based on the specifications of your RDL unit)
-#define baudRate 57600                // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
-#define ADCrange 65535                // value range for 16-bit ADC (ADC1115) is 0-65535
+#define baudRate 57600                  // (bps) data rate at which data is transmitted between the Arduino and the PC, through the serial monitor (max = 115200)
+#define ADCrange 65535                  // value range for 16-bit ADC (ADC1115) is 0-65535
 
-//LIBRARIES INCLUDED
+//////////  LIBRARIES INCLUDED //////////
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
 #include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
-#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed). /////////////// see Atlas example.
+#include "DFRobot_PH.h"                // library required for the pH meter. This might be replaced with the Atlas system (no library needed).
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 
@@ -52,7 +52,7 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-NAU7802 nau;                           //Create instance of the NAU7802 class       ///////////////// Should only be created if NAU7802 is activated (save memory space).
+NAU7802 nau;                           //Create instance of the NAU7802 class
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
@@ -82,7 +82,6 @@ float arrayR[8];                  // define array to store resistances of all pr
 float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0};         // define array to store the thermistor extension wire values
 String str;                            // define str in the general scope of the program
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
-//#define RTC_supply 12                  // Define the Nano digital pin that supplies power to the RTC chip   //// Verify: Do I still supply RTC with pin 12 ???//////////////
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10                // Define the Nano digital pin that enables/disables the Voltages multiplexer
 
@@ -94,7 +93,7 @@ unsigned long timePassed = readInterval; // initialize variable to keep track of
 unsigned long timePassedHeader;          // initialize variable to keep track of time passed between each measurement
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
 bool strainDevice;                       // define a boolean that indicates the presence of a strain device
-uint8_t addr;                            // define an address variable for i2c multiplexer channel selection   ////// temp test ////////////
+uint8_t addr;                            // define an address variable for i2c multiplexer channel selection
 float voltage,phValue;                   // define the varaibles for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
 
 //----------------------
@@ -268,7 +267,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
       addr = 0;
       i2c_select(addr);    // TEST ////////////// STILL A VALID TEST?
       
-      SHT40Func(); 
+      sht40Func(); 
       
       //Wire.endTransmission();
       //SENSOR 1 - Channel 1
@@ -291,7 +290,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (terosDisplay==1){
-      terosFunc();             //run soil humidity function for a pre-selected sensor
+      terosFunc(1);             //run soil humidity function for with channel selection (0-7)        ////// HEADER MISSING FOR SUCTION. UNITS FOR VON GENUCHTEN are "hPa" or "Pa" ?
     }
 
     if (strainDisplay==1){   

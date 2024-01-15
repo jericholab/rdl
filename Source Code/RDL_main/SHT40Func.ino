@@ -1,10 +1,10 @@
 //-------------------------------------------------------------------
-// FONCTION: SHT40Func
+// FONCTION: sht40Func
 // PURPOSE: Obtain a measurement from the selected SHT40 sensor
 // INPUT: none
 // OUTPUT: none
 
-void SHT40Func(){
+void sht40Func(){
 
     //sht4.setPrecision(SHT4X_LOW_PRECISION);        //set to low precision measurement, fast
     //sht4.setPrecision(SHT4X_MEDIUM_PRECISION);     //set to medium precision measurement, medium

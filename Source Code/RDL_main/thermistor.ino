@@ -26,11 +26,8 @@ struct STRUCT1 thermistor(float A, float B, float C, int channel, bool readMode)
     average=ADCrange - 1;
   }
   
-  
   if (readMode ==0){
-
     ohmvalue = Seriesresistor/(1023 / average - 1);        // ohms // convert the ADC average value to resistance
-
   }
   if (readMode ==1){
     ads1115.setGain(GAIN_TWOTHIRDS);                            // reset gain to default, just in case the ADS has been modified.
@@ -43,8 +40,6 @@ struct STRUCT1 thermistor(float A, float B, float C, int channel, bool readMode)
   }
 
   ohmvalue = ohmvalue - R_MUX - R_wire[(channel-1)];           // ohms //remove electric resistance of multiplexer and extension wire.
-
-  //Serial.println(ohmvalue); 
   
   float steinhart;                                             // define steinhart as a placeholder floating number
   steinhart = log(ohmvalue);                                   // log(x) means natural logarithm in Arduino 

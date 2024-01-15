@@ -8,11 +8,11 @@ float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
       
     // PREPARATION
 
-    int n = 10;                                     // size of the sample to be collected
+    int n = 10;                                    // size of the sample to be collected
     int i;                                         // integer for loop iteration
     float rms_value = 0;                           // initialize average value
     float volts;                                   // initialize variable 
-    float V_offset = 2.543;                        // offset value (no load) to calibrate the sensor
+    float V_offset = 0; //2.542;                      // offset value (no load) to calibrate the sensor      //////// TEST
     float hallRatio = 50/1.5;                      // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05
     Serial.print("*");
     spacing2("*",12); 
@@ -62,7 +62,7 @@ float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
     // CONVERT TO AMPS & PRINT
 
     Serial.print(rms_value,4);         //print out the value you calculated.
-    spacing1(rms_value,12); 
+    spacing1(rms_value,10);            // since two bonus decimal is printed, the spacing requirement is reduced by two units.
     //float amps2 = (rms_value - V_offset) * 50/1.5;                      // Finalize conversion to instantaneous amps  (Removing V_offset after RMS allow negative currents)
     float amps2 = rms_value * hallRatio;                      // Finalize conversion to instantaneous amps  (Removing V_offset after RMS allow negative currents)
     Serial.print(amps2,3);         //print out the value you read. Test with 3 decimals

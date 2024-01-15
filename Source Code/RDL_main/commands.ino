@@ -51,7 +51,7 @@ if (str == F("KELVIN\r")){
     if (str == F("HELP\r")){
     Serial.println();
     Serial.println(F("Possible commands:")); 
-    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V"));
+    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, I2CSCAN"));
     Serial.println();
     delay(2000);
     }        

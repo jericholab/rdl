@@ -4,6 +4,17 @@
 // INPUT: none
 // OUTPUT: none
 
+// DEFAULT ADDRESSES OF RDL SYSTEM COMPONENTS
+// 0x20, 0x21 : PCF8574 on the RDL
+// 0x22, 0x23 : PCF8574 on the default SHIELD
+// 0x24, 0x25 : PCF8574 on a second SHIELD (double stack)
+// 0x44 : SHT40 (Air humidity and temperature)
+// 0x48 : ADS1115
+// 0x68 : DS3231 (Real Time Clock)
+// 0x2A : NAU7802 (Strain/ 24-bit ADC device)
+// 0x70 : TCA9548 (I2C Multiplexer)
+
+
 void i2cScan(){
 
     Serial.println("\nTCAScanner ready!");

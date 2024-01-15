@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION: simpleVoltFunc
-// PURPOSE: Provides a simple voltage reading from all available channels.
+// PURPOSE: Provides a voltage reading from all activated channels.
 // INPUT: none
 // OUTPUT: none
 
@@ -18,8 +18,8 @@ void simpleVoltFunc(){
         pcf2.digitalWrite(i, HIGH);  // turn LED on by sinking current to ground
         delay(100);
         value=getVoltFunc(readMode);                             // storing voltages 
-        Serial.print(value,2);
-        spacing1(value,12);
+        Serial.print(value,4);
+        spacing1(value,10);
         pcf1.digitalWrite(i, HIGH); //turn LED off by turning off sinking transistor
         pcf2.digitalWrite(i, LOW);  //turn LED off by turning off sinking transistor
       }

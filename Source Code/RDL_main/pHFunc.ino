@@ -4,6 +4,9 @@
 // INPUT: none
 // OUTPUT: none
 
+// ********* THIS CODE WILL BE TRANSFORMED TO WELCOME THE ATLAS SUBSYSTEM
+
+
 // PH METER: PSEUDO CODE OF WHAT NEEDS TO BE DONE (TRANSFER TO SAD LATER)
 // Note: We assume that we have analog pH meters only. An I2C pH meter will be different process.
 // 1. We activate the power supply of the selected analog channel.
@@ -18,7 +21,10 @@
 // 10. If applicable, change back the external reference to 3.3V.
 
 void phFunc(int channel, bool readMode){
-      
+
+      Serial.print("*");
+      spacing2("*",12);   
+  
       // 1. We activate the power supply of the selected analog channel.
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
       setMultiplexer(5);                             // select the multiplexer channel      
@@ -50,18 +56,19 @@ void phFunc(int channel, bool readMode){
       float voltage = getVoltFunc(channel); 
 
       // 8. Optional printout of the raw voltage measurement
-      bool debug =1;     // normal operation (0) or debug (1) for more information.   
+      bool debug =0;     // normal operation (0) or debug (1) for more information.   
       if (debug ==1){
         Serial.print(voltage);  // temporary print out of the raw voltage measurement
         spacing1(voltage,12);             
       }
             
       // 9. Calculate pH value from the voltage
-      float sensorValue = ph.readPH(voltage,25);     ////// Is this ph() related to DFRobot or Sparkfun?
-            
+      float sensorValue = ph.readPH(voltage,25);
+
       // 10. Print out pH value.
       Serial.print(sensorValue);
-      
+      spacing1(sensorValue,12); 
+          
       // 11. If applicable, change back the external reference to 3.3V.
       if (readMode ==0){
         analogReference(EXTERNAL);  
