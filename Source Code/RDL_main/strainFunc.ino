@@ -5,12 +5,11 @@
 // INPUT: channel
 // OUTPUT: none
 
-void strainFunc(int channel) {
+void strainFunc() {
 
   float val = -1.00;            // define a default value.
-  i2c_select(channel);          // select I2C channel and power it up.
-  //Wire.beginTransmission(TCAADDR);
-  strain_init();                // sensor must be initialized after each power up.
+  
+  //strain_init();                // sensor must be initialized after each power up.  ///////// This is a problem in a multiplexed scenario /////
   if(strainDevice == 1){        // if sensor found by strain_init()
     val = nau.getReading();     //sparkfun's (raw values)
   //Wire.endTransmission();  

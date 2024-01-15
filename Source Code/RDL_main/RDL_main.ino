@@ -11,20 +11,20 @@
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
-bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
+bool timeDisplay=0;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
-bool ControlSignal = 1;                 // optional activation of the signal control functions
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_strain[] = {3};         // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_sht40[] = {0};        // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -58,8 +58,7 @@ NAU7802 nau;                           //Create instance of the NAU7802 class
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
-//DFRobot_PH ph;                         // load pH meter library under shorter name 'ph'
-#define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)
+#define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)    ////////// The resistance of the second MUX will have to be added.
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
@@ -143,11 +142,12 @@ void setup(void) {
     Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
     
     initRTC();                                         //initialize the Real Time Clock
-
+    Wire.setClock(clockSpeed);
+    
     if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
-      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
-      }
+//      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
+//        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
+//      }
     } 
 
     ads1115.begin();                                 // initialize the ADS1015 chip
@@ -159,9 +159,10 @@ void setup(void) {
     pinMode(S2, OUTPUT);
 
     qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
-    //qty_strain = sizeof(i2cChannels_strain)-1;
+    qty_strain = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
+    
 
-// TEMPORARY SECTION (Initialization applies to non-multiplexed i2c strain devices)
+// TEMPORARY SECTION (Initialization applies to non-multiplexed i2c strain devices)///////////////
     if (strainDisplay ==1){
       strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
       if (strainDevice ==0){
@@ -178,9 +179,11 @@ void setup(void) {
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
    }
+   Wire.setClock(clockSpeed);
    if (!pcf2.begin(0x21, &Wire)) {
     Serial.println("Couldn't find PCF8574 #2");
    }
+   Wire.setClock(clockSpeed);
    for (uint8_t p=0; p<8; p++) {
      pcf1.pinMode(p, OUTPUT);
      pcf2.pinMode(p, OUTPUT);
@@ -192,9 +195,11 @@ void setup(void) {
   if (!pcf3.begin(0x22, &Wire)) {
     Serial.println("Couldn't find PCF8574 #3 (I2C Shield)");
   }
+  Wire.setClock(clockSpeed);
   if (!pcf4.begin(0x23, &Wire)) {
     Serial.println("Couldn't find PCF8574 #4 (I2C Shield)");
   }
+  Wire.setClock(clockSpeed);
   for (uint8_t p=0; p<8; p++) {
     pcf3.pinMode(p, OUTPUT);
     pcf4.pinMode(p, OUTPUT);
@@ -264,8 +269,12 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(100);
-        i2c_select(addr); 
+        i2c_select(addr);
+        Wire.beginTransmission(addr);
+        Wire.setClock(clockSpeed); 
+        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         sht40Func(); 
+        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
       }
@@ -278,23 +287,18 @@ if (timePassed >= readInterval)                     // if enough time has passed
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
     
     if (currentDisplay==1){
-      currentFunc(0,1,1);          //run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).
+      currentFunc(0,1,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).
     }
 
     if (terosDisplay==1){
-      terosFunc(1);             //run soil humidity function for with channel selection (0-7)        ////// HEADER MISSING FOR SUCTION. UNITS FOR VON GENUCHTEN are "hPa" or "Pa" ?
+      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
     }
 
-    if (strainDisplay==1){   
-      strainFunc(1);             //run function with Strain sensor connected to channel 1 of shield #1
+    if (strainDisplay==1){  
+      strainFunc();             // run Strain sensor function
     }
 
     if (phDisplay==1){
-
-      //// ANCIENT CODE SECTION FOR ANALOG VERSION OF PH MEASUREMENTS
-      //bool readMode = 1;                 //option between ADS1115 read (readMode =1) for voltFunc() and Nano ADC read (readMode =0).
-      //phFunc(PH_PIN, readMode);          //run pH measurement function for a pre-selected sensor
-      //// CODE SECTION FOR NUMERICAL VERSION OF PH MEASUREMENTS (EZO PH)
       int pHChannel=1;   //dummy value for now, later the shield channel
       phFunc(); 
     }

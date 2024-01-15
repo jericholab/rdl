@@ -18,7 +18,7 @@ bool strain_init() {
     }
   
     void calculateZeroOffset(uint8_t averageAmount = 8);    //tare function
-    Serial.println(F("NAU7802 calibration done."));
+    Serial.print(F("NAU7802 calibration done. "));
   
     value = 1;
   }

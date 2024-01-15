@@ -9,11 +9,12 @@ void i2c_select(uint8_t i) {    //define a small function to select the i2c mult
 
 
 //  Wire.beginTransmission(TCAADDR);
-//  Wire.write(1 << i);    // Bitwise left shift operation    ///////////////////// Whats the purpose of this line
-//  Wire.endTransmission();                                   ///////////////////// Do I really want to end transmission?
+//  Wire.write(1 << i);    // Bitwise left shift operation    
+//  Wire.endTransmission();                                   
 
   tcaselect(i);
-  Wire.beginTransmission(addr);
+//  Wire.beginTransmission(addr);
+//  Wire.setClock(clockSpeed); 
 
 //  pcf3.digitalWrite(i, HIGH); // turn LED off by turning off sinking transistor
 //  pcf4.digitalWrite(i, LOW); // turn LED off by turning off sinking transistor
