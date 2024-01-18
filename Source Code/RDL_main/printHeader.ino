@@ -101,11 +101,13 @@ void printHeader(){
             }
 
          if (strainDisplay == 1){
+          for (int i=0; i<qty_strain; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
               String terosText1 = F("Strain_raw");
               Serial.print(terosText1);
-              spacing2(terosText1,12);
+              spacing2(terosText1,12);            
+          }
 
             }    
          if (phDisplay == 1){
