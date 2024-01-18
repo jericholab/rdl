@@ -60,7 +60,6 @@ float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
         }
                 
     // CONVERT TO AMPS & PRINT
-
     Serial.print(rms_value,4);         //print out the value you calculated.
     spacing1(rms_value,10);            // since two bonus decimal is printed, the spacing requirement is reduced by two units.
     //float amps2 = (rms_value - V_offset) * 50/1.5;                      // Finalize conversion to instantaneous amps  (Removing V_offset after RMS allow negative currents)

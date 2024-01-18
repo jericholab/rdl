@@ -104,7 +104,6 @@ int qty_strain;                          // define the variable that holds the n
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
 #define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
 #define TEROS_PIN A1                   // Analog signal pin for soil meter
-//#define PH_PIN A2                      // Define the analog pin for the pH meter input
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
@@ -120,7 +119,7 @@ void setup(void) {
     
     if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
-        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE3"));
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE3 Code"));
         Serial.print(F("Compiled: "));
         Serial.print(F(__DATE__));
         Serial.print(F("  "));
@@ -159,19 +158,8 @@ void setup(void) {
     pinMode(S2, OUTPUT);
 
     qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
-    qty_strain = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
+    qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     
-
-// TEMPORARY SECTION (Initialization applies to non-multiplexed i2c strain devices)///////////////
-    if (strainDisplay ==1){
-      strainDevice = strain_init();      // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-      if (strainDevice ==0){
-        Serial.println();
-        Serial.println(F("Failed to find NAU7802"));
-        delay(500);  
-      }    
-    }
-
    if (phDisplay == 1){
      //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
    }      
@@ -179,11 +167,11 @@ void setup(void) {
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
    }
-   Wire.setClock(clockSpeed);
+
    if (!pcf2.begin(0x21, &Wire)) {
     Serial.println("Couldn't find PCF8574 #2");
    }
-   Wire.setClock(clockSpeed);
+
    for (uint8_t p=0; p<8; p++) {
      pcf1.pinMode(p, OUTPUT);
      pcf2.pinMode(p, OUTPUT);
@@ -207,6 +195,37 @@ void setup(void) {
     pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
 // -------------------------------------------------- //
+
+// TEMPORARY TEST  /////////////// WE WILL ADD A MANUAL CALIBRATION COMMAND SOON ///////////////
+//    if (strainDisplay ==1){
+//        //addr = i2cChannels_strain[0];     // we choose the channel in position X of the array
+//        addr = 1;
+//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+//        delay(100);
+//        i2c_select(addr);
+//        Wire.beginTransmission(addr);
+//        Wire.setClock(clockSpeed); 
+//        delay(100);                       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+//        //strainFunc();                   // run Strain sensor function
+//        strainDevice = strain_init();     // initialize the nau7802 sensor . Boolean = 1 if device is detected.
+//        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+//        pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
+//        pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
+//      
+//      
+//      if (strainDevice ==1){
+//        Serial.println();
+//        Serial.println(F("Found at least one NAU7802"));
+//        delay(500);  
+//      }
+//      if (strainDevice ==0){
+//        Serial.println();
+//        Serial.println(F("Failed to find NAU7802"));
+//        delay(500);  
+//      }    
+//    }
+
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
@@ -295,7 +314,22 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (strainDisplay==1){  
-      strainFunc();             // run Strain sensor function
+
+      for (int i=0; i<qty_strain; i++) {
+        addr = i2cChannels_strain[i];     // we choose the channel X
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(100);
+        i2c_select(addr);
+        Wire.beginTransmission(addr);
+        Wire.setClock(clockSpeed); 
+        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        strainFunc();             // run Strain sensor function
+        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+      }
+      
     }
 
     if (phDisplay==1){

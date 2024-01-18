@@ -9,6 +9,7 @@ bool strain_init() {
   bool value;
   if (! nau.begin()) {                              //if device is not found, we skip the initialization
     value = 0;
+    Serial.print(F("NAU7802 device not found. No calibration. "));
   }
   else{                                               //otherwise, we initialize with the NAU7802 library
   
