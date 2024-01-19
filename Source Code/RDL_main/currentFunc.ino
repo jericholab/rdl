@@ -12,13 +12,13 @@ float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
     int i;                                         // integer for loop iteration
     float rms_value = 0;                           // initialize average value
     float volts;                                   // initialize variable 
-    float V_offset = 0; //2.542;                      // offset value (no load) to calibrate the sensor      //////// TEST
+    float V_offset = 2.546;                      // offset value (no load) to calibrate the sensor      //////// TEST
     float hallRatio = 50/1.5;                      // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05
     Serial.print("*");
     spacing2("*",12); 
 
     digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
-    setMultiplexer(channel);                       // select the multiplexer channel
+    setMultiplexer(channel);                       // select the multiplexer channel, from 0 to 7
     pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
     pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
     delay(500);

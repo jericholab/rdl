@@ -11,20 +11,22 @@
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
-bool timeDisplay=0;                     // optional display of timestamp (1 = yes, 0 = no)
+bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0};        // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_strain[] = {2,4};         // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {2,4};       // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
+int channels_current[] = {0,1};           // define array to store the list of analog channels dedicated to current sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -62,7 +64,7 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
-long clockSpeed = 50000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
+long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 #define TCAADDR 0x70                   // TCA ADDRESS, used by i2c_select()   ??? If there is more than one TCA9548 on the bus, wouldn't it create a conflict????
@@ -78,8 +80,8 @@ Adafruit_PCF8574 pcf4;                 //I2C SHIELD: create an instance of PCF85
 #define GEN_B 2.5316558834E-04
 #define GEN_C -5.3213022916E-12
 
-float arrayV[8];                  // define array to store values of all probes before Serial print
-float arrayR[8];                  // define array to store resistances of all probes before Serial print
+float arrayV[8];                       // define array to store values of all probes before Serial print
+float arrayR[8];                       // define array to store resistances of all probes before Serial print
 float R_wire[] = {0, 0, 0, 0, 0, 0, 0, 0};         // define array to store the thermistor extension wire values
 String str;                            // define str in the general scope of the program
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
@@ -98,6 +100,9 @@ uint8_t addr;                            // define an address variable for i2c m
 float voltage,phValue;                   // define the variables for pH meter (voltage, pH values and temperature (for temperature compensation)(initialized at 25C))
 int qty_sht40;                           // define the variable that holds the number of sht40 devices connected to the i2c shield
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
+int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
+int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
+
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
@@ -159,6 +164,9 @@ void setup(void) {
 
     qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
+    qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
+    qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
+    
     
    if (phDisplay == 1){
      //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
@@ -194,38 +202,6 @@ void setup(void) {
     pcf3.digitalWrite(p, HIGH); // initialize each channel off 
     pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
-// -------------------------------------------------- //
-
-// TEMPORARY TEST  /////////////// WE WILL ADD A MANUAL CALIBRATION COMMAND SOON ///////////////
-//    if (strainDisplay ==1){
-//        //addr = i2cChannels_strain[0];     // we choose the channel in position X of the array
-//        addr = 1;
-//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
-//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-//        delay(100);
-//        i2c_select(addr);
-//        Wire.beginTransmission(addr);
-//        Wire.setClock(clockSpeed); 
-//        delay(100);                       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-//        //strainFunc();                   // run Strain sensor function
-//        strainDevice = strain_init();     // initialize the nau7802 sensor . Boolean = 1 if device is detected.
-//        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-//        pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
-//        pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
-//      
-//      
-//      if (strainDevice ==1){
-//        Serial.println();
-//        Serial.println(F("Found at least one NAU7802"));
-//        delay(500);  
-//      }
-//      if (strainDevice ==0){
-//        Serial.println();
-//        Serial.println(F("Failed to find NAU7802"));
-//        delay(500);  
-//      }    
-//    }
-
 
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
@@ -306,7 +282,10 @@ if (timePassed >= readInterval)                     // if enough time has passed
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
     
     if (currentDisplay==1){
-      currentFunc(0,1,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).
+      for (int i=0; i<qty_current; i++) {
+        addr = channels_current[i];     // we choose the channel X
+        currentFunc(0,1,addr);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).        
+      }
     }
 
     if (terosDisplay==1){
@@ -319,11 +298,12 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_strain[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(100);
+        delay(1000);
         i2c_select(addr);
+        delay(1000);
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         strainFunc();             // run Strain sensor function
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
@@ -333,8 +313,23 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (phDisplay==1){
-      int pHChannel=1;   //dummy value for now, later the shield channel
-      phFunc(); 
+
+
+      for (int i=0; i<qty_ph; i++) {
+        addr = i2cChannels_ph[i];         // we choose the channel X
+        pcf3.digitalWrite(addr, LOW);     // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);    // turn LED on by sinking current to ground
+        //delay(100);
+        i2c_select(addr);
+        delay(1000);
+        Wire.beginTransmission(addr);
+        Wire.setClock(clockSpeed); 
+        delay(100);                       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        phFunc();                         // run Strain sensor function
+        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
+      }   
     }
 
     if (ControlSignal==1){

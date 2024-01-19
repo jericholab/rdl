@@ -76,15 +76,18 @@ void printHeader(){
         }
 
         if (currentDisplay == 1){
+          for (int i=0; i<qty_current; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String voltageText = F("Raw_V");
+              String voltageText = F("Raw");
               Serial.print(voltageText);
               spacing2(voltageText,12);
-              String voltageText2 = F("Amps");
+              String voltageText2 = F("Amps_C");
               Serial.print(voltageText2);
+              Serial.print(channels_current[i]);
               spacing2(voltageText2,12);
             }
+        }
 
         if (terosDisplay == 1){
               Serial.print(F("*"));
