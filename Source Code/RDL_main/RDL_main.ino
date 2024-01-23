@@ -13,20 +13,20 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {2,4};       // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
-int channels_current[] = {0,1};           // define array to store the list of analog channels dedicated to current sensors
+int i2cChannels_sht40[] = {0,1};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {2};       // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors
+int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -48,7 +48,7 @@ int channels_current[] = {0,1};           // define array to store the list of a
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
 unsigned long time2 = 0;               // initialize variable to control header print cycles
-uint8_t numberC=8;                       // default number of active thermistor channels. Must be an integer between 1 and 8.
+uint8_t numberC=8;                      // default number of active thermistor channels. Must be an integer between 1 and 8.
 uint8_t numberV =8;                     // default number of active voltage channels. Must be an integer between 1 and 8.
 bool sensors_present=0;                 // we initialize this variable with 0. If there is valid data on the EEPROM, the boolean will change to 1, and we will use this data for 'sensors'.
 uint8_t numberC10 = numberC;            // (ms) Temporary storage variable for quantity of thermistor channels used
@@ -289,7 +289,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (terosDisplay==1){
-      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
+      terosFunc(0);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
@@ -304,7 +304,11 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
         delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        strainFunc();             // run Strain sensor function
+
+        currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        //strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
+
+        
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
