@@ -13,20 +13,21 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {2};       // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors
-int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors
+int i2cChannels_sht40[] = {1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (1 to 8)
+int i2cChannels_strain[] = {0};       // define array to store the list of shield channels dedicated to strain sensors (1 to 8)
+int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors (1 to 8)
+int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
+int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -102,13 +103,14 @@ int qty_sht40;                           // define the variable that holds the n
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
+int qty_teros;                         // define the variable that holds the number of current devices connected to the RDL
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
-#define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
-#define TEROS_PIN A1                   // Analog signal pin for soil meter
+//#define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
+//#define TEROS_PIN A1                   // Analog signal pin for soil meter
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
@@ -166,6 +168,7 @@ void setup(void) {
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
+    qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
     
     
    if (phDisplay == 1){
@@ -289,7 +292,10 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (terosDisplay==1){
-      terosFunc(0);             // run soil humidity function for with channel selection (0-7)
+      for (int i=0; i<qty_teros; i++) {
+        addr = channels_teros[i];     // we choose the channel X
+        terosFunc(1,addr);             // run soil humidity function for readMode (e.g. 1=ADS1115 ADC), and channel selection (0-7)
+      }
     }
 
     if (strainDisplay==1){  

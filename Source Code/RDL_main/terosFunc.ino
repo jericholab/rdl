@@ -5,7 +5,8 @@
 // OUTPUT: none
 
 
-void terosFunc(uint8_t channel){                                  
+void terosFunc(bool readMode, uint8_t channel){                                  
+//float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
 
   digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
   setMultiplexer(channel);                       // select the multiplexer channel
@@ -13,7 +14,7 @@ void terosFunc(uint8_t channel){
   pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
   delay(500);
   
-  bool readMode = 1;
+  //bool readMode = 1;
   float sensorValue = getVoltFunc(readMode);           // read the voltage while assuming a 5000mV voltage reference
   float voltage1 = sensorValue * 1000;                 // conversion to millivolts to make it usable by the VWC eq.
   Serial.print("*");
