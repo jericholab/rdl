@@ -11,23 +11,22 @@
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
-bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
+bool timeDisplay=0;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (1 to 8)
-int i2cChannels_strain[] = {0,1,2};       // define array to store the list of shield channels dedicated to strain sensors (1 to 8)
-int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors (1 to 8)
-int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
-int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
+int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {0,1};       // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {0};             // define array to store the list of shield channels dedicated to pH sensors
+int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -103,18 +102,20 @@ int qty_sht40;                           // define the variable that holds the n
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
-int qty_teros;                         // define the variable that holds the number of current devices connected to the RDL
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
-//#define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
-//#define TEROS_PIN A1                   // Analog signal pin for soil meter
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
+
+
+sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
+
+
 
 ////// SETUP ////////
 
@@ -151,9 +152,9 @@ void setup(void) {
     Wire.setClock(clockSpeed);
     
     if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
-//      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-//        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
-//      }
+      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
+        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
+      }
     } 
 
     ads1115.begin();                                 // initialize the ADS1015 chip
@@ -168,7 +169,6 @@ void setup(void) {
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
-    qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
     
     
    if (phDisplay == 1){
@@ -222,6 +222,8 @@ if (timePassed >= readInterval)                     // if enough time has passed
     readCycle2=readCycle2 + 1;                      // increment the read cycle number at each turn     
     
     if (timeDisplay == 1){
+        //initRTC();                                       //initialize the Real Time Clock       //// TEST : RECOPY initRTC in the loop to avoid bad timestamps
+        //Wire.setClock(clockSpeed);                      // //// TEST : RECOPY initRTC in the loop to avoid bad timestamps
         runRTC();                                       // call the RTC and display timestamp 
     }
 
@@ -259,18 +261,18 @@ if (timePassed >= readInterval)                     // if enough time has passed
               }
           }
        }
-
+ 
     if (SHT40Display == 1){
 
       for (int i=0; i<qty_sht40; i++) {
         addr = i2cChannels_sht40[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(100);
+        delay(1000);
         i2c_select(addr);
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         sht40Func(); 
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
@@ -292,10 +294,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (terosDisplay==1){
-      for (int i=0; i<qty_teros; i++) {
-        addr = channels_teros[i];     // we choose the channel X
-        terosFunc(1,addr);             // run soil humidity function for readMode (e.g. 1=ADS1115 ADC), and channel selection (0-7)
-      }
+      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
@@ -304,15 +303,15 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_strain[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(100);
+        delay(1000);
         i2c_select(addr);
-        delay(100);
+        delay(1000);
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
 
-        //currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
-        strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
+        currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        //strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
 
         
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////

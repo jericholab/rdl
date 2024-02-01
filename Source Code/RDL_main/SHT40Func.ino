@@ -6,13 +6,21 @@
 
 void sht40Func(){
 
-
-    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
+    if ((SHT40Display == 1)&(SHT4_present ==0)){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
       }
+      else{
+        sht4.reset();
+        }
     } 
-    
+
+    if ((SHT40Display == 1)&(SHT4_present ==1)){
+         SHT4_present = sht4.reset();          //reset() will return 1 if able to communicate, 0 if not.
+    }
+
+    sht4.readSerial();
+
     Serial.print(F("*"));
     spacing2(F("*"),12); 
     
@@ -38,7 +46,7 @@ void sht40Func(){
     //sht4.setHeater(SHT4X_LOW_HEATER_1S); 
     //sht4.setHeater(SHT4X_LOW_HEATER_100MS); 
     
-    sensors_event_t humidity, temp;                                  //define two events (objects)
+    sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
 
 
     
