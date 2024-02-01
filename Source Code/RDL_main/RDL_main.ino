@@ -13,18 +13,18 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (1 to 8)
-int i2cChannels_strain[] = {0};       // define array to store the list of shield channels dedicated to strain sensors (1 to 8)
+int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (1 to 8)
+int i2cChannels_strain[] = {0,1,2};       // define array to store the list of shield channels dedicated to strain sensors (1 to 8)
 int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors (1 to 8)
 int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
 int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
@@ -304,15 +304,15 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_strain[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(1000);
+        delay(100);
         i2c_select(addr);
-        delay(1000);
+        delay(100);
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
 
-        currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
-        //strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
+        //currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
 
         
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
