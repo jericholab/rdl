@@ -24,8 +24,8 @@ bool phDisplay = 1;                     // optional measurement and display of p
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 0;                // optional activation of a printed header every given interval
 int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {0,1};       // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {0};             // define array to store the list of shield channels dedicated to pH sensors
+int i2cChannels_strain[] = {2,3};       // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {0,1};             // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
 
 
@@ -171,9 +171,6 @@ void setup(void) {
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
     
     
-   if (phDisplay == 1){
-     //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
-   }      
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -222,8 +219,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
     readCycle2=readCycle2 + 1;                      // increment the read cycle number at each turn     
     
     if (timeDisplay == 1){
-        //initRTC();                                       //initialize the Real Time Clock       //// TEST : RECOPY initRTC in the loop to avoid bad timestamps
-        //Wire.setClock(clockSpeed);                      // //// TEST : RECOPY initRTC in the loop to avoid bad timestamps
         runRTC();                                       // call the RTC and display timestamp 
     }
 
@@ -309,11 +304,8 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
         delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-
         currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
         //strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
-
-        
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
@@ -328,14 +320,15 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_ph[i];         // we choose the channel X
         pcf3.digitalWrite(addr, LOW);     // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);    // turn LED on by sinking current to ground
-        //delay(100);
+        delay(500);
         i2c_select(addr);
         delay(1000);
+        Wire.setClock(clockSpeed);     //test
         Wire.beginTransmission(addr);
-        Wire.setClock(clockSpeed); 
-        delay(100);                       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        //Wire.setClock(clockSpeed); 
+        delay(1000);                       
         phFunc();                         // run Strain sensor function
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        Wire.endTransmission(addr);       
         pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
       }   

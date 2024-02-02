@@ -114,12 +114,14 @@ void printHeader(){
 
             }    
          if (phDisplay == 1){
+           for (int i=0; i<qty_ph; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String pHText1 = F("pH1");
+              String pHText1 = F("pH");
               Serial.print(pHText1);
               spacing2(pHText1,12);
-            }    
+            }
+         }    
             
         if (ControlSignal == 1){
               Serial.print(F("*"));
