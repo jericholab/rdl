@@ -6,20 +6,20 @@
 
 void sht40Func(){
 
-    if ((SHT40Display == 1)&(SHT4_present ==0)){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
+    if ((SHT40Display == 1)&(SHT4_present ==0)){      
       if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
         SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
       }
       else{
-        sht4.reset();
+        sht4.reset();                                /////// iS THIS LINE NECESSARY ???
         }
     } 
 
     if ((SHT40Display == 1)&(SHT4_present ==1)){
-         SHT4_present = sht4.reset();          //reset() will return 1 if able to communicate, 0 if not.
+         SHT4_present = sht4.reset();               //reset() will return 1 if able to communicate, 0 if not.            // We will reset at every loop ?????
     }
 
-    sht4.readSerial();
+    //sht4.readSerial();                              // what does that do??? ////////  Returns the 32-bit ID register. 
 
     Serial.print(F("*"));
     spacing2(F("*"),12); 
@@ -47,8 +47,6 @@ void sht40Func(){
     //sht4.setHeater(SHT4X_LOW_HEATER_100MS); 
     
     sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
-
-
     
     if(SHT4_present == 1){
         sht4.getEvent(&humidity, &temp);                             //populate temp and humidity objects with fresh data

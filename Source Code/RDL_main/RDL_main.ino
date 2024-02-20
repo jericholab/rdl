@@ -11,20 +11,20 @@
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
-bool timeDisplay=0;                     // optional display of timestamp (1 = yes, 0 = no)
+bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
-bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {2,3};       // define array to store the list of shield channels dedicated to strain sensors
+bool periodicHeader = 1;                // optional activation of a printed header every given interval
+int i2cChannels_sht40[] = {0,1};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {0,1};       // define array to store the list of shield channels dedicated to strain sensors
 int i2cChannels_ph[] = {0,1};             // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
 
@@ -140,22 +140,22 @@ void setup(void) {
     pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
     digitalWrite(enable_T_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
 
-    pinMode(enable_V_MUX, OUTPUT);                      // define pin 10 as an output pin.
-    digitalWrite(enable_V_MUX, HIGH);                 // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+    pinMode(enable_V_MUX, OUTPUT);                     // define pin 10 as an output pin.
+    digitalWrite(enable_V_MUX, HIGH);                  // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
     pinMode(VOLT_PIN, INPUT);                          //set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
     pinMode(CTRL_PIN, OUTPUT);                         //set pin as an input for voltage readings to allow sending a control signal    //
 
-    Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
-    
+    Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+    delay(100);                                        // let some time pass before trying to communicate with the RTC
     initRTC();                                         //initialize the Real Time Clock
     Wire.setClock(clockSpeed);
     
-    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
-      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
-      }
-    } 
+//    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
+//      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
+//        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
+//      }
+//    } 
 
     ads1115.begin();                                 // initialize the ADS1015 chip
     Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
@@ -263,11 +263,11 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_sht40[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(1000);
+        delay(200); //delay(1000);
         i2c_select(addr);
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(200); //delay(1000);delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         sht40Func(); 
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
@@ -300,12 +300,12 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);
         i2c_select(addr);
-        delay(1000);
+        delay(300);//1000
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
-        //strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
+        delay(300);//1000                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        //currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
