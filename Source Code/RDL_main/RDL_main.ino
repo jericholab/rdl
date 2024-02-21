@@ -19,13 +19,13 @@ bool SHT40Display = 1;                  // optional measurement and display of i
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {0,1};       // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {0,1};             // define array to store the list of shield channels dedicated to pH sensors
+int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {0};         // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {0,1};           // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
 
 
@@ -151,12 +151,6 @@ void setup(void) {
     initRTC();                                         //initialize the Real Time Clock
     Wire.setClock(clockSpeed);
     
-//    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
-//      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-//        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
-//      }
-//    } 
-
     ads1115.begin();                                 // initialize the ADS1015 chip
     Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
 
@@ -265,9 +259,10 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(200); //delay(1000);
         i2c_select(addr);
+        delay(300);                       //A delay is required to avoid miscommunication. Delay value (300) not optimized yet.
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(200); //delay(1000);delay(1000);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        delay(200); 
         sht40Func(); 
         Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
