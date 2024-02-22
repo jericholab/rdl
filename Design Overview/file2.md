@@ -2,6 +2,7 @@ SparkFun Qwiic Scale NAU7802 Library
 ==================================================
 
  [![SparkFunFUN Qwiic Scale - NAU7802 WORD (SEN-15242)](https://cdn.sparkfun.com/assets/parts/1/3/7/0/0/Scale_Converted_to_Digital_-_SparkFun_Qwiic_Scale.jpg)](https://www.sparkfun.com/products/15242) 
+ *here is a caption*
 
 [*SparkFun Qwiic Scale - NAU7802 (SEN-15242)*](https://www.sparkfun.com/products/15242)
 
@@ -31,10 +32,9 @@ SparkFun Qwiic Scale NAU7802 Library
 <figure>
 <p align="center">
 <img src="images\infrared_img1.png"  alt="Trulli" style="width:70%" >
-<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
 </p>
 </figure>
-
+<p align="center"><b>This text will be centered.</p>
 
 * item 1 
 * item 2
