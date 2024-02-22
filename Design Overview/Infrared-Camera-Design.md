@@ -8,6 +8,13 @@ License: CC-BY-SA-4.0.
 
 **Safety warning**: It is imperative to avoid inhalation of germanium dust due to its potential health hazards. Therefore, meticulous care is required during the handling of these optical components. The utilization of protective gloves is strongly recommended to minimize direct contact. Additionally, adherence to standard operating procedures, including thorough handwashing post-handling, is essential to ensure safety.
 
+<figure>
+<p align="center">
+<img src="images\infrared_img1.png"  alt="Trulli" style="width:70%" >
+</p>
+</figure>
+<p align="center"><b>Starter Kit Infrared Camera by Seek Thermal (Copyright Seek Thermal).</p>
+
 GENERAL
 
 - This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2.
