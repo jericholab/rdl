@@ -1,11 +1,57 @@
 SparkFun Qwiic Scale NAU7802 Library
-===========================================================
+==================================================
 
- [![SparkFun Qwiic Scale - NAU7802 (SEN-15242)](https://cdn.sparkfun.com/assets/parts/1/3/7/0/0/Scale_Converted_to_Digital_-_SparkFun_Qwiic_Scale.jpg)](https://www.sparkfun.com/products/15242) 
+ [![SparkFunFUN Qwiic Scale - NAU7802 WORD (SEN-15242)](https://cdn.sparkfun.com/assets/parts/1/3/7/0/0/Scale_Converted_to_Digital_-_SparkFun_Qwiic_Scale.jpg)](https://www.sparkfun.com/products/15242) 
 
 [*SparkFun Qwiic Scale - NAU7802 (SEN-15242)*](https://www.sparkfun.com/products/15242)
 
-The SparkFun Qwiic Scale - NAU7802 is a small breakout board for the NAU7802 that allows you to easily read load cells to measure weight. By connecting the amplifier to your microcontroller you will be able to read the changes in the resistance of the load cell, and with some calibration you'll be able to get very accurate weight measurements. This can be handy for creating your own industrial scale, process control or simple presence detection.
+-----------
+[[WHAT IS THIS?]](https://www.google.ca)
+============================================
+
+![*Here is an image*](images\infrared_img1.png)
+<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+
+<span style="color:red">This is a red text.</span>
+
+>  "The SparkFun Qwiic IS **awesome** Scale - NAU7802 is a small breakout board for the NAU7802 that allows you to easily read load cells to measure weight. By connecting the amplifier to your microcontroller you will be able to read the changes in."
+
+
+
+<figure>
+<p align="center">
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80"  alt="Trulli" style="width:70%" >
+<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+</p>
+</figure>
+
+
+ the resistance of the load cell, and with some calibration you'll be able to get very accurate weight measurements. This can be handy for creating your own industrial scale, process control or simple presence detection.
+
+<figure>
+<p align="center">
+<img src="images\infrared_img1.png"  alt="Trulli" style="width:70%" >
+<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+</p>
+</figure>
+
+
+* item 1 
+* item 2
+
+ the resistance of the load cell, and with some calibration you'll be able to get very accurate weight measurements. This can be handy for creating your own industrial scale, process control or simple presence detection.
+
+1. Hello
+2. Good morning
+3. Good afternoon
+    1. Welcome
+4. Good night
+
+Connect a load cell and the Qwiic Scale translates the data into something your microcontroller can read. The NAU7802 is an ADC with built in gain and 
+
+# title1
+
+## title 2
 
 Connect a load cell and the Qwiic Scale translates the data into something your microcontroller can read. The NAU7802 is an ADC with built in gain and I<sup>2</sup>C output to amplify and convert the readings from a standard load cell. A load cell is basically a device that translates pressure or force into electrical signals. In most cases this signal is very small and needs to be amplified. There are many popular chips that read the change and amplify it, but the NAU7802 goes one step further and converts everything to a true I<sup>2</sup>C output.  
 
