@@ -10,7 +10,7 @@ License: CC-BY-SA-4.0.
 
 <figure>
 <p align="center">
-<img src="images\infrared_img1.png"  alt="Trulli" style="width:70%" >
+<img src="images\infrared_img1.png"  alt="Trulli" style="width:50%" >
 </p>
 </figure>
 <p align="center"><b>Starter Kit Infrared Camera by Seek Thermal (Copyright Seek Thermal).</p>
