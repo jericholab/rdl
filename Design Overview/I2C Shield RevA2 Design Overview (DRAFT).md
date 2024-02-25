@@ -87,7 +87,9 @@ OTHER
 - Another LED was temporarily added to the VCC of channel 1 to indicate that this MOSFET works correctly. This is useful for troubleshooting.
 <figure>
 <p align="center">
-<img src="images\Design Overview/images/I12 shield RevA2.png" style="width:70%" >
-</p>
+<img src="../Design Overview/images/I12 shield RevA2.png" style="width:70%">
+  </p>
 </figure>
+<p align="center">
 Figure . Temporary diagram for the MOSFETs pairs controlling the sensors power supply
+</p>
