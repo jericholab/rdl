@@ -1,5 +1,5 @@
 **Atmospheric Humidity Sensor Revision A2 - Design Overview (DRAFT)**  
-*************
+=======================================
 Copyright: Jericho Laboratory Inc. Documentation license: CC-BY-SA.  
 Revision: 0.
 
