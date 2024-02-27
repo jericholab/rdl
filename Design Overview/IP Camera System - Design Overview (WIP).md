@@ -30,4 +30,8 @@ ETHERNET SWITCH
 
 REFERENCES
 
+
+https://reolink.com/blog/security-camera-canada-for-outdoor-extreme-cold/
+https://reolink.com/blog/best-cold-weather-ip-security-cameras-systems/
+
 \[To be done\]
