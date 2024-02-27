@@ -1,5 +1,5 @@
 **WIRED Main Hub Revision A1 - Design Overview (WIP)**  
-***********
+=======================================
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
 Revision: 1.  
 
