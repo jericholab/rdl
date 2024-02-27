@@ -1,5 +1,5 @@
 **Hall Effect Current Sensor Revision A1 - Design Overview (DRAFT)**  
-**************
+=======================================
 
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
 Revision: 0.  
