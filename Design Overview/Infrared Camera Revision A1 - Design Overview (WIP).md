@@ -145,6 +145,21 @@ OTHER
 - A future area of development is to manufacture the coprocessor, based on the design provided for free by Seek Thermal for customers who want a better product integration. This could reduce the overall cost.
 
 REFERENCES
+<figure>
+<p align="center">
+<img src="../Design Overview/images/1 <figure>
+<p align="center">
+<img src="../Design Overview/images/1 IR Camera RevA1.png" style="width:70%">
+  </p>
+</figure>
+<p align="center">
+Figure 1. Copyright: Seek Thermal website
+</p>.png" style="width:70%">
+  </p>
+</figure>
+<p align="center">
+Figure . Temporary diagram for the MOSFETs pairs controlling the sensors power supply
+</p>
 
 \[To be done.\]
 
