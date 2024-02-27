@@ -153,18 +153,17 @@ REFERENCES
   </p>
 </figure>
 <p align="center">
-Figure 1. Copyright: Seek Thermal website
-</p>.png" style="width:70%">
+*Figure 1. Copyright: Seek Thermal website*
   </p>
 </figure>
-<p align="center">
-Figure . Temporary diagram for the MOSFETs pairs controlling the sensors power supply
-</p>
-
-\[To be done.\]
-
-Figure . Copyright: Seek Thermal website
 
 \[INSERT THERMAL CAMERA RGB PICTURE SAMPLE\]
 
-Figure An example of Starter Kit (SPX214). Copyright Seek Thermal website
+<p align="center">
+<img src="../Design Overview/images/2 IR Camera RevA1.png" style="width:70%">
+  </p>
+</figure>
+<p align="center">
+*Figure . Figure An example of Starter Kit (SPX214). Copyright Seek Thermal website*
+</p>
+
