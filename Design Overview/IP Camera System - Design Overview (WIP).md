@@ -1,5 +1,5 @@
 **IP Camera System - Design Overview (WIP)** 
-***********
+=======================================
 Jericho Laboratory Inc. Documentation license: CC-BY-SA.  
 Revision: 0.  
 
