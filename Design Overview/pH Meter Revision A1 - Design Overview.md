@@ -1,5 +1,5 @@
 **pH Meter Revision A1 - Design Overview**  
-************
+=======================================
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
 Revision: 0.  
 WIP – FIRST PASS. MULTIPLE BLANKS. LOTS TO VERIFY. STILL UNCLEAR PICK.
