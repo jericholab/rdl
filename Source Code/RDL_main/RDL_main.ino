@@ -23,9 +23,9 @@ bool strainDisplay = 1;                 // optional measurement and display of s
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to air humidity sensors
 int i2cChannels_strain[] = {0};         // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {0,1};           // define array to store the list of shield channels dedicated to pH sensors
+int i2cChannels_ph[] = {3,4};           // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
 
 
@@ -44,6 +44,9 @@ int channels_current[] = {0};           // define array to store the list of ana
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
+#include "SoftWire.h"                   //////////// JUST TO A TEST TO SEE HOW IT AFFECTS CODE SIZE
+#include "AsyncDelay.h"                  //////////// JUST TO A TEST TO SEE HOW IT AFFECTS CODE SIZE
+
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -200,7 +203,9 @@ void setup(void) {
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
-       
+
+
+   tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }
 
 ///// MAIN LOOP //////////
