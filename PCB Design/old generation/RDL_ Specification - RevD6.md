@@ -98,10 +98,11 @@ Note: For more details about temperature measurements performance, see graphs of
 
 For more details about the resistance measurements performance, see graphs of Annex 1 and 2.
 
+
 <figure>
 <p align="center">
 <img src="../PCB Design/images/1.png" style="width:70%">
-  </p>
+</p>
 
 
 ## RDL CONTROLLER
