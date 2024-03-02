@@ -100,7 +100,7 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../Design Overview/images/1.jpg" style="width:70%">
+<img src="../PCB Design/old generation/images/1.jpg" style="width:70%">
   </p>
 </figure>
 <p align="center">
