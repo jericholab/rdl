@@ -1,5 +1,6 @@
 # RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS
 
+
 Table of Contents
 
 [RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS 1](#_Toc113303116)
@@ -96,6 +97,7 @@ Note: For more details about temperature measurements performance, see graphs of
 - Maximum uncertainty: \[To be determined\]
 
 For more details about the resistance measurements performance, see graphs of Annex 1 and 2.
+
 
 ## RDL CONTROLLER
 
