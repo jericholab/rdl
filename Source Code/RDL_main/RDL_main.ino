@@ -13,20 +13,20 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0};          // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {0};         // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {3,4};           // define array to store the list of shield channels dedicated to pH sensors
-int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors
+int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {3,4};          // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {5,6};             // define array to store the list of shield channels dedicated to pH sensors
+int channels_current[] = {0};         // define array to store the list of analog channels dedicated to current sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -44,9 +44,6 @@ int channels_current[] = {0};           // define array to store the list of ana
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
-#include "SoftWire.h"                   //////////// JUST TO A TEST TO SEE HOW IT AFFECTS CODE SIZE
-#include "AsyncDelay.h"                  //////////// JUST TO A TEST TO SEE HOW IT AFFECTS CODE SIZE
-
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -116,7 +113,7 @@ int qty_current;                         // define the variable that holds the n
 //----------------------
 
 
-sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
+//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
 
 
 
@@ -127,6 +124,8 @@ void setup(void) {
     Serial.println();                           //create space after reset of the Arduino
     Serial.begin(baudRate);                     //initialize serial monitor at the specified baud rate (e.g. 9600) 
     readEEPROM();                               //call function to read the EEPROM memory to see if there are some parameters stored
+    
+    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
     
     if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
@@ -262,14 +261,18 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_sht40[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(200); //delay(1000);
-        i2c_select(addr);
-        delay(300);                       //A delay is required to avoid miscommunication. Delay value (300) not optimized yet.
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        delay(200); 
+        //delay(200); 
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
       }
