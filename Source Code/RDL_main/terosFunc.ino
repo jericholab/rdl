@@ -54,39 +54,3 @@ void terosFunc(uint8_t channel){
       float phi = (1/ alpha) * term2; 
       return phi;
 }
-      
-
-// CHATGPT VERSION (IT HAS NO ALPHA THOUGH)
-// float calculatePhi(float teta) {       
-//    // Avoid negative and zero values
-//    if (teta <= 0) {
-//        teta = 0.001; 
-//    }
-//
-//    // Parameters
-//    const float teta_r = 0.01;
-//    const float teta_s = 0.6; //0.396;
-//    const float n = 2.06;
-//    const float m = 1 - (1 / n); 
-//
-//    // Checking if teta is within the valid range
-//    if (teta <= teta_r || teta >= teta_s) {
-//        return -9999; // Return an error code for invalid teta
-//    }
-//
-//    // Calculating the pressure head
-//    float term = (teta_s - teta) / (teta - teta_r);
-//    if (term <= 0) {
-//        return -9999; // Return an error code for invalid term
-//    }
-//
-//    float term1 = pow(term, 1.0 / m);
-//    float phi = pow(term1 - 1, 1.0 / n);
-//
-//    // Check for negative or undefined values
-//    if (phi <= 0 || isnan(phi)) {
-//        return -9999; // Return an error code for invalid phi
-//    }
-//
-//    return phi;
-//}

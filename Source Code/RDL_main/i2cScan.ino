@@ -51,9 +51,9 @@ void i2cScan(){
       Wire.endTransmission();  
     }
 
-      void tca_init() {              //Attempt to create an initialization function which disconnects all the channels ////////////////  
+      void tca_init() {                              //Initialization function which disconnects all the channels 
         Wire.beginTransmission(TCAADDR);
         Wire.setClock(clockSpeed);
-        Wire.write(0);    //binary zero is 00000000.
+        Wire.write(0);    //binary zero is "00000000".
         Wire.endTransmission();  
     }
