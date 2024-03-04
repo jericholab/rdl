@@ -17,15 +17,15 @@ bool tDisplay=1;                        // optional measurement and display of t
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to air humidity sensors
 int i2cChannels_strain[] = {3,4};          // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {5,6};             // define array to store the list of shield channels dedicated to pH sensors
+int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};         // define array to store the list of analog channels dedicated to current sensors
 
 
@@ -272,7 +272,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         sht40Func(); 
         Wire.endTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
       }
@@ -306,12 +306,14 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(300);//1000
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(300);//1000                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        //currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
-        strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+        delay(300);//1000    
+        //currentNAU7802();               //// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        strainFunc();                      // run Strain sensor function  
+        Wire.endTransmission(addr);       
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
       }
       
     }
@@ -321,19 +323,23 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
       for (int i=0; i<qty_ph; i++) {
         addr = i2cChannels_ph[i];         // we choose the channel X
-        pcf3.digitalWrite(addr, LOW);     // turn LED on by sinking current to ground
-        pcf4.digitalWrite(addr, HIGH);    // turn LED on by sinking current to ground
-        delay(500);
-        i2c_select(addr);
-        delay(1000);
-        Wire.setClock(clockSpeed);     //test
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
-        //Wire.setClock(clockSpeed); 
-        delay(1000);                       
-        phFunc();                         // run Strain sensor function
-        Wire.endTransmission(addr);       
-        pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
-        pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        Wire.setClock(clockSpeed); 
+        //delay(200); 
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        phFunc();                         // run pH function
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+        
       }   
     }
 
