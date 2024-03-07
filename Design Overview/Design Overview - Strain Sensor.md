@@ -6,7 +6,7 @@ Revision: 0.
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version, as well as the latest specification sheets of the associated electronic components.
 
 ## TABLE OF CONTENTS
-- [GENERAAAL](#GENERAL)
+- [GENERAL](#GENERAL)
 - [APPLICABLE TO THE RDL SUITE](#APPLICABLE-TO-THE-RDL-SUITE)
   - [Subsection 2.1](#subsection-2.1)
 - [Section 3](#section-3)
@@ -20,7 +20,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - There are holes around the board to help attach the wires and reduce mechanical stress on the wires.
 - A copper plane (ground) is poured on the bottom surface of the PCB to reduce EM noise. There is no copper plane on the top surface.
 
-## APPLICABLE TO THE RDL SUITE
+### APPLICABLE TO THE RDL SUITE
 
 - Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
