@@ -1,11 +1,11 @@
-**Strain Sensor Revision A1 - Design Overview (DRAFT)**  
+**Strain Sensor Revision A1 - Design Overview**  
 =======================================
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
 Revision: 0.  
 
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version, as well as the latest specification sheets of the associated electronic components.
 
-GENERAL
+## GENERAL
 
 - This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
@@ -13,7 +13,7 @@ GENERAL
 - There are holes around the board to help attach the wires and reduce mechanical stress on the wires.
 - A copper plane (ground) is poured on the bottom surface of the PCB to reduce EM noise. There is no copper plane on the top surface.
 
-APPLICABLE TO THE RDL SUITE
+## APPLICABLE TO THE RDL SUITE
 
 - Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
@@ -23,7 +23,7 @@ APPLICABLE TO THE RDL SUITE
 - Unless stated otherwise, all libraries required to run the RDL suite are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
-NAU7802 CHIP - GENERALITIES
+## NAU7802 CHIP - GENERALITIES
 
 - The NAU7802 chip by Nuvoton is a high-accuracy voltage measurement device. It includes a 24-bit ADC and has I2C communication capabilities.
 - The NAU7802 has two functions: it provides a regulated excitation voltage and it measures the response signal.
@@ -36,7 +36,7 @@ NAU7802 CHIP - GENERALITIES
 - Note that the NAU7802 can accept various voltage supply values but the reading voltage is limited by the supply voltage (“AVDD should not exceed DVDD supply voltage”).
 - When used with the RDL revision E2 and after, the PCB is only supplied in power when a measurement is required by the Nano. This means that over the course of its life, the sensor will be powered up thousands of times. The NAU7802 chip does not require a delay between power up and reading: it will deal with the necessary delays autonomously.
 
-NAU7802 CHIP – I2C COMMUNICATION
+## NAU7802 CHIP – I2C COMMUNICATION
 
 - The NAU7802 chip has a single permanent I2C address: 0x2A. Therefore, one cannot daisy-chain two strain boards, it can only daisy chain a different sensor. Using two strain sensors on a given system requires two separate channels.
 - Like all sensors from the RDL suite, the NAU7802 board has been designed for long wire operation (30m). However, the NAU7802 chip appears to have a weaker native signal and achieves shorter cable lengths. When combined with I2C shield revA1 and RDL RevE2, with a CAT5 cable and low EM noise environment, the maximum cable length for continuous communication is currently 30 m.
@@ -44,7 +44,7 @@ NAU7802 CHIP – I2C COMMUNICATION
 - NAU7802 is designed to operate at 100kHz or 400kHz (high-speed I2C bus). However, it has shown no difficulties at operating at low bus frequency, down to 31kHz (Jericho default on hardware-based I2C protocol).
 - The presence of two RJ45 connectors on the board allows to daisy chain I2C devices. For example, the cabling cost can be reduced by using a single long cable to reach the strain sensor PCB and, from there, only add a short CAT cable to connect to the SHT40 PCB. This is possible because the two PCBs do not have the I2C address.
 
-NAU7802 CHIP - MEASUREMENTS
+## NAU7802 CHIP - MEASUREMENTS
 
 - The measurements can be done at various speed: 10, 20, 40, 80, 320 SPS (Samples Per Second). To reduce sampling time, RDL runs at 320 SPS by default.
 - DVDD is the digital power supply input (2.7 - 5.5V). It is external (e.g. RDL/Nano).
@@ -54,10 +54,10 @@ NAU7802 CHIP - MEASUREMENTS
 - The measurement output by the NAU7802 is the average of a large sample. This is configured within the Arduino code. The ADC voltage range is also modified within the code. For more information, read the RDL source code and the RDL code documentation.
 - The ADC output follow this equation: “ADC Output Value = Gain_Calibration\* (ADC measurement - Offset_Calibration)”.
 
-STRAIN GAUGE LOAD CELL
+## STRAIN GAUGE LOAD CELL
 
-- A strain sensor is not of much use without a strain gauge load cell. This section details the relationship of the sensor with the required load cell.
-- The J3 screw terminal allows the PCB to connect with the strain gauge load cell. The load cell should be a full Wheatstone bridge. The wire colors are an indication only and might differ on your specific load cell. In case of contradiction, the wire function has priority (VDDA, GND, A-, A+).
+- A strain sensor board is not of much use without a strain gauge load cell. This section details the relationship of the sensor with the required load cell.
+- The J3 screw terminal allows the PCB to connect with the strain gauge load cell. The load cell should be a full Wheatstone bridge. The wire colors are an indication only and might differ on your specific load cell. In case of contradiction, the wire function (VDDA, GND, A-, A+) has priority over color.
 - A Wheatstone bridge is an electrical circuit used to precisely measure an unknown electrical resistance by balancing two legs of a bridge circuit, one leg of which includes the unknown component. It is commonly used in sensor applications to convert changes in physical phenomena (like temperature, strain, or pressure) into changes in resistance, which can then be measured with high accuracy.
 - As a general rule of thumb, the wire length between the NAU7802 and the strain gauge must be minimized and be kept under 1 m. This helps keep the signal-to-noise ratio at a sufficient level.
 - For general use, we recommend the following load cell: TAL220 (micro parallel beam) by HTC-sensor (China). For more information, consult the TAL220 specification sheet. You can buy the TAL220 on Sparkfun.com or on the manufacturer website (htc-sensor.com). The manufacturer has more production options (e.g. load capacity from 1kg to 50kg, outdoor jacket).
@@ -66,11 +66,11 @@ STRAIN GAUGE LOAD CELL
 - By their nature, strain gauges do not tolerate well long-term static loads (> 1 day). It causes measurement drift for multiple reasons (gauge deformation, adhesive breakdown). For precise long-term measurements, periodic recalibration and the use of multiple gauges for redundancy may also be necessary.
 - For outdoor operation, Jericho recommends weatherproofed strain gauge load cells (with conformal coating or other) and weather resistant wires. These options are available on the TAL220 if you order directly from the manufacturer.
 
-SOFTWARE
+## SOFTWARE
 
 - The native code of the RDL (revE2 and beyond) can operate the strain sensor. The number of allowable strain sensors is only limited by the number of I2C channels.
 
-SENSOR CALIBRATION
+## SENSOR CALIBRATION
 
 - When measuring strain with a NAU7802, there are three types of calibration: internal, external and at the system level. Internal (or external) calibration makes sure that the strain gauge is accurately measured by the NAU7802 ADC. The system calibration ensures that the strain gauge resistance is accurately converted into a force or strain.
 - According to the NAU7802 chip manufacturer, the calibration (either internal or external) is recommended after each of the following events: initial power-up, power-up after long-duration register mediated power-down conditions, PGA gain changes, supply changes, significant temperature changes (can be measured using built-in thermal sensing feature), Sample rate changes, Channel select changes. This list excludes the frequent powerups that occur due to a potential multiplexer (i.e. RDL).
@@ -78,7 +78,7 @@ SENSOR CALIBRATION
 - External calibration has to be done for each specific load cell. If the load cell is damaged and replaced, calibration must be done. External calibration can be done via the source code only. It currently cannot be done via a live command.
 - Since the strain gauges are highly linear devices, only a two-point calibration is required.
 
-RJ45 CONNECTORS
+## RJ45 CONNECTORS
 
 - There are two RJ45 connectors on this board, which allow I2C communication. They are not compatible with Ethernet protocol. They are interchangeable.
 - Each connector follows the following wiring connection:
@@ -91,7 +91,7 @@ RJ45 CONNECTORS
 - The NAU7802 chip itself has some sensitivity to temperature. There is an embedded temperature compensation mechanism inside the NAU7802 chip. However, this compensation is done at calibration time only (calculateZeroOffset()). The temperature data is not exposed to the I2C interface. This means that if the chip temperature changes, chip calibration must be redone.
 - Strain gauge load cells are very sensitive to temperature variation. There are multiple components to this relationship (e.g. load cell thermal expansion, strain gauge film expansion). Load cell temperature compensation is specific to each installation setup and must be addressed separately than the chip temperature compensation.
 
-OTHER
+## OTHER
 
 - A LED is added to the PCB to indicate that the sensor powered.
 - The board has 3.5mm diameter holes in each corner for installation purposes.
