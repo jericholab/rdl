@@ -1,7 +1,8 @@
-**I2C Shield RevA2 Design Overview (DRAFT)**  
+**I2C Shield RevA2 Design Overview **  
 =======================================
 Jericho Laboratory Inc. Documentation licence: CC-BY-SA.  
 Revision: 0.  
+
 <br/>Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
 
 GENERAL
@@ -9,7 +10,7 @@ GENERAL
 - This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2. This board is the successor of revision E1 (prototype).
 - The RDL rev E2 hardware is released under the MIT open-source license.
 - The current board revision only works with the corresponding source code version.
-- Allowable wire gauges are written on the silkscreen (AWG 20-26). This is the ideal size to avoid wires slipping out. The order of the terminals is also printed (i.e. VCC, GND, SIG, VCC, GND, SIG, etc.)
+- Allowable wire gauges are written on the silkscreen (AWG 20-26). This interval is the ideal size to avoid wires slipping out. The order of the terminals is also printed (i.e. VCC, GND, SIG, VCC, GND, SIG, etc.)
 - Starting with revision E2, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced.
 - In this revision E2, the SMD components are installed at the factory (JLCPCB, China) and THT components are installed in house. The later include headers, screw terminals and RJ45 connectors.
 - Long wires (>10m) between the RDL and its sensors will cause significant voltage loss. This means that some devices will require a voltage regulator at the other end to make sure that the chip is supplied with the proper voltage.
@@ -30,7 +31,7 @@ NOTES APPLICABLE TO THE RDL SUITE
 GENERALITIES ABOUT THE I2C SHIELD
 
 - The I2C shield allows the RDL to communicate with eight sensors based on I2C communication.
-- Multiplexing is a technical term to describe the ability to communicate with devices one-at-a-time using a single channel. This is a very common technique to reduce the hardware requirements in electronics project. It implies that the Arduino will connect to each I2C sensor one after the other.
+- Multiplexing is a technical term to describe the ability to communicate with multiple devices one-at-a-time using a single channel. This is a common technique to reduce the hardware requirements in electronics project. It implies that the Arduino will connect to each I2C sensor one after the other.
 - With this design, up to three I2C shields can be connected by stacking them below the RDL. They all form a single I2C bus.
 
 I2C COMMUNICATION
@@ -40,13 +41,13 @@ I2C COMMUNICATION
 - There can only be a single device with the same I2C address on a given bus. Otherwise, two or more devices would ‘respond’ at the same time when being ‘talked’ to.
 - Some I2C chips are more convenient as they can use more than one address. This is usually done by pulling high/low one or more pins on the chip. Some breakout boards can have solder jumpers cut/soldered to make this address permanent.
 - An I2C address has the format 0x_\_. Examples include: 0x44, 0x42, etc.
-- Many projects dedicated to I2C multiplexing only affect the SDA and SCL lines. This allows you to communicate with multiple I2C devices, even if they all have the same I2C address. However, these projects do not multiplex the supply lines, which presents a problem when using long wires. It was therefore necessary to create a different multiplexing solution.
+- Many projects dedicated to I2C multiplexing only affect the SDA and SCL lines. This allows you to communicate with multiple I2C devices, even if they all have the same I2C address. However, these projects do not multiplex the supply lines, which creates problems when using long wires (noisy supply lines). It was therefore necessary to create a different multiplexing solution.
 
 CABLES
 
 - The I2C shield connects to the RDL via RJ45 connectors and an Ethernet (CAT) cable.
 - Multiple versions of the CAT cable exist: CAT5, CAT5e, CAT6, CAT7 can all be used. Earlier standards are usually cheaper, but they are progressively phased out of high-volume production.
-- Both shielded and unshielded cables can be used. The design tries to minimize the impact of EMI but shielded cable can be required for best performance in noisy environments.
+- Both shielded and unshielded cables can be used. The product design tries to minimize the impact of EMI but shielded cable can be required for best performance in noisy environments.
 
 I2C EXTENDER (LTC4311)
 
@@ -55,7 +56,7 @@ I2C EXTENDER (LTC4311)
 - The I2C extender chip used is the LTC4311. It works by providing extra potential to the rising edges of the I2C signal.
 - I2C extender works in combination with the pull-up resistors. There are generally pull-up resistors near the master and the slave devices.
 - The I2C extender must be close to the Arduino Nano, so that it can operate properly.
-- The I2C shield contains two RJ45 connectors. They are interchangeable as they are both connected to the same I2C bus. A first connector is used to connect to the RDL. The second connector can be used to connect to either 1) a second shield; or 2) a supplementary I2C device.
+- The I2C shield contains two RJ45 connectors. They are interchangeable as they are both connected to the same I2C bus. A first connector is used to connect the shield to the RDL. The second connector can be used to connect to either 1) a second shield; or 2) a supplementary I2C device (no multiplexing).
 
 GPIO I2C EXPANDER (PCF8574)
 
