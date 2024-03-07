@@ -74,9 +74,9 @@ I2C MULTIPLEXER (TCA9548)
 MOSFET TRANSISTORS
 
 - Choice of components:
-  - P-channel MOSFET (high-side): AO3401 (-4.0A)
+  - P-channel MOSFET (high-side): AO3401 (max -4.0A)
   - N-channel MOSFET (low-side): AO3406 (max 3.6A)
-- High-side transistors, whether in MOSFET (P-channel) or Darlington (PNP) versions, require a low signal (i.e. ground) to be activated. This means that the same signal cannot be used to activate the high-side and low side-multiplexer chips. One solution is to use a separate GPIO multiplexer for each, like the PCF8574T. This implies that 3-shield stacked system would have 6 PCF8574T with 6 different I2C addresses (out of a possibility of 8). For a given channel, one PCF will send a high signal to the AO3406’S and the other PCF will send a low signal to the AO3401’S. The downside of this strategy is that it adds one more device talking on the I2C bus.
+- High-side transistors, whether in MOSFET (P-channel) or Darlington (PNP) versions, require a low signal (i.e. ground) to be activated. This means that the same signal cannot be used to activate the high-side and low side-multiplexer chips. One solution is to use a separate GPIO multiplexer for each, like the PCF8574T. This implies that a 3-shield stacked system would have 6 PCF8574T with 6 different I2C addresses (out of a possibility of 8). For a given channel, one PCF will send a high signal to the AO3406’S and the other PCF will send a low signal to the AO3401’S. The downside of this strategy is that it adds one more device talking on the I2C bus.
 - Note that the PCF8574 has ‘latched outputs’ so all pins can be set simultaneously to HIGH, if needed be.
 - High-side and low-side configuration are sometimes called Source and Sink Configuration, respectively.
 - On the MOSFET diagram, the body diode has to be oriented so that there is no flow in normal operation. The other internal arrow indicates that the gate is activated by comparison with the voltage at the source (V_GS). With P-channel, we must be at least 2V beneath the source voltage. With N-Channel, we must be at least 2V above the source voltage.
