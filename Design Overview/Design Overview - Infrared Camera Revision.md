@@ -1,4 +1,4 @@
-**Infrared Camera Revision A1 - Design Overview (WIP)**  
+**Infrared Camera Revision A1 - Design Overview**  
 =======================================
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA-4.0.  
 Revision: 1.  
