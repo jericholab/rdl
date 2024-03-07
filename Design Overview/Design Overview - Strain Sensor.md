@@ -7,7 +7,7 @@ Warning: The following material is for educational purposes only. Always refer t
 
 ## TABLE OF CONTENTS
 - [GENERAL](#GENERAL)
-- [APPLICABLE TO THE RDL SUITE](#APPLICABLE)
+- [APPLICABLE TO THE RDL SUITE](#APPLICABLE-TO-THE-RDL-SUITE)
   - [Subsection 2.1](#subsection-2.1)
 - [Section 3](#section-3)
 
