@@ -1,4 +1,4 @@
-**Hall Effect Current Sensor Revision A1 (Analog Signal)- Design Overview **  
+**Hall Effect Current Sensor Revision A1 (Analog Signal)- Design Overview**  
 =======================================
 
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
