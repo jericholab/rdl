@@ -15,11 +15,11 @@ GENERAL
 
 APPLICABLE TO THE RDL SUITE
 
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
+- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 7.
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
 - Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
+- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement (CPL) files.
+- Design and cost have been partially optimized for JLCPCB manufacturing abilities and components pricing at the time of design, for small batches.
 - Unless stated otherwise, all libraries required to run the RDL suite are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
@@ -34,12 +34,12 @@ CORE SENSOR - SHT40 CHIP
   - Temperature: 0 to +70°C @ ±0.2°C
   - Humidity: 10 to 90%RH @ ±2.0%
 - The humidity accuracy is reduced to ± 3.0% in the range extreme (below 10%RH, above 90%RH). However, this level of accuracy remains sufficient to the requirements of the World Meteorological Organization.
-- Conformal coating can be applied to the PCB but not directly on the SHT40 chip to prevent obstruction and damage.
+- Conformal coating can be applied to the PCB but not directly on the SHT40 chip, as it can cause sensor obstruction and damage.
 - Also, the SHT40 chip does NOT tolerate the isopropyl alcohol rinse. Therefore, the board is assembled via No-Clean flux only.
 
 CORE SENSOR - OPERATION MODES
 
-- The SHT40 has three measurement durations: low (1.3 ms), medium (3.7 ms), high (6.9 ms). The repeatability of the measurement increases with duration. With the RDL code, the default is high duration mode (SHT4X_HIGH_PRECISION).
+- The SHT40 has three measurement durations: low (1.3 ms), medium (3.7 ms), high (6.9 ms). The repeatability of the measurement increases with duration. With the RDL code, the default is high duration mode (i.e. SHT4X_HIGH_PRECISION).
 - The SHT40 also has an internal heater for multiple reasons: removing condensations, sprayed water, and avoid drifting in long term measurements. Application notes on the topic by Sensirion are available.
 - The maximum current pulled by the chip heater is 75mA (high level heating).
 - At startup, the SHT40 chip is activated in heating by the RDL code. This helps eliminate any potential condensation that might have occurred on the sensor surface. This can be deactivated in the source code. In the seconds that follow the heating, the data output is invalid. There are three levels of heating (low, medium, high). The length can also be modified (1 sec or 100 ms). The heating level and duration can be modified in the source code.
@@ -55,11 +55,11 @@ CORE SENSOR - OPERATION MODES
 PRINTED CIRCUIT BOARD
 
 - For accurate measurements, the SHT40 is meant to be installed inside a radiation shield.
-- The board has been dimensioned to fit inside the UWO 3D printed shield. An OS paper about the design and performance of this shield is available for free \[ref\].
-- There is a board cutout in the middle of the board to improve air circulation around the chip.
-- Like other RDL sensor boards, there is RJ45 connector. It has also the same pin order.
+- The board has been dimensioned to fit inside the UWO 3D printed shield. An OS paper about the design and performance of this shield is available for free \[ref\ https://www.appropedia.org/Design_and_Implementation_of_3-D_Printed_Radiation_Shields_for_Environmental_Sensors].
 - There is a M3 hole in each corner of the board. A fifth hole, centered, allows the installation inside the radiation shield.
-- There is a male header 2.54mm spacing giving quick access to important pins: 5V, 3.3V, GND, SDA, SCL.
+- There is a board cutout in the middle of the board to improve air circulation around the chip.
+- Like other RDL sensor boards, there is a RJ45 connector, with the usual pin order.
+- There is a male header 2.54mm spacing giving quick access to some important pins: 5V, 3.3V, GND, SDA, SCL.
 
 LEVEL SHIFTING
 
