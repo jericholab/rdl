@@ -8,8 +8,12 @@ Warning: The following material is for educational purposes only. Always refer t
 ## TABLE OF CONTENTS
 - [GENERAL](#GENERAL)
 - [APPLICABLE TO THE RDL SUITE](#APPLICABLE-TO-THE-RDL-SUITE)
+- [NAU7802 CHIP](#NAU7802-CHIP)
   - [NAU7802 CHIP - GENERALITIES](#NAU7802-CHIP---GENERALITIES)
+  - [NAU7802 CHIP – I2C COMMUNICATION](#NAU7802-CHIP-–-I2C-COMMUNICATION)
 
+
+## NAU7802 CHIP – I2C COMMUNICATION
 
 ## GENERAL
 
@@ -28,6 +32,8 @@ Warning: The following material is for educational purposes only. Always refer t
 - Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
 - Unless stated otherwise, all libraries required to run the RDL suite are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
+
+## NAU7802 CHIP
 
 ## NAU7802 CHIP - GENERALITIES
 
