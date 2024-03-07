@@ -1,4 +1,4 @@
-**Hall Effect Current Sensor Revision A1 - Design Overview (DRAFT)**  
+**Hall Effect Current Sensor Revision A1 (Analog Signal)- Design Overview **  
 =======================================
 
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.  
@@ -12,6 +12,7 @@ Warning: This product is neither intended nor warranted for use in following equ
 
 GENERAL
 
+- This document details the revision A1 of the current sensor, which has analog signal output. The revision A2, with the NAU7802 digital output is not covered here.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
 - The original design of the voltage regulation circuit was done by Sparkfun under CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
 - A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
@@ -43,15 +44,15 @@ OPERATION
 - To make a measurement, a single conductor must pass through the core. If both the supply and return conductors pass through, the sensor will measure a value near zero, since the two electrical fields will cancel each other.
 - The TAMURA design is NOT a clamp. The cable has to be securely disconnected from the source and passed through the core.
 - The maximum size of wire gauge that can fit into the TAMURA core is limited. The cable – with its insulation – must fit into an 8mm x 15mm rectangular opening.
-- The module can work from -20 to 80°C. Therefore, in most cold climates, there is no need to add a heating module. The rest of the components such as the voltage regulator can also tolerate those temperatures. In the near future, the module will be tested at -40°C.
-- According to TAMURA specifications, the sensor accuracy at nominal current (i.e., 50A DC) is ±1%. However, this is dependent on a high accuracy voltage supply: 5V ± 2%. For this reason, a voltage regulator must be integrated on-board.
+- The module can work from -20 to 80°C. Therefore, in most cold climates, there is no need to add a heating module. The rest of the components such as the voltage regulator can also tolerate those temperatures. In the near future, the module accuracy will be tested at -40°C.
+- According to TAMURA specifications, the sensor accuracy at nominal current (i.e., 50A DC) and nominal temperature is ±1%. However, this is dependent on a high accuracy voltage supply: 5V ± 2%. For this reason, a voltage regulator must be integrated on-board.
 - The TAMURA sensor has 3 pins: voltage (VCC), ground (GND), signal (SIG). The signal data is an analog 0-5V signal. This signal can be read by the analog channels of the RDL RevE2. The sensor can read positive and negative DC currents. Positive currents go from the reference voltage (V_ref) to 5V. Negative currents go from the reference voltage to 0V.
-- The TAMURA consumes up to 15mA, which causes a voltage drop on the power supply cable. This is the second reason (beside accuracy) why the voltage regulator subcircuit is essential. For the signal cable, the current is much reduced, reducing significantly the voltage drop. The RDL can therefore measure the signal directly.
+- The TAMURA consumes up to 15mA, which causes a voltage drop on the power supply cable. This is the second reason - beside accuracy - why the voltage regulator subcircuit is essential. For the signal cable, the current is much reduced, reducing significantly the voltage drop. The RDL can therefore measure the signal directly with its ADS1115 chip.
 
 VOLTAGE REGULATOR TPS630701
 
 - To supply a high accuracy 5V line to the current sensor, the TPS630701 chip (buck-boost converter with switch current) is used.
-- The circuitry around the TPS is based on the manufacturer recommendation presented in the specification sheet.
+- The circuitry around the TPS630701 is based on the manufacturer recommendation presented in the specification sheet.
 - A large number of decoupling capacitors are added on the input and output of the TPS63070.
 - This chip has two operation modes: PFM mode (Pulse Frequency Modulation) and PWM (Pulse Width Modulation). One mode is more efficient, the other is more accurate. The PWM mode has a +1/-3% accuracy, which is insufficient for the need of the TAMURA sensor. The PFM mode achieves a +/-1% accuracy, which is the minimum requirement for the TAMURA sensor. To activate the PFM mode, the pin ‘PS/SYNC’ is pulled high.
 - For TPS63070, the accuracy of the output depends on the accuracy of the feedback resistor.
