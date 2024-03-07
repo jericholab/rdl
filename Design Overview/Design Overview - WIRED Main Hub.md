@@ -18,7 +18,7 @@ GENERAL
   - 1x Power bar
   - 1x USB hub
   - 1x USB-over-CAT-adapter
-  - 1x Ethernet switch
+  - 1x Ethernet switch (optional)
   - 1x Cable glands
   - 1x IPEX antenna
   - 1x Switch power supply
@@ -29,8 +29,8 @@ GENERAL
 
 SINGLE BOARD COMPUTER (SBC)
 
-- Due to a global shortage and increased cost, the Orange Pi 4 LTE was chosen instead of the traditional Raspberry Pi.
-- The native OS provided by Orange Pi is used. It is Ubuntu based.
+- Due to a global shortage and increased cost, the decision was made in 2023 to use Orange Pi 4 LTE instead of the traditional Raspberry Pi. The decision might be reversed in the future.
+- The native OS provided by Orange Pi is used (Ubuntu-based).
 - A 3D printed enclosure allows to install the Pi on the bottom panel.
 - A small fan is added to the SBC enclosure. The fan blows towards the heat sink for improved performance. However, this leaves the back of the fan unprotected. It has a supplementary 3D printed grill that reduces the risk of an object blocking the blades. This would probably not cause a CPU overheat, but it would reduce the heat transfer to the other components (e.g. RDL) in the winter. This fan is powered by the Pi GPIO pins.
 - When supplying power through the dedicated jack barrel, the power supply of the Pi has to be 4A. With lower current capacity power supplies, the SBC will restart when it has high CPU usage and consumes an increased amount of current, causing a voltage drop.
@@ -52,8 +52,8 @@ USB HUB
 
 MAIN ENCLOSURE
 
-- The main enclosure is an ABS IP65 white junction box with a hinged door and two snaps. Plastic was selected to reduce cost and weight. Plastic is also easier to drill. The outer dimensions are 15.4"x11.4"x6.3" (391 mm x 290 mm x 160 mm).
-- The enclosure contains and protects the equipment against the hardship of the northern climates (-40 to +40°C). This waterproof enclosure is tolerant to freeze, direct sunlight (UV) and dust. The door has a black rubber seal.
+- The main enclosure is an ABS IP65 white junction box with a hinged door and two snaps. Plastic was selected to reduce cost and weight. It is also easier to drill. The outer dimensions are 15.4"x11.4"x6.3" (391 mm x 290 mm x 160 mm).
+- The enclosure contains and protects the equipment against the hardship of the northern climates (-40 to +40°C). With the sun exposure, the enclosure is expected to endure a 100°C temperature range. This waterproof enclosure is tolerant to freeze, direct sunlight (UV) and dust. The door has a black rubber seal.
 - A simple mounting plate is used, to reduce cost. The mounting plate is made of a custom size 2.54mm thick white ABS sheet.
 - For a multi-year project operating with a 100°C temperature range, screws are preferable to a two-face tape, despite the enthusiasm of the 3M company. This ensures that no component will detach from their surface, under the heat.
 - A similar mounting plate on the enclosure door holds other components.
@@ -69,13 +69,13 @@ CABLE GLANDS
 - There are five (5) cable glands on one of the side panel of the enclosure.
 - A single size of cable gland (M25X1.5, 25mm diameter passage) was selected to reduce cost and complexity (standardization).
 - The number of cable glands is also standardized, despite the variation in the number of sensors and cables on each WIRED system. Cable glands left empty are filled with a closed cell foam to avoid humidity ingress.
-- In the WIRED project, up to 30? CAT cables need to go through the enclosure. To save space and reduce cost, up to three CAT cables (to be verified) can fit inside a large cable gland (M25). This is unorthodox since usually it is 1 cable per cable gland and you tighten up. The use of multiple cables leaves void between the cables. This can let dust, humidity and insects enter the enclosure. This void is filled with closed cell foam.
+- In the WIRED project, up to 30 CAT cables need to go through the enclosure. To save space and reduce cost, up to three CAT cables (to be verified) can fit inside a large cable gland (M25). This is unorthodox since usually it is 1 cable per cable gland and you tighten up. The use of multiple cables leaves void between the cables. This can let dust, humidity and insects enter the enclosure. This void is filled with closed cell foam.
 - The cable glands are installed on a single row to spread out the cables and reduce the cable density in this region of the enclosure.
 - The enclosure holes for the cable glands are done with a hand drill and a 1-in diameter (2.54mm) Forstner drill bit.
 
 WIFI IPEX ANTENNA
 
-- The antenna is installed on the side of the box to reduce the risk of leaks inside (compared with the top surface). This antenna is outside the enclosure to increase range. It might not be necessary in all setups.
+- The antenna is installed on the side of the box to reduce the risk of leaks (compared with the top surface). This antenna is outside the enclosure to increase range. It might not be necessary in all setups.
 
 POWER BAR
 
