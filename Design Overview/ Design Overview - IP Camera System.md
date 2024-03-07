@@ -16,9 +16,8 @@ CAMERA
 - Among the large choice of surveillance camera, the Reolink RLC-520A was chosen for its low-cost, good quality, broad availability and its use of the standard IP protocol.
 - The Reolink camera must be setup beforehand with the Reolink software on a Windows PC. This allows giving a static IP address to the camera (required) and adjust the image (color, resolution, timestamp display, etc.)
 - The Reolink camera operation is officially limited in low temperature settings. There is no heating element inside the camera, but the electronics inside consume about 3W and release that energy as heat.
-- Internet users report that they have run similar models like the RLC-423 without a problem at -45C. The -10C limit is actually the minimal internal temperature. The strategy is to start the camera above -10C and to never shut it off so that it maintains its internal temperature. The strategy proved so efficient that the Reolink design team abandoned the idea of adding a heater. 
-- Below 10°C, the camera is not allowed to start operating (software or hardware safety). However, testing by Jericho showed that this is not a problem at least down to -40°C. 
-- Note that the Reolink 420LC camera has a fixed fisheye lens, which is typical of surveillance camera aiming at a large field of view.
+- The official minimal operating temperature is -10°C. To operate below this limit, the official strategy is to start the camera above -10°C and to never shut it off so that it maintains its internal temperature. The strategy proved so efficient that the Reolink design team abandoned the idea of adding a heater. Internet users report that they have run similar models like the RLC-423 without a problem at -45°C. In theory, below 10°C (internal product temperature), the camera is not allowed to boot (cold start). However, tests by Jericho showed that this is not a problem, at least down to -40°C. 
+- Note that the Reolink 520A camera has a fixed fisheye lens, which is typical of surveillance camera aiming at a large field of view.
 - The camera has the video capability, but currently, only images are captured by the WIRED system.
 
 ETHERNET SWITCH
