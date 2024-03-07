@@ -10,7 +10,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - [APPLICABLE TO THE RDL SUITE](#APPLICABLE-TO-THE-RDL-SUITE)
 - [NAU7802 CHIP](#NAU7802-CHIP)
   - [NAU7802 CHIP - GENERALITIES](#NAU7802-CHIP---GENERALITIES)
-  - [NAU7802 CHIP – I2C COMMUNICATION](#NAU7802-CHIP-–-I2C-COMMUNICATION)
+  - [NAU7802 CHIP – I2C COMMUNICATION](#NAU7802-CHIP---I2C-COMMUNICATION)
 
 
 ## NAU7802 CHIP – I2C COMMUNICATION
@@ -48,7 +48,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - Note that the NAU7802 can accept various voltage supply values but the reading voltage is limited by the supply voltage (“AVDD should not exceed DVDD supply voltage”).
 - When used with the RDL revision E2 and after, the PCB is only supplied in power when a measurement is required by the Nano. This means that over the course of its life, the sensor will be powered up thousands of times. The NAU7802 chip does not require a delay between power up and reading: it will deal with the necessary delays autonomously.
 
-## NAU7802 CHIP – I2C COMMUNICATION
+## NAU7802 CHIP - I2C COMMUNICATION
 
 - The NAU7802 chip has a single permanent I2C address: 0x2A. Therefore, one cannot daisy-chain two strain boards, it can only daisy chain a different sensor. Using two strain sensors on a given system requires two separate channels.
 - Like all sensors from the RDL suite, the NAU7802 board has been designed for long wire operation (30m). However, the NAU7802 chip appears to have a weaker native signal and achieves shorter cable lengths. When combined with I2C shield revA1 and RDL RevE2, with a CAT5 cable and low EM noise environment, the maximum cable length for continuous communication is currently 30 m.
