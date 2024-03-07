@@ -1,7 +1,6 @@
 **I2C Shield RevA2 Design Overview**  
 =======================================
 Jericho Laboratory Inc. Documentation licence: CC-BY-SA.  
-Revision: 0.  
 
 <br/>Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
 
