@@ -1,4 +1,4 @@
-**Resistance Data Logger (RDL) Revision E2 - Design Overview (DRAFT)**  
+**Resistance Data Logger (RDL) Revision E2 - Design Overview**  
 =======================================
 
 Jericho Laboratory Inc. Documentation license: CC-BY-SA.  
