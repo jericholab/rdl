@@ -2,7 +2,7 @@
 =======================================
 Jericho Laboratory Inc. Documentation licence: CC-BY-SA.  
 
-<br/>Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
+**Warning**: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
 
 GENERAL
 
