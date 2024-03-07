@@ -6,7 +6,7 @@ Revision: 0.
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version, as well as the latest specification sheets of the associated electronic components.
 
 ## Table of Contents
-- [GENERAL](##GENERAL)
+- [GENERAL](## GENERAL)
 - [Section 2](#section-2)
   - [Subsection 2.1](#subsection-2.1)
 - [Section 3](#section-3)
