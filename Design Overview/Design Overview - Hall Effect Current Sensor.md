@@ -12,7 +12,6 @@ Warning: This product is neither intended nor warranted for use in following equ
 
 GENERAL
 
-- This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
 - The original design of the voltage regulation circuit was done by Sparkfun under CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
 - A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
@@ -25,16 +24,16 @@ NOTES APPLICABLE TO THE RDL SUITE
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
 - Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
 - The complete PCB design, ready for production, is available on Github. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
+- Design and cost have been partially optimized for JLCPCB manufacturing abilities and components pricing at the time of design, for small batches.
 - Unless stated otherwise, all libraries required to make the RDL suite run are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
 CURRENT SENSOR (L01Z050S05) GENERALITIES AND INSTALLATION
 
 - The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA. The LZ01 module is based on the Hall effect. It can measure both DC and AC (up to 100kHz) current up to 50A DC. The LZ01 series offers module with a capacity up to 600A DC.
-- This component was selected because it can be used with DC current, while as induction-based sensors can also work with AC current.
+- This component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
 - The TAMURA component is readily available at global suppliers like DigiKey or Mouser.
-- The TAMURA module was designed for indoor use and is not weatherproof. Therefore, the PCB should be installed in a weatherproof enclosure.
+- The TAMURA module was designed for indoor use and is not weatherproof. Therefore, the sensor MUST be installed in a weatherproof enclosure to avoid any damage or safety risk.
 - The TAMURA is soldered on the PCB. Two soldered mechanical pins reduce the strain on the electronic pins.
 - Jericho recommend the use of two adequate size cable glands (inlet, outlet) on the main cable to avoid any water entry in the enclosure.
 - Jericho recommends the addition of silica gel packet inside the enclosure to reduce humidity.
