@@ -70,7 +70,7 @@ CABLE GLANDS
 - A single size of cable gland (M25X1.5, 25mm diameter passage) was selected to reduce cost and complexity (standardization).
 - The number of cable glands is also standardized, despite the variation in the number of sensors and cables on each WIRED system. Cable glands left empty are filled with a closed cell foam to avoid humidity ingress.
 - In the WIRED project, up to 30 CAT cables need to go through the enclosure. To save space and reduce cost, up to three CAT cables (to be verified) can fit inside a large cable gland (M25). This is unorthodox since usually it is 1 cable per cable gland and you tighten up. The use of multiple cables leaves void between the cables. This can let dust, humidity and insects enter the enclosure. This void is filled with closed cell foam.
-- The cable glands are installed on a single row to spread out the cables and reduce the cable density in this region of the enclosure.
+- The cable glands are installed on a **single row** to spread out the cables and reduce the cable density in this region of the enclosure.
 - The enclosure holes for the cable glands are done with a hand drill and a 1-in diameter (2.54mm) Forstner drill bit.
 
 WIFI IPEX ANTENNA
