@@ -83,9 +83,13 @@ CONTROL SIGNAL
 - For non-critical operations (see the User Guide disclaimer), the RDL can provide a 0-5V control signal.
 - This control signal is most easily produced by the J5 screw terminal via the D9 identified channel. This channel is connected to pin D9 of the Nano. This pin is interesting due to its ability to have Pulse-Width Modulation (PWM) signals. Only certain pins on the Nano can provide such PWM signals: D3, D5, D6, D9, D10, D11.
 - Note that PWM signals perform poorly on long wires, whose high capacitance blurs the PWM exact signal shape. The D9 pin can also provide a binary output (low/high) but it cannot provide a true analog output, since the Nano has no DAC (Digital-to-Analog Converter). For more information on the various types of signal output, refer to the official Arduino Nano documentation.
+
+  
 COMMENTS
+
+
 1) When using the ELEGOO Nano, I don't have the upload error/warning. It seems like the new bootloader works better than the old in some ways.
 UPDATE: Transfer to Design overview RDL.
 2) RDL_RevE2: The screw terminal J3 can also serve to add a temporary (experimental) pull-up on the SDA or SCL line! Unintended use!
-(ADD to Design Overview)
-3)According to manufacturer speciications, the ADS1115 has a minimum I2C clock speed requirement of 10 kHz. In theory, this recommendation puts a limit to slowing the clock, although it could be tested lower.
+(ADD to Design Overview).
+3) According to manufacturer speciications, the ADS1115 has a minimum I2C clock speed requirement of 10 kHz. In theory, this recommendation puts a limit to slowing the clock, although it could be tested lower.
