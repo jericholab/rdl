@@ -69,3 +69,9 @@ LEVEL SHIFTING
 OTHER
 
 - A LED is added to the PCB to indicate that the sensor is powered ON.
+
+COMMENTS
+
+1) Can SHT40 chip survive the isopropyl alcohol washing bath? NO!!! Absolutely not. It will cause permanent damage (drift). No alcohol, no scotch tape (except 3M tape 92 polyimide), and no non-viscous conformal coating. It prescribes no-clean solder paste. I am not even sure I can use my normal solder (flux core).
+For more information about how to process SHT40, please refer to: [2] Sensirion, "Handling Instructions for Humidity Sensors," 2020.
+
