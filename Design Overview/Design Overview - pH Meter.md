@@ -95,3 +95,30 @@ STEP-BY-STEP CALIBRATION PROCEDURE (DRAFT)
 OTHER
 
 - A LED is added to the PCB to indicate that the sensor is powered ON.
+
+COMMENTS
+
+1) I really think we are coming back to an I2C EZO-pH based system. See paper scribings.
+
+* If I switch back to the EZO pH, do I have enough I2C channels in all installation to accommodate the required pH meters? And if not, what if we consider daisy chains?
+ANSWER: Yes, we can use EZO pH, because we have in all the installations with pH measurement, we have at least 4 empty I2C channels on the I2C shield. Without even using daisy chaining.
+
+2) Explain the choice for the INDUSTRIAL probe (larger reservoirs).
+
+Explain the reasoning behind soil measurement. How is it possible? What are some limitations about installations. Why should you calibrate each season not every week , like in river.
+
+3) Do I want to use DFRobot library? Or the Atlas library? Which is open-source? Did DFRobot steal from Atlas for its library too? Which is more convenient?
+
+4) Switching to an I2C pH is STILL a possibility, if we make use of daisy chain. Double check required.
+
+5) What if we add a NAU7802 chip to the pH meter board? (This chip is a high-accuracy voltage measurement device. It includes a 24-bit ADC and has I2C communication capabilities. )
+We can add it in parallel, maybe?
+Do I already have a Sparkfun nau7802 board?
+
+6) Now that I am more familiar with the pH EZO, it seems to me we will not integrate the calibration routine into the main RDL code. It is not necessary for now. We can simply temporarily connect the EZO-PH to the main RJ45 of the RDL and upload the Atlas sample code, and send the calibration commands in the serial command window. This code will be in the Github repo. Also, the main_RDL must not use the same EEPROM addresses as the calibration data values storage.
+
+7) No it doesn’t meet. I promised 0.1. (Verified in TRS Nov 30). I think I could rather easily negotiate 0.2C. I would have to bet on repeatability (which is probably much better than 0.2C) and find open source articles that use a 0.2C uncertainty or worse.
+
+8) What is the shelf life of the powders themselves?
+Do I avoid the problem of the two-years expiration date of the liquid buffers, incompatible with a 5 yr project?
+
