@@ -107,3 +107,48 @@ OTHERS
 - The system has no protection against thunder, do not install in areas prone to thunder.
 - Residual heat from the system, mostly the SBC, helps reduce the relative humidity inside the enclosure by maintaining a constantly warmer temperature than outdoors. This is the same phenomenon that keeps heated houses very dry in the winter time.
 - Inside the enclosure, cable organization is improved with 3M adhesive devices and tie-wraps.
+
+  COMMENTS
+1) Add logo and footer.
+ 
+2) Do I conserve the ‘SBC setup’ doc? Or merge it here?
+
+UPDATE: I really think that the SBC setup is part of the PRODUCTION docs. It is not a Design Overview. However, it has elements of info that could bonify the Design Overview.
+
+3) LATER
+
+Add the electrician warning that was included in the current board design overview.
+
+4) ADD In the standard way, the mounting panel covers the installations holes. This means that the panel must be removed in order to unscrew the enclosure from the wall/structure.
+
+5) Later
+
+Yes, the USB-over-cAT adapters (2) for the IR camera are planned to be located inside the main hub. That keeps them hot. But yeah, I find that this become very crammed in there.
+
+CREATE A SMALL SECTION
+
+6) LATER
+
+Why? What if it’s not the case? What happens?
+Does the cable length has any effect? I saw reboots right?
+
+12Volts?
+
+7) LATER
+
+Is the USB hub really necessary? The SBC has three hub and we don’t use a mouse in the field.
+
+8) If I only fit 3 CAT cables per gland, five is probably not enough.
+
+9) Seems like a lot! I could detail the maximum system. This number includes I2C sensors.
+
+10) Test today (2023-12-02) shows that the upmost maximum is 3 cables when you have a round CAT cable. The heat is very hard to pass through if you keep the rubber ring.
+Is this enough? Do I want another strategy? Do I want to add more cable glands? It’s cheap after all!
+
+11) What is the antenna model?
+What are the main antenna properties?
+Why that instead of the USB antenna?
+Is it waterproof?
+How is it installed?
+What is the size of the hole drilled in the enclosure?
+Is there a rubber seal?
