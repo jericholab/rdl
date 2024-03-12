@@ -110,3 +110,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - There is a supplementary 6-pin male header (2.54mm spacing) for quick connections and testing: GND, 5V, INT, SDA, SCL, VDDA.
 - There are two STEMMA (aka QWIIC) connectors on this board. They contain the same pins than the RJ45 connectors. They are a redundant form of connecting the boards. There are two units for the same daisy chain reason than RJ45.
 - Warning: Contrarily to the original Sparkfun design, this design is not compatible with a standard Qwiic bus due to the 5V operation of the I2C bus instead of 3.3V.
+
+COMMENTS
+
+1) UPDATE: "Thin film heaters" have supposedly replaced PTC resistors
