@@ -157,7 +157,7 @@ Figure 1. Copyright: Seek Thermal website
   </p>
 </figure>
 
-\[INSERT THERMAL CAMERA RGB PICTURE SAMPLE\]
+
 
 <figure>
 <p align="center">
@@ -167,3 +167,35 @@ Figure 1. Copyright: Seek Thermal website
 <p align="center">
 Figure 2 An example of Starter Kit (SPX214). Copyright Seek Thermal website
 </p>
+
+
+COMMENTS
+
+1) Papa a brisé un ruban de camera Infrarouge par accident. Documenter l'accident avec photo. Ecrire mise en garde dans user guide.
+2) Add to Design Overview Thermal Camera: The heating pad should be disconnected in the summer. In the future, a tiny PCB with a microcontroller could be added for a PID function (25C). This avoids integration with RDL.
+3) There has been very little mention of the accuracy in the text so far.
+4) The properties of the AR coating must be in the spec sheet, no?
+5) What is our case?
+6) The big question is why can’t I find something at a 100$US like walter said? (150$CAD).
+I could live with that. Especially for the first unit.
+7) Can be done later.
+Insert a graph of transmittivity as a function of wavelength for different materials.
+I think I saw such a graph in the PDF I read about thermal imaging.
+
+8) For the IR Camera revA1, the XXXX supplier is used.
+
+9) Verify
+
+10) If the junction is done at the sensor level, how can I send a control signal?
+
+11) But I don’t understand why.
+
+12) Contradiction with next sentence.
+
+13) Is the performance sensitive to the window alignment with the camera. If there is a 2deg angle between the window and the camera lense, does it degrade the reading?
+
+Yes, it’s chalcogenide (more affordable). They say it is not as resistant to scratches than germanium but we could probably have a cheaper lens as a sacrificial part. If the lens degrades we can replace it and reseal the enclosure. This is a cost saving opportunity.
+
+14) What is the sealant used? Are there some incompatible sealant materials with Germanium or Chalcogenide?
+
+15) But are they on the same side than the camera core opening?
