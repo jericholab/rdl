@@ -83,8 +83,13 @@ References:
 4. <www.arduino.cc/en/Reference/AnalogRead>
 
 Pictures:
-
-Figure 1 Schematic of the distance requirements for the ice bath procedure.
+<figure>
+<p align="center">
+  <img src="../Calibration Procedures/images/ICEBATH1.png" 
+    </p>
+</figure>
+    
+<p align="center">Figure 1 Schematic of the distance requirements for the ice bath procedure.
 
 Figure Example of a silicon mold for small ice cubes
 
@@ -92,3 +97,10 @@ Figure Jericho probe holder for cold ice bath
 
 Figure Typical data for a measurement period of 30  
 seconds in an ice bath with a probe holder for 8 probes
+
+
+
+COMMENTS
+1) see ASTM norms taken from ETS here
+
+D:\GDRIVE\Jericho-Lab\12_Litterature\Norms & Standards
