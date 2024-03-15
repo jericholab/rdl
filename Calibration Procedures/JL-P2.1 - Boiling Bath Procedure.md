@@ -90,10 +90,8 @@ COMMENTS
 Ca aiderait probablement de mettre la main sur le pdf suivant : ASTM E644-08
 ou ASTM E644-11
 
-2) En attente de reponse NIST courriel 2022-04-26
+2) Eor cutting board ? teflon
 
-
-Ca aiderait probablement de mettre la main sur le pdf suivant : ASTM E644-08
-ou ASTM E644-11
+aluminum food plate ? poor word choice
 
 3) + mitaines de four
