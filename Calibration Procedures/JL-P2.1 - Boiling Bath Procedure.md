@@ -38,7 +38,7 @@ The steam point equation is given by the NIST excel sheet referenced at the end 
 <p align="center"> Table 1 Frequent values as per the NIST Excel sheet
 <figure>
  <p align="center">
-    <img src="../Calibration Procedures/images/JL2.png" style="width:70%">
+    <img src="../Calibration Procedures/images/" style="width:70%">
 </figure>
 Figure Typical curve
 
