@@ -15,11 +15,13 @@ The overall logic of the procedure is to use the highly-precise ovulation thermo
 
 <figure>
   <p align="center">
-    <img src="../Calibration Procedures/images/WARMBATH1.png>
+    <img src="../Calibration Procedures/images/WARMBATH1.png">
       </p>
 </figure>
 
-Figure Main events in the measurement sequence for the warm bath calibration procedure
+ <p align="center">Figure Main events in the measurement sequence for the warm bath calibration procedure.
+
+ 
 
 **Required material**
 
@@ -54,28 +56,21 @@ Figure Main events in the measurement sequence for the warm bath calibration pro
 
 **Comments**
 
-1. A non-insulated vessel will give less accurate results due to a less homogeneous bath temperature.
-2. Make sure that no bare metal from the probe wire is exposed to water. The electric conductivity would induce an error in the resistance value measured.
-3. In theory, the bath could be replaced by an electrically heated bath, equipped with a thermostat. The magnitude and impact of the thermal fluctuations should be evaluated however.
-4. If you do not have access to our 3D printed apparatus, you can try to approximate the procedure with a substitute. For example, you could tie the probes and the reference thermometer to a plastic ruler. However, we cannot guarantee the accuracy of such modified procedure.
-5. It is not necessary to use distilled water or gloves for this procedure since potential impurities will not affect the temperature evolution of the medium.
-6. The thermistor must be immersed deeply enough to avoid perturbation of the temperature by radiation or thermal conduction along the electrical wires. This is why this procedure has a significant water column above the probe.
-7. The Joule effect bias is reduced by taking a 100 microseconds measurement \[4\] every 1 second (0.01% of the
-
-time). For a 10 kOhm thermistor connected to a 3.3V tension divider, the average dissipated power is 0.01
-
-microwatts. This value is negligible compared to other sources of error, and is therefore not taken into
-
-account.
-
-1. It is possible to test more than one probe at the same time. However, this will increase the thermal leak through the wires, and could reduce the accuracy and stability of the ice bath temperature. We recommend separating as much as possible the probes from each other. The same should apply to wires. We also suggest using smaller wires to reduce the thermal leak magnitude. Calibrating multiple probes at the same time can increase the time required to stabilize the temperature reading.
-2. The test vessel should not be made of glass. Otherwise, the probe could absorb some radiant energy in the visible spectrum. This would bias the temperature measurement.
-3. It is normal that during measurements, the probe temperature will oscillate. This is the reason why we average.
-4. For even more precision, a plastic structure could be inserted to reduce the convection within the column of liquid, leaving a hole in the center for the probes.
-5. Many beverage jugs, such as the Coleman 6009, do not have an insulated lid. This causes an increased overall heat loss as well as increase natural convection, since the cooling occurs on top of the liquid column. To reduce these effects, we add a layer of closed cell foam insulation above the water column.
-6. Calibration procedures are delicate procedures and it may take a few tries before you master the procedure. If you are unsure of the results, the procedure should be repeated to see if, at least, you get consistent results.
-7. To avoid the ‘stem effect’ during calibration, the company Fluke suggests an immersion depth of 20 times the sum of the probe diameter and the probe length.
-8. Extension wires should be as short as possible to minimize the effect of electromagnetic noise.
+1) A non-insulated vessel will give less accurate results due to a less homogeneous bath temperature.
+2) Make sure that no bare metal from the probe wire is exposed to water. The electric conductivity would induce an error in the resistance value measured.
+3) In theory, the bath could be replaced by an electrically heated bath, equipped with a thermostat. The magnitude and impact of the thermal fluctuations should be evaluated however.
+4) If you do not have access to our 3D printed apparatus, you can try to approximate the procedure with a substitute. For example, you could tie the probes and the reference thermometer to a plastic ruler. However, we cannot guarantee the accuracy of such modified procedure.
+5) It is not necessary to use distilled water or gloves for this procedure since potential impurities will not affect the temperature evolution of the medium.
+6) The thermistor must be immersed deeply enough to avoid perturbation of the temperature by radiation or thermal conduction along the electrical wires. This is why this procedure has a significant water column above the probe.
+7) The Joule effect bias is reduced by taking a 100 microseconds measurement \[4\] every 1 second (0.01% of the time). For a 10 kOhm thermistor connected to a 3.3V tension divider, the average dissipated power is 0.01 microwatts. This value is negligible compared to other sources of error, and is therefore not taken intoaccount.
+8) It is possible to test more than one probe at the same time. However, this will increase the thermal leak through the wires, and could reduce the accuracy and stability of the ice bath temperature. We recommend separating as much as possible the probes from each other. The same should apply to wires. We also suggest using smaller wires to reduce the thermal leak magnitude. Calibrating multiple probes at the same time can increase the time required to stabilize the temperature reading.
+9) The test vessel should not be made of glass. Otherwise, the probe could absorb some radiant energy in the visible spectrum. This would bias the temperature measurement.
+10) It is normal that during measurements, the probe temperature will oscillate. This is the reason why we average.
+11) For even more precision, a plastic structure could be inserted to reduce the convection within the column of liquid, leaving a hole in the center for the probes.
+12) Many beverage jugs, such as the Coleman 6009, do not have an insulated lid. This causes an increased overall heat loss as well as increase natural convection, since the cooling occurs on top of the liquid column. To reduce these effects, we add a layer of closed cell foam insulation above the water column.
+13) Calibration procedures are delicate procedures and it may take a few tries before you master the procedure. If you are unsure of the results, the procedure should be repeated to see if, at least, you get consistent results.
+14) To avoid the ‘stem effect’ during calibration, the company Fluke suggests an immersion depth of 20 times the sum of the probe diameter and the probe length.
+15) Extension wires should be as short as possible to minimize the effect of electromagnetic noise.
 
 Electromagnetic noise from the environment should also be minimized. We therefore recommend that the
 
