@@ -35,9 +35,9 @@ Procedure:
 
 The steam point equation is given by the NIST excel sheet referenced at the end of this document. Pressure must be between 97.0 and 104.0 kPa for the equation to be valid.
 
-Table 1 Frequent values as per the NIST Excel sheet
+<p align="center"> Table 1 Frequent values as per the NIST Excel sheet
 <figure>
-  <p align="center">
+ <p align="center">
     <img src="../Calibration Procedures/images/JL2.png" style="width:70%">
 </figure>
 Figure Typical curve
