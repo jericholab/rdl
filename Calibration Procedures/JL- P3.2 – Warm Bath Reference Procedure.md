@@ -71,8 +71,12 @@ The overall logic of the procedure is to use the highly-precise ovulation thermo
 13) Calibration procedures are delicate procedures and it may take a few tries before you master the procedure. If you are unsure of the results, the procedure should be repeated to see if, at least, you get consistent results.
 14) To avoid the ‘stem effect’ during calibration, the company Fluke suggests an immersion depth of 20 times the sum of the probe diameter and the probe length.
 15) Extension wires should be as short as possible to minimize the effect of electromagnetic noise.
-
-Electromagnetic noise from the environment should also be minimized. We therefore recommend that the
+<figure>
+  <p align="center">
+    <img src="../Calibration Procedures/images/ICEBATH3.png"
+      </p>
+</figure>
+<p align="center">Electromagnetic noise from the environment should also be minimized. We therefore recommend that the
 
 user does not extend the lead wires during the calibration procedures. All noise filters should also be
 
