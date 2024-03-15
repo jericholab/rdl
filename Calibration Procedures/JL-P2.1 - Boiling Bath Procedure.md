@@ -81,3 +81,19 @@ References:
 - National Weather Service (USA weather data): <https://www.weather.gov/>
 - NIST Procedure for steam point: <https://www.nist.gov/pml/mercury-thermometer-alternatives/mercury-thermometer-alternatives-verification-methods> (the videos do not work anymore)
 - <https://inspection.canada.ca/inspection-and-enforcement/guidance-for-food-inspection-activities/sample-collection/calibration-procedures/eng/1540301411823/1540302234709>
+
+
+COMMENTS
+1) En attente de reponse NIST courriel 2022-04-26
+
+
+Ca aiderait probablement de mettre la main sur le pdf suivant : ASTM E644-08
+ou ASTM E644-11
+
+2) En attente de reponse NIST courriel 2022-04-26
+
+
+Ca aiderait probablement de mettre la main sur le pdf suivant : ASTM E644-08
+ou ASTM E644-11
+
+3) + mitaines de four
