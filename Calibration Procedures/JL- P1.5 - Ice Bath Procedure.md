@@ -97,7 +97,7 @@ Pictures:
   <img src="../Calibration Procedures/images/ICEBATH2.png" 
     </p>
 </figure>
-<p align="center">Figure Example of a silicon mold for small ice cubes
+<p align="center"> Figure Example of a silicon mold for small ice cubes
 
 
 <figure>
