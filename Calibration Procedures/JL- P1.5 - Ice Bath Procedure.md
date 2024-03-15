@@ -108,10 +108,18 @@ Pictures:
 
 <p align="center">Figure Jericho probe holder for cold ice bath
 
-Figure Typical data for a measurement period of 30  
-seconds in an ice bath with a probe holder for 8 probes
 
 
+
+<figure>
+<p align="center">
+  <img src="../Calibration Procedures/images/ICEBATH4.png" 
+    </p>
+</figure>
+<p align="center">Figure Typical data for a measurement period of 30  
+seconds in an ice bath with a probe holder for 8 probes.
+
+**************************
 
 COMMENTS
 1) see ASTM norms taken from ETS here
