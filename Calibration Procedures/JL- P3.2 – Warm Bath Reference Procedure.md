@@ -13,6 +13,12 @@ An ovulation thermometer is normally used to monitor the body temperature of wom
 
 The overall logic of the procedure is to use the highly-precise ovulation thermometer as a reference thermometer within a liquid bath. The system is not thermally static: it is slowly cooling towards room temperature (exponential curve). However, it can be linearized if we consider a very small section of the curve (<0.1 °C). The water temperature will have changed slightly between the reference measurement and the probe measurement. To compensate that effect, a second reference reading is done at the end \[NIST\]. The two reference readings are averaged to form the final reference value. The final measurement value for the uncalibrated probe is an average of the 30 measurements sequence. This is illustrated in Figure 1, where a set of only 2 (not 30) measurements is considered. One downside of this technique is that, since the reference thermometer is used two times, the instrument uncertainty must be considered twice. For more information, please consider reading about uncertainty propagation. This is why this procedure can provide a reference point with an uncertainty of +/- 0.2 °C.
 
+<figure>
+  <p align="center">
+    <img src="../Calibration Procedures/images/WARMBATH1.png>
+      </p>
+</figure>
+
 Figure Main events in the measurement sequence for the warm bath calibration procedure
 
 **Required material**
