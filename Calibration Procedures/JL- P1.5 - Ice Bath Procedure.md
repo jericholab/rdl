@@ -91,7 +91,13 @@ Pictures:
     
 <p align="center">Figure 1 Schematic of the distance requirements for the ice bath procedure.
 
-Figure Example of a silicon mold for small ice cubes
+
+<figure>
+<p align="center">
+  <img src="../Calibration Procedures/images/ICEBATH2.png" 
+    </p>
+</figure>
+<p align="center">Figure Example of a silicon mold for small ice cubes
 
 Figure Jericho probe holder for cold ice bath
 
