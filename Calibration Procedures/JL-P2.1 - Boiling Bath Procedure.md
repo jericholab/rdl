@@ -44,16 +44,10 @@ The steam point equation is given by the NIST excel sheet referenced at the end 
  </p>
     </figure>
 
-*********************
+---
+---
+---
 
-
-
-
-
-
-
-
-    
 
   
  <figure>
