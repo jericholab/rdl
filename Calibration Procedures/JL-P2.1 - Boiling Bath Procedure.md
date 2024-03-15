@@ -46,7 +46,7 @@ The steam point equation is given by the NIST excel sheet referenced at the end 
 
 *********************
     
- <p align="center"> Figure Typical curve.
+
   
  <figure>
   <p align=/"center">
@@ -54,6 +54,7 @@ The steam point equation is given by the NIST excel sheet referenced at the end 
     </p>
  </figure>
 
+ <p align="center"> Figure Typical curve.
 
 
 (ADD A DIAGRAM OF THE APPARATUS, CAN BE DONE WITH FREECAD ?)
