@@ -1,0 +1,8 @@
+[Unit]
+Description=WIRED RDL USB0
+After = network.target
+[Service]
+ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-logging-RDL-USB0.py
+Restart = always
+[Install]
+WantedBy=multi-user.target
