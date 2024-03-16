@@ -41,11 +41,15 @@ ANNEX 2: RDL system performance with uncalibrated thermistors for the full range
 - Storage: Varies with computer/smartphone. Typical: 1,000,000 temperatures = 28 MB text file.
 - Maximum measurement interval: 96 400 000 ms (24 hr)
 - Default baud rate: 57 600 bits per sec
-- Calibration type: end-to-end 3-point characterization
-- ice bath (0°C / 32°F)
-- warm bath (typically 37°C/99°F)
-- steam point (typically 100°C/212°F)
-- For more information about the calibration process, refer to the Jericho calibration procedures.
+- Calibration type: end-to-end 3-point characterization:
+  
+   -Ice bath (0°C / 32°F)
+
+   -Warm bath (typically 37°C/99°F)
+
+   -Steam point (typically 100°C/212°F)
+
+  -For more information about the calibration process, refer to the Jericho calibration procedures.
 
 ### Performance
 
