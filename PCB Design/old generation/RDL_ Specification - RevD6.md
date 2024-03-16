@@ -1,27 +1,29 @@
 # RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS
 
 
-Table of Contents
 
-[RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS 1](#_Toc113303116)
 
-[OVERALL SYSTEM PROPERTIES 1](#_Toc113303117)
+## Table of Contents
 
-[Performance 2](#_Toc113303118)
+RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS____________________________________________________________________ 1
 
-[A) Temperature measurements <sup>1</sup> 2](#_Toc113303119)
+OVERALL SYSTEM PROPERTIES _________________________________________________________________________________________________ 1
 
-[B) Resistance measurements 2](#_Toc113303120)
+Performance ____________________________________________________________________________________________________________________ 2 
 
-[RDL CONTROLLER 3](#_Toc113303121)
+A) Temperature measurements <sup>1</sup> _______________________________________________________________________________________________ 2
 
-[TH-1 PROBE 4](#_Toc113303122)
+B) Resistance measurements ___________________________________________________________________________________________________ 2
 
-[TH-2 PROBE 5](#_Toc113303123)
+RDL CONTROLLER ______________________________________________________________________________________________________________ 3
 
-[ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script 6](#_Toc113303124)
+TH-1 PROBE ____________________________________________________________________________________________________________________ 4
 
-[ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script 7](#_Toc113303125)
+TH-2 PROBE ____________________________________________________________________________________________________________________ 5
+
+ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script ________ 6
+
+ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script ________________ 7
 
 ## OVERALL SYSTEM PROPERTIES
 
