@@ -107,7 +107,7 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../PCB Design/images/H1.png" style="width:70%">
+<img src="../Design Overview/images/HH1.png" style="width:70%">
 </p>
 
 
@@ -127,7 +127,20 @@ For more details about the resistance measurements performance, see graphs of An
 - SRAM memory available: 2 kB
 - EEPROM memory available: 1 kB
 - Typical maximum acquisition rate for various conditions:
+  
+<figure>
+<p align="center">
+<img src="../PCB Design/images/2.png" style="width:70%">
+</p>
+</figure>
 
+
+  <figure>
+<p align="center">
+<img src="../PCB Design/images/3.png" style="width:70%">
+</p>
+</figure>
+  
 ## TH-1 PROBE
 
 - NTC thermistor 10 kΩ, with black epoxy coating
@@ -142,6 +155,13 @@ For more details about the resistance measurements performance, see graphs of An
 - Typical power consumption per probe (slow speed (1 S/s), 3.3V circuit): 0.01 W
 - Origin: Made in China
 
+
+<figure>
+<p align="center">
+<img src="../PCB Design/images/4.png" style="width:70%">
+</p>
+</figure>
+  
 ## TH-2 PROBE
 
 - NTC thermistor 10kΩ, stainless steel
@@ -158,4 +178,16 @@ For more details about the resistance measurements performance, see graphs of An
 
 # ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script
 
+<figure>
+<p align="center">
+<img src="../PCB Design/images/5.png" style="width:70%">
+</p>
+</figure>
+  
 # ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script
+
+<figure>
+<p align="center">
+<img src="../PCB Design/images/6.png" style="width:70%">
+</p>
+</figure>
