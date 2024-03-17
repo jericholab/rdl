@@ -152,7 +152,7 @@ For more details about the resistance measurements performance, see graphs of An
 - Typical power consumption per probe (slow speed (1 S/s), 3.3V circuit): 0.01 W
 - Origin: Made in China
 
-# ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script
+## ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script
 
 <figure>
 <p align="center">
@@ -160,7 +160,7 @@ For more details about the resistance measurements performance, see graphs of An
 </p>
 </figure>
   
-# ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script
+## ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script
 
 <figure>
 <p align="center">
