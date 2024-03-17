@@ -83,7 +83,7 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../../Design Overview/images/HH1.png" style="width:70%">
+<img src="../../PCB Design/images/H1.png" style="width:70%">
 </p>
 
 
@@ -106,14 +106,14 @@ For more details about the resistance measurements performance, see graphs of An
   
 <figure>
 <p align="center">
-<img src="../PCB Design/images/2.png" style="width:70%">
+<img src="../../PCB Design/images/2.png" style="width:70%">
 </p>
 </figure>
 
 
   <figure>
 <p align="center">
-<img src="../PCB Design/images/3.png" style="width:70%">
+<img src="../../PCB Design/images/3.png" style="width:70%">
 </p>
 </figure>
   
@@ -134,7 +134,7 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../PCB Design/images/4.png" style="width:70%">
+<img src="../../PCB Design/images/4.png" style="width:70%">
 </p>
 </figure>
   
@@ -156,7 +156,7 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../PCB Design/images/5.png" style="width:70%">
+<img src="../../PCB Design/images/5.png" style="width:70%">
 </p>
 </figure>
   
@@ -164,6 +164,6 @@ For more details about the resistance measurements performance, see graphs of An
 
 <figure>
 <p align="center">
-<img src="../PCB Design/images/6.png" style="width:70%">
+<img src="../../PCB Design/images/6.png" style="width:70%">
 </p>
 </figure>
