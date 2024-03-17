@@ -1,30 +1,6 @@
 # RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS
 
 
-
-
-## Table of Contents
-
-RESISTANCE DATA LOGGER (RDL) REV D6 SPECIFICATIONS____________________________________________________________________ 1
-
-OVERALL SYSTEM PROPERTIES _________________________________________________________________________________________________ 1
-
-Performance ____________________________________________________________________________________________________________________ 2 
-
-A) Temperature measurements <sup>1</sup> _______________________________________________________________________________________________ 2
-
-B) Resistance measurements ___________________________________________________________________________________________________ 2
-
-RDL CONTROLLER ______________________________________________________________________________________________________________ 3
-
-TH-1 PROBE ____________________________________________________________________________________________________________________ 4
-
-TH-2 PROBE ____________________________________________________________________________________________________________________ 5
-
-ANNEX 1: RDL system performance with uncalibrated thermistors for the 0 to 100°C range, based on Octave script ________ 6
-
-ANNEX 2: RDL system performance with uncalibrated thermistors for the full range, based on Octave script ________________ 7
-
 ## OVERALL SYSTEM PROPERTIES
 
 - Jericho model number: RDL-RevD6
