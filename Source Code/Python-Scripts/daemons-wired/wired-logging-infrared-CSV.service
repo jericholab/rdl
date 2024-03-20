@@ -1,0 +1,8 @@
+[Unit]
+Description=WIRED Infrared CSV
+After = network.target
+[Service]
+ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-logging-Infrared-CSV.py
+Restart = always
+[Install]
+WantedBy=multi-user.target
