@@ -13,21 +13,21 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
-bool periodicHeader = 0;                // optional activation of a printed header every given interval
-int i2cChannels_sht40[] = {0,1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (1 to 8)
-int i2cChannels_strain[] = {0,1,2};       // define array to store the list of shield channels dedicated to strain sensors (1 to 8)
-int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors (1 to 8)
-int channels_current[] = {1};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
-int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to current sensors (0 to 7)
+bool periodicHeader = 1;                // optional activation of a printed header every given interval
+bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
+int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to air humidity sensors
+int i2cChannels_strain[] = {3,4};          // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
+int channels_current[] = {0};         // define array to store the list of analog channels dedicated to current sensors
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -103,18 +103,20 @@ int qty_sht40;                           // define the variable that holds the n
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
-int qty_teros;                         // define the variable that holds the number of current devices connected to the RDL
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
 #define THERMISTORPIN A0               // Analog signals from all thermistors are multiplexed to a single pin
 #define VOLT_PIN A1                    // Analog signal pin for voltage readings or current sensor readings
-//#define CURRENT_PIN A1                 // Analog signal pin for current sensor readings
-//#define TEROS_PIN A1                   // Analog signal pin for soil meter
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
+
+
+//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
+
+
 
 ////// SETUP ////////
 
@@ -123,6 +125,8 @@ void setup(void) {
     Serial.println();                           //create space after reset of the Arduino
     Serial.begin(baudRate);                     //initialize serial monitor at the specified baud rate (e.g. 9600) 
     readEEPROM();                               //call function to read the EEPROM memory to see if there are some parameters stored
+    
+    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
     
     if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
@@ -139,23 +143,17 @@ void setup(void) {
     pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
     digitalWrite(enable_T_MUX, HIGH);                            // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
 
-    pinMode(enable_V_MUX, OUTPUT);                      // define pin 10 as an output pin.
-    digitalWrite(enable_V_MUX, HIGH);                 // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
+    pinMode(enable_V_MUX, OUTPUT);                     // define pin 10 as an output pin.
+    digitalWrite(enable_V_MUX, HIGH);                  // toggle pin to HIGH value in order turn off MUX while not used (avoid Joule effect and MUX consumption)
     
     pinMode(VOLT_PIN, INPUT);                          //set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
     pinMode(CTRL_PIN, OUTPUT);                         //set pin as an input for voltage readings to allow sending a control signal    //
 
-    Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
-    
+    Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+    delay(100);                                        // let some time pass before trying to communicate with the RTC
     initRTC();                                         //initialize the Real Time Clock
     Wire.setClock(clockSpeed);
     
-    if (SHT40Display == 1){                            // This section might be transfered to sht40Func in the multiplexed future //////////////
-//      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
-//        SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
-//      }
-    } 
-
     ads1115.begin();                                 // initialize the ADS1015 chip
     Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
 
@@ -168,12 +166,8 @@ void setup(void) {
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
-    qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
     
     
-   if (phDisplay == 1){
-     //ph.begin();                      // this is the function call that outputs unrequired text ("_acidVoltage:2032.44"). Library might have to be modified.//////
-   }      
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -209,7 +203,9 @@ void setup(void) {
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
-       
+
+
+   tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }
 
 ///// MAIN LOOP //////////
@@ -259,20 +255,25 @@ if (timePassed >= readInterval)                     // if enough time has passed
               }
           }
        }
-
+ 
     if (SHT40Display == 1){
 
       for (int i=0; i<qty_sht40; i++) {
         addr = i2cChannels_sht40[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(100);
-        i2c_select(addr);
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        //delay(200); 
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
       }
@@ -286,16 +287,14 @@ if (timePassed >= readInterval)                     // if enough time has passed
     
     if (currentDisplay==1){
       for (int i=0; i<qty_current; i++) {
-        addr = channels_current[i];     // we choose the channel X
-        currentFunc(0,1,addr);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).        
+        addr = channels_current[i];     // we choose the analog channel X
+        uint8_t tCompChannel= 1;                // we choose the thermistor channel used for temperature compensation of all current sensors
+        currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).        
       }
     }
 
     if (terosDisplay==1){
-      for (int i=0; i<qty_teros; i++) {
-        addr = channels_teros[i];     // we choose the channel X
-        terosFunc(1,addr);             // run soil humidity function for readMode (e.g. 1=ADS1115 ADC), and channel selection (0-7)
-      }
+      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
@@ -304,20 +303,19 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = i2cChannels_strain[i];     // we choose the channel X
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(100);
+        delay(1000);
         i2c_select(addr);
-        delay(100);
+        delay(300);//1000
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(100);                     // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-
-        //currentNAU7802();            //////////// TEMPORARY TEST FOR "NAU7802+CURRENT"
-        strainFunc();             // run Strain sensor function       //////////// TEMPORARY COMMENTED OUT TO TEST "NAU7802+CURRENT"
-
-        
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+        delay(300);//1000    
+        //currentNAU7802();               //// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        strainFunc();                      // run Strain sensor function  
+        Wire.endTransmission(addr);       
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
       }
       
     }
@@ -327,18 +325,23 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
       for (int i=0; i<qty_ph; i++) {
         addr = i2cChannels_ph[i];         // we choose the channel X
-        pcf3.digitalWrite(addr, LOW);     // turn LED on by sinking current to ground
-        pcf4.digitalWrite(addr, HIGH);    // turn LED on by sinking current to ground
-        //delay(100);
-        i2c_select(addr);
-        delay(1000);
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        delay(100);                       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        phFunc();                         // run Strain sensor function
-        Wire.endTransmission(addr);       // TEST TO AVOID WEIRD REBOOTS (Stack overflow?) ////////////
-        pcf3.digitalWrite(addr, HIGH);    // turn LED off by turning off sinking transistor
-        pcf4.digitalWrite(addr, LOW);     // turn LED off by turning off sinking transistor
+        //delay(200); 
+        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        phFunc();                         // run pH function
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+        
       }   
     }
 

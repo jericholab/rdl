@@ -4,19 +4,34 @@
 // INPUT: averaging algorithm, selected ADC, input channel
 // OUTPUT: none
 
-float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
+float currentFunc(uint8_t algo, bool readMode, uint8_t channel, uint8_t t_channel){
       
     // PREPARATION
 
+    Serial.print("*");
+    spacing2("*",12); 
+    
     int n = 10;                                    // size of the sample to be collected
     int i;                                         // integer for loop iteration
     float rms_value = 0;                           // initialize average value
     float volts;                                   // initialize variable 
-    float V_offset = 2.546;                      // offset value (no load) to calibrate the sensor      //////// TEST
-    float hallRatio = 50/1.5;                      // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05
-    Serial.print("*");
-    spacing2("*",12); 
-
+    float offsetTdrift = 0;                        // initialize variable to zero
+    float T_comp =0;                               // initialize variable to zero
+    T_comp = arrayV[t_channel-1];                  // current sensor temperature 
+    Serial.print(T_comp,2);   
+    spacing1(T_comp,12);                     
+        
+    if (currentTComp ==1){
+        float slope = -0.001122;                        // slope for offset temperature drift compensation [mv/C]
+        float T_ref = 21;                               // Temperature reference for the temperature compensation [C]
+        offsetTdrift = (arrayV[t_channel-1]-21)*slope;  //offset temperature drift compensation [mV] (array indexed to 0, not 1)  
+    }
+    
+    Serial.print(offsetTdrift,5);   
+    spacing1(offsetTdrift,12);                     
+    float V_offset = 2.5528+offsetTdrift;                       //[mV] offset value (no load) to calibrate the sensor
+    float hallRatio = 33.33333;                      // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05 (50/1.5 = 33.33333)
+    
     digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
     setMultiplexer(channel);                       // select the multiplexer channel, from 0 to 7
     pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground

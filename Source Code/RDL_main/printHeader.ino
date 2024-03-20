@@ -79,13 +79,24 @@ void printHeader(){
           for (int i=0; i<qty_current; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String voltageText = F("Raw");
-              Serial.print(voltageText);
-              spacing2(voltageText,12);
-              String voltageText2 = F("Amps_C");
-              Serial.print(voltageText2);
+
+              String currentText1 = F("T_sensor");
+              Serial.print(currentText1);
+              spacing2(currentText1,12);
+
+              String currentText4 = F("T_comp");
+              Serial.print(currentText4);
+              spacing2(currentText4,12);
+                            
+              String currentText2 = F("Raw");
+              Serial.print(currentText2);
+              spacing2(currentText2,12);
+
+              
+              String currentText3 = F("Amps_C");
+              Serial.print(currentText3);
               Serial.print(channels_current[i]);
-              spacing2(voltageText2,12);
+              spacing2(currentText3,12);
             }
         }
 
@@ -114,12 +125,14 @@ void printHeader(){
 
             }    
          if (phDisplay == 1){
+           for (int i=0; i<qty_ph; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String pHText1 = F("pH1");
+              String pHText1 = F("pH");
               Serial.print(pHText1);
               spacing2(pHText1,12);
-            }    
+            }
+         }    
             
         if (ControlSignal == 1){
               Serial.print(F("*"));

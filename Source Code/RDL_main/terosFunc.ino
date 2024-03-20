@@ -5,8 +5,7 @@
 // OUTPUT: none
 
 
-void terosFunc(bool readMode, uint8_t channel){                                  
-//float currentFunc(uint8_t algo, bool readMode, uint8_t channel){
+void terosFunc(uint8_t channel){                                  
 
   digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
   setMultiplexer(channel);                       // select the multiplexer channel
@@ -14,7 +13,7 @@ void terosFunc(bool readMode, uint8_t channel){
   pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
   delay(500);
   
-  //bool readMode = 1;
+  bool readMode = 1;
   float sensorValue = getVoltFunc(readMode);           // read the voltage while assuming a 5000mV voltage reference
   float voltage1 = sensorValue * 1000;                 // conversion to millivolts to make it usable by the VWC eq.
   Serial.print("*");
@@ -55,39 +54,3 @@ void terosFunc(bool readMode, uint8_t channel){
       float phi = (1/ alpha) * term2; 
       return phi;
 }
-      
-
-// CHATGPT VERSION (IT HAS NO ALPHA THOUGH)
-// float calculatePhi(float teta) {       
-//    // Avoid negative and zero values
-//    if (teta <= 0) {
-//        teta = 0.001; 
-//    }
-//
-//    // Parameters
-//    const float teta_r = 0.01;
-//    const float teta_s = 0.6; //0.396;
-//    const float n = 2.06;
-//    const float m = 1 - (1 / n); 
-//
-//    // Checking if teta is within the valid range
-//    if (teta <= teta_r || teta >= teta_s) {
-//        return -9999; // Return an error code for invalid teta
-//    }
-//
-//    // Calculating the pressure head
-//    float term = (teta_s - teta) / (teta - teta_r);
-//    if (term <= 0) {
-//        return -9999; // Return an error code for invalid term
-//    }
-//
-//    float term1 = pow(term, 1.0 / m);
-//    float phi = pow(term1 - 1, 1.0 / n);
-//
-//    // Check for negative or undefined values
-//    if (phi <= 0 || isnan(phi)) {
-//        return -9999; // Return an error code for invalid phi
-//    }
-//
-//    return phi;
-//}

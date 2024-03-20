@@ -5,7 +5,7 @@
 // OUTPUT: none
 
 void initRTC(){
-    delay(100);                 //give time to RTC to start after receiving Vcc supply 
+
     if (! rtc.begin()) {       //if unable to start the rtc, then print out a warning to the user
       Serial.println();
       Serial.println(F("Couldn't find RTC"));
