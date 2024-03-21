@@ -1,6 +1,10 @@
 PYTHON SCRIPTS
 
-The python scripts allow the integration of the surveillance camera, the infrared camera and the RDL Data Logger into the Orange Pi 4 LTS.
+The python scripts allow the integration of the surveillance camera, the infrared camera and the RDL Data Logger into the Orange Pi 4 LTS. The Python scripts can be run in various ways:
+1) Run a single script within Thonny
+2) Run all scripts by executing the shell script "WIRED-runAll.sh"
+3) Run them via Daemons (next section)
+
 
 DAEMONS
 
