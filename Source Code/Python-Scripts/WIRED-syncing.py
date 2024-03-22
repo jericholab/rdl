@@ -7,6 +7,16 @@ import time
 import shutil
 import os   
 import logging
+import json
+
+# Load the configuration file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+
+
+
+
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
@@ -29,10 +39,10 @@ def syncToDropbox():
     print("syncToDropbox")
     print("   ")
     from subprocess import call
-    localSide1 = "/home/orangepi/SHELF3/logging-folder/transit/RDL"
-    cloudSide1 = "Professional/WIRED/Site2_Floatovoltaics/RDL"
-    localSide2 = "/home/orangepi/SHELF3/logging-folder/transit/cameras"
-    cloudSide2 = "Professional/WIRED/Site2_Floatovoltaics/cameras"
+    localSide1 = "./logging-folder/transit/RDL"
+    cloudSide2 = f"Professional/WIRED/{config['SITE']}/RDL"
+    localSide2 = "./logging-folder/transit/cameras"
+    cloudSide2 = f"Professional/WIRED/{config['SITE']}/cameras"
     Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
     Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2

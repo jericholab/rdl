@@ -25,7 +25,7 @@ bool ControlSignal = 0;                 // optional activation of the signal con
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {3,4};          // define array to store the list of shield channels dedicated to strain sensors
+int i2cChannels_strain[] = {0,4};          // define array to store the list of shield channels dedicated to strain sensors
 int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
 int channels_current[] = {0};         // define array to store the list of analog channels dedicated to current sensors
 
