@@ -40,7 +40,7 @@ def syncToDropbox():
     print("   ")
     from subprocess import call
     localSide1 = "./logging-folder/transit/RDL"
-    cloudSide2 = f"Professional/WIRED/{config['SITE']}/RDL"
+    cloudSide1 = f"Professional/WIRED/{config['SITE']}/RDL"
     localSide2 = "./logging-folder/transit/cameras"
     cloudSide2 = f"Professional/WIRED/{config['SITE']}/cameras"
     Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
