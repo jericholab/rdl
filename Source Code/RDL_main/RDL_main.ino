@@ -17,17 +17,17 @@ bool tDisplay=1;                        // optional measurement and display of t
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
-bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {0,1};        // define array to store the list of shield channels dedicated to air humidity sensors
-int i2cChannels_strain[] = {0,4};          // define array to store the list of shield channels dedicated to strain sensors
-int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors
-int channels_current[] = {0};         // define array to store the list of analog channels dedicated to current sensors
+int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_strain[] = {1,4};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
+int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -259,7 +259,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     if (SHT40Display == 1){
 
       for (int i=0; i<qty_sht40; i++) {
-        addr = i2cChannels_sht40[i];     // we choose the channel X
+        addr = i2cChannels_sht40[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
@@ -300,7 +300,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
     if (strainDisplay==1){  
 
       for (int i=0; i<qty_strain; i++) {
-        addr = i2cChannels_strain[i];     // we choose the channel X
+        addr = i2cChannels_strain[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);
@@ -324,7 +324,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
 
       for (int i=0; i<qty_ph; i++) {
-        addr = i2cChannels_ph[i];         // we choose the channel X
+        addr = i2cChannels_ph[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
@@ -354,7 +354,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
 
 if ((periodicHeader ==1)&&(timePassedHeader >= headerInterval)){                 // if enough time has passed, printHeader
     printHeader();
-    time2=millis();                                 // each time a reading is taken, time1 is reset     
+    time2=millis();                                 //each time a reading is taken, time1 is reset     
 }
 watchSerial(); //  Watching for incoming commands from the serial port
 
