@@ -13,11 +13,6 @@ import json
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-
-
-
-
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
 #configure the logging module
@@ -40,15 +35,14 @@ def syncToDropbox():
     print("   ")
     from subprocess import call
     localSide1 = "./logging-folder/transit/RDL"
-    cloudSide1 = f"Professional/WIRED/{config['SITE']}/RDL"
+    cloudSide1 = f"Professional/WIRED/{config['SITE']}"
     localSide2 = "./logging-folder/transit/cameras"
-    cloudSide2 = f"Professional/WIRED/{config['SITE']}/cameras"
+    cloudSide2 = f"Professional/WIRED/{config['SITE']}"
     Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
     Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
-    
-    print("move from /transit to /synced folder")
+    print("move from /transit to backup folder (e.g. SD Card)")
     sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced" 
     
 def sync(src, dest):
