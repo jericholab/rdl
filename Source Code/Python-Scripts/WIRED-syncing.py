@@ -25,7 +25,9 @@ print("RDL-python-syncing to Dropbox script...")
 source_path = "./logging-folder/tosync/"  #relative path"
 transit_path = "./logging-folder/transit/"  #relative path"
 #destination_path = "./logging-folder/synced/"
-destination_path = "/media/orangepi/SD_CARD1/"
+#destination_path = "/media/orangepi/SD_CARD1/"
+destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
+
 
 def syncToDropbox():
     print("move from /tosync to /transit folder")
