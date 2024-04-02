@@ -12,6 +12,7 @@ import json
 # Load the configuration file
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
+    print(json.dumps(config, indent=4))  # Print the config file
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
