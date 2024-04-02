@@ -27,7 +27,7 @@ echo "Display the status of the services..."
 lxterminal --command="systemctl status $LIST"
 
 # step 5: offer to reboot
-echo "Do you want to reboot the PC now to verify start at boot? (Y/N)"
+echo "Do you want to reboot the PC now to verify start at boot? (y/N)"
 read confirm
 if [[ $confirm == [Yy] ]]; then
     echo "Rebooting now..."
