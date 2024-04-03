@@ -4,5 +4,6 @@ After = network.target
 [Service]
 ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-logging-RDL-USB0.py
 Restart = always
+RestartSec=10
 [Install]
 WantedBy=multi-user.target
