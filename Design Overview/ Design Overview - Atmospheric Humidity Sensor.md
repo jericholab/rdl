@@ -55,7 +55,7 @@ CORE SENSOR - OPERATION MODES
 PRINTED CIRCUIT BOARD
 
 - For accurate measurements, the SHT40 is meant to be installed inside a radiation shield.
-- The board has been dimensioned to fit inside the UWO 3D printed shield. An OS paper about the design and performance of this shield is available for free \[ref\ https://www.appropedia.org/Design_and_Implementation_of_3-D_Printed_Radiation_Shields_for_Environmental_Sensors].
+- The board has been dimensioned to fit inside the UWO 3D printed shield. An OS paper about the design and performance of this shield is available for free \[ref\ https://www.appropedia.org/Design_and_Implementation_of_3-D_Printed_Radiation_Shields_for_Environmental_Sensors ].
 - There is a M3 hole in each corner of the board. A fifth hole, centered, allows the installation inside the radiation shield.
 - There is a board cutout in the middle of the board to improve air circulation around the chip.
 - Like other RDL sensor boards, there is a RJ45 connector, with the usual pin order.
