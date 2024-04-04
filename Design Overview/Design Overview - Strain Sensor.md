@@ -17,6 +17,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - [SENSOR CALIBRATION](#sensor-calibration)
 - [RJ45 CONNECTORS](#rj45-connectors)
 - [OTHER](#other)
+- [TEMPORARY COMMENTS](#temporary-comments)
 
 
 
