@@ -12,11 +12,11 @@ Warning: The following material is for educational purposes only. Always refer t
   - [NAU7802 CHIP - GENERALITIES](#nau7802-chip---generalities)
   - [NAU7802 CHIP – I2C COMMUNICATION](#nau7802-chip---i2c-communication)
   - [NAU7802 CHIP - MEASUREMENTS](#nau7802-chip---measurements)
-  - [STRAIN GAUGE LOAD CELL](#strain-gauge-load-cell)
-  - [SOFTWARE](#software)
-  - [SENSOR CALIBRATION](#sensor-calibration)
-  - [RJ45 CONNECTORS](#rj45-connectors)
-  - [OTHER](#other)
+- [STRAIN GAUGE LOAD CELL](#strain-gauge-load-cell)
+- [SOFTWARE](#software)
+- [SENSOR CALIBRATION](#sensor-calibration)
+- [RJ45 CONNECTORS](#rj45-connectors)
+- [OTHER](#other)
 
 
 
@@ -42,7 +42,7 @@ Warning: The following material is for educational purposes only. Always refer t
 
 ## NAU7802 CHIP
 
-## NAU7802 CHIP - GENERALITIES
+### NAU7802 CHIP - GENERALITIES
 
 - The NAU7802 chip by Nuvoton is a high-accuracy voltage measurement device. It includes a 24-bit ADC and has I2C communication capabilities.
 - The NAU7802 has two functions: it provides a regulated excitation voltage and it measures the response signal.
@@ -55,7 +55,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - Note that the NAU7802 can accept various voltage supply values but the reading voltage is limited by the supply voltage (“AVDD should not exceed DVDD supply voltage”).
 - When used with the RDL revision E2 and after, the PCB is only supplied in power when a measurement is required by the Nano. This means that over the course of its life, the sensor will be powered up thousands of times. The NAU7802 chip does not require a delay between power up and reading: it will deal with the necessary delays autonomously.
 
-## NAU7802 CHIP - I2C COMMUNICATION
+### NAU7802 CHIP - I2C COMMUNICATION
 
 - The NAU7802 chip has a single permanent I2C address: 0x2A. Therefore, one cannot daisy-chain two strain boards, it can only daisy chain a different sensor. Using two strain sensors on a given system requires two separate channels.
 - Like all sensors from the RDL suite, the NAU7802 board has been designed for long wire operation (30m). However, the NAU7802 chip appears to have a weaker native signal and achieves shorter cable lengths. When combined with I2C shield revA1 and RDL RevE2, with a CAT5 cable and low EM noise environment, the maximum cable length for continuous communication is currently 30 m.
@@ -63,7 +63,7 @@ Warning: The following material is for educational purposes only. Always refer t
 - NAU7802 is designed to operate at 100kHz or 400kHz (high-speed I2C bus). However, it has shown no difficulties at operating at low bus frequency, down to 31kHz (Jericho default on hardware-based I2C protocol).
 - The presence of two RJ45 connectors on the board allows to daisy chain I2C devices. For example, the cabling cost can be reduced by using a single long cable to reach the strain sensor PCB and, from there, only add a short CAT cable to connect to the SHT40 PCB. This is possible because the two PCBs do not have the I2C address.
 
-## NAU7802 CHIP - MEASUREMENTS
+### NAU7802 CHIP - MEASUREMENTS
 
 - The measurements can be done at various speed: 10, 20, 40, 80, 320 SPS (Samples Per Second). To reduce sampling time, RDL runs at 320 SPS by default.
 - DVDD is the digital power supply input (2.7 - 5.5V). It is external (e.g. RDL/Nano).
