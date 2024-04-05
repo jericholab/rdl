@@ -5,5 +5,6 @@ After = network.target
 ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-syncing.py
 WorkingDirectory=/home/orangepi/Desktop/SHELF3
 Restart = always
+RestartSec=60
 [Install]
 WantedBy=multi-user.target
