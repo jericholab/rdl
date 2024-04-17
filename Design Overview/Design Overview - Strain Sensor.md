@@ -5,21 +5,19 @@ Copyright: Jericho Laboratory Inc. License: CC-BY-SA.
 
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version, as well as the latest specification sheets of the associated electronic components.
  
-## TABLE OF CONTENTS
-- [GENERAL](#general)
-- [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
-- [NAU7802 CHIP](#nau7802-chip)
-  - [NAU7802 CHIP - GENERALITIES](#nau7802-chip---generalities)
-  - [NAU7802 CHIP – I2C COMMUNICATION](#nau7802-chip---i2c-communication)
-  - [NAU7802 CHIP - MEASUREMENTS](#nau7802-chip---measurements)
-- [STRAIN GAUGE LOAD CELL](#strain-gauge-load-cell)
-- [SOFTWARE](#software)
-- [SENSOR CALIBRATION](#sensor-calibration)
-- [RJ45 CONNECTORS](#rj45-connectors)
-- [OTHER](#other)
-- [TEMPORARY COMMENTS](#temporary-comments)
+**Table of Contents**
 
-
+1. [GENERAL](#general)
+2. [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
+3. [NAU7802 CHIP](#nau7802-chip)
+   - [NAU7802 CHIP - GENERALITIES](#nau7802-chip---generalities)
+   - [NAU7802 CHIP – I2C COMMUNICATION](#nau7802-chip---i2c-communication)
+   - [NAU7802 CHIP - MEASUREMENTS](#nau7802-chip---measurements)
+4. [STRAIN GAUGE LOAD CELL](#strain-gauge-load-cell)
+5. [SOFTWARE](#software)
+6. [SENSOR CALIBRATION](#sensor-calibration)
+7. [RJ45 CONNECTORS](#rj45-connectors)
+8. [OTHER](#other)
 
 ## NAU7802 CHIP – I2C COMMUNICATION
 
