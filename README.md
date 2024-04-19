@@ -2,7 +2,7 @@
 
 The RDL is an open-source suite of ready-to-use data logger and sensors designed for scientists and engineers.
 
-Jericho Laboratory operates the RDL product with a mix of following open-source licenses:
+The RDL is an open-source ready-to-use data logger designed for scientists and engineers.
 
 SOFTWARE: GPL 3.0 
 

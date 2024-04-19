@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: controlFunc
-// PURPOSE: Update the control signal (code example: if temperature is warmer inside than outside start the fan)
+// PURPOSE: Update the control signal (coded example: if voltage 1 is higher than voltage 2, then start a fan)
 // INPUT: none
 // OUTPUT: none
 

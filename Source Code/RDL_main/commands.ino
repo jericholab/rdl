@@ -51,7 +51,7 @@ if (str == F("KELVIN\r")){
     if (str == F("HELP\r")){
     Serial.println();
     Serial.println(F("Possible commands:")); 
-    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V"));
+    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, I2CSCAN"));
     Serial.println();
     delay(2000);
     }        
@@ -127,6 +127,12 @@ if (str == F("QTY-V\r")){  //if word "quantity" is received, enter a while loop 
   delay(1000);
   resetFunc(); //reset the arduino
 }
+
+if (str == F("I2CSCAN\r")){
+  i2cScan();  
+  delay(1000);
+}
+
 
 str="";                     // reinitialize string str with empty string. str holds commands incoming from serial monitor. Without this line, buffer is never empty.
 }

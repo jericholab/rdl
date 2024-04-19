@@ -6,15 +6,18 @@
 
 void i2c_select(uint8_t i) {    //define a small function to select the i2c multiplexer channel
   if (i > 7) return;           //ensure that the selected channel value is between 0 and 7 (8 channel i2c mux)
-  pcf3.digitalWrite(i, LOW);  // turn LED on by sinking current to ground
-  pcf4.digitalWrite(i, HIGH);  // turn LED on by sinking current to ground
-  delay(100);
 
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);    // Bitwise left shift operation
-  Wire.endTransmission();  
-  pcf3.digitalWrite(i, HIGH); // turn LED off by turning off sinking transistor
-  pcf4.digitalWrite(i, LOW); // turn LED off by turning off sinking transistor
+
+//  Wire.beginTransmission(TCAADDR);
+//  Wire.write(1 << i);    // Bitwise left shift operation    
+//  Wire.endTransmission();                                   
+
+  tcaselect(i);
+//  Wire.beginTransmission(addr);
+//  Wire.setClock(clockSpeed); 
+
+//  pcf3.digitalWrite(i, HIGH); // turn LED off by turning off sinking transistor
+//  pcf4.digitalWrite(i, LOW); // turn LED off by turning off sinking transistor
 }  
 
 //Arduino.cc Reference: There are both 7 and 8-bit versions of I2C addresses. 7 bits identify the device, and the eighth bit determines
