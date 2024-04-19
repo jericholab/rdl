@@ -7,6 +7,12 @@ import time
 import shutil
 import os   
 import logging
+import json
+
+# Load the configuration file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+    print(json.dumps(config, indent=4))  # Print the config file
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
@@ -20,7 +26,9 @@ print("RDL-python-syncing to Dropbox script...")
 source_path = "./logging-folder/tosync/"  #relative path"
 transit_path = "./logging-folder/transit/"  #relative path"
 #destination_path = "./logging-folder/synced/"
-destination_path = "/media/orangepi/SD_CARD1/"
+#destination_path = "/media/orangepi/SD_CARD1/"
+destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
+
 
 def syncToDropbox():
     print("move from /tosync to /transit folder")
@@ -29,16 +37,15 @@ def syncToDropbox():
     print("syncToDropbox")
     print("   ")
     from subprocess import call
-    localSide1 = "/home/orangepi/SHELF3/logging-folder/transit/RDL"
-    cloudSide1 = "Professional/WIRED/Site2_Floatovoltaics/RDL"
-    localSide2 = "/home/orangepi/SHELF3/logging-folder/transit/cameras"
-    cloudSide2 = "Professional/WIRED/Site2_Floatovoltaics/cameras"
+    localSide1 = "./logging-folder/transit/RDL"
+    cloudSide1 = f"Professional/WIRED/{config['SITE']}"
+    localSide2 = "./logging-folder/transit/cameras"
+    cloudSide2 = f"Professional/WIRED/{config['SITE']}"
     Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
     Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
-    
-    print("move from /transit to /synced folder")
+    print("move from /transit to backup folder (e.g. SD Card)")
     sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced" 
     
 def sync(src, dest):
