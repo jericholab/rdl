@@ -6,7 +6,7 @@
 
 void readEEPROM(){
 
-    units_T =  EEPROM.read(0);                          // read EEPROM in case, temperature units were previously defined. EEPROM.read() will read a single byte.
+    units_T =  EEPROM.read(0);                        // read EEPROM in case, temperature units were previously defined. EEPROM.read() will read a single byte.
     long readInterval_ROM;                            // define readInterval_ROM before using it to store data extracted from EEPROM, if any
     EEPROM.get(4, readInterval_ROM);                  // Read EEPROM address that could contain readInterval and store to temporary variable. EEPROM.get() can read variable size object.
     
