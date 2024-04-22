@@ -1,7 +1,8 @@
 JL- P1.5 - Ice Bath Procedure
 =============================
+by Jericho Lab
 
-Disclaimer: Jericho Laboratory is not responsible for any damage or your safety if you attempt to reproduce this procedure or any other procedure shared by Jericho Laboratory. DO NOT move a vessel filled with fluid.
+**WARNING**: Jericho Laboratory is not responsible for any damage or your safety if you attempt to reproduce this procedure or any other procedure shared by Jericho Laboratory. DO NOT move a vessel filled with fluid.
 
 **Introduction**
 
@@ -69,7 +70,7 @@ Day 2
 14. The test vessel should not be made of glass. Glass is not transparent to the infrared spectrum, but it is transparent to the visible spectrum. Hence, the probe could absorb some radiant energy in the visible spectrum. This energy gain would bias the temperature measurement.
 15. The use of larger ice cubes would create a less uniform temperature bath, which is a source of error. The ice cubes will also tend to melt together more easily due to the larger amount of latent energy available to solidify the water in between the cubes.
 16. It is normal that during measurements, the probe temperature will fluctuate slightly (see Figure 4). At least two phenomena are involved. First, the temperature equilibrium is not perfect since it is the microscopic temperature differences combined with Brownian movement that drives the phase change. Second, it is possible that the resistance value of the probe falls in between two values on the ADC, due to its limited accuracy. Both electrical and thermal fluctuations will make the reading oscillate between the two values. These two phenomena are dealt with by averaging the data over a sufficient time period.
-17. The overall accuracy of a calibrated sensor depends on the accuracy of the reference point but also on the accuracy of the measurement device used for the calibration procedure.
+17. The overall accuracy of a calibrated sensor depends on the accuracy of the reference point but also on the accuracy of the measurement device used for the calibration procedure. In our lab, the resistance value is measured with the 16-bit accuracy of the ADS1115 (RDL). If you reproduce this experiment at home with the native 10-bit ADC of the RDL, the accuracy of procedure will be lower.
 18. The extension wires should be as short as possible to minimize the noise (electromagnetic induction). Electromagnetic noise emanating from the environment should also be minimized, if possible.
 19. If you have insufficient quantities of small cubes, the impact of using larger cubes can be minimized by using small cubes in the bottom of the vessel and larger cubes at the top, further away from the probes. In such a scenario however, the accuracy of the bath could be lower.
 20. During the measurements, one option is to let the probe still. Alternatively, some users will keep stiring slowly to make sure that all the water and the ice come into intimate contact. Stir in the center region, avoiding the sides, the top and the bottom, where the temperature is different due to heat losses.
@@ -79,8 +80,7 @@ Day 2
 
 1. ASTM E563-11 (2016) Standard Practice for Preparation and Use of an Ice-Point Bath as a Reference Temperature.
 2. ASTM Specification D1193 Standard Specification for Reagent Water.
-3. NIST, User-Friendly Guidance on the Replacement of Mercury Thermometers, 2010
-4. <www.arduino.cc/en/Reference/AnalogRead>
+3. NIST, User-Friendly Guidance on the Replacement of Mercury Thermometers, 2010  https://www.epa.gov/sites/default/files/2015-10/documents/nistuserfriendlyguide.pdf
 
 **Images**
 <figure>
