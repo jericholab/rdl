@@ -33,9 +33,13 @@ The procedure is based on  NIST Special Publication 250-23 (1988) as well as mor
 10. The probe must be exposed to five (5) minutes of rolling boil before taking measurements \[NIST\].
 11. Measure the electrical resistance every second for 30 seconds, one time per second. See Figure 1 for a typical curve.
 12. Data treatment: Calculate the atmospheric pressure and average the 30 data points.
-13. NIST: The uncertainty of the elevation limits the uncertainty of the steam point. Using the steam point calculator, you can achieve an uncertainty of 0.1 °C (0.2 °F) at a 95 % confidence level.
+13. NIST: The uncertainty of the elevation limits the uncertainty of the steam point. Using the steam point calculator, you can achieve an uncertainty of 0.1 °C (0.2 °F) at a 95 % confidence level. The steam point equation is given by the NIST Excel sheet referenced at the end of this document. Pressure must be between 97.0 and 104.0 kPa for the equation to be valid.
+14. Keep your calibration logs for future consultations. Record keeping is an essential component of any calibration program.
+15. Calibration procedures are delicate procedures and it may take a few tries before mastering the procedure. If you are unsure of the results, the procedure should be repeated to see if, at least, you get consistent results.
+16. To avoid the ‘stem effect’ during calibration, the Fluke company suggests an immersion depth of 20 times the sum of the probe diameter and the probe length.
 
-The steam point equation is given by the NIST Excel sheet referenced at the end of this document. Pressure must be between 97.0 and 104.0 kPa for the equation to be valid.
+
+
 
  <figure>
   <p align="center">

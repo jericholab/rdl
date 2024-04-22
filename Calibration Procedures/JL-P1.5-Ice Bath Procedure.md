@@ -75,6 +75,9 @@ Day 2
 19. If you have insufficient quantities of small cubes, the impact of using larger cubes can be minimized by using small cubes in the bottom of the vessel and larger cubes at the top, further away from the probes. In such a scenario however, the accuracy of the bath could be lower.
 20. During the measurements, one option is to let the probe still. Alternatively, some users will keep stiring slowly to make sure that all the water and the ice come into intimate contact. Stir in the center region, avoiding the sides, the top and the bottom, where the temperature is different due to heat losses.
 21. If you were to replicate the procedure using shaved ice made of distilled water, the uncertainty would be 0.002°C (ASTM E563-11 (2016)).
+22. Keep your calibration logs for future consultations. Record keeping is an essential component of any calibration program.
+23. Calibration procedures are delicate procedures and it may take a few tries before mastering the procedure. If you are unsure of the results, the procedure should be repeated to see if, at least, you get consistent results.
+24. To avoid the ‘stem effect’ during calibration, the Fluke company suggests an immersion depth of 20 times the sum of the probe diameter and the probe length.
 
 **References**
 
