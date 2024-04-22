@@ -1,3 +1,13 @@
+## Atmospheric Humidity Sensor Revision A2 - Design Overview
+
+### GENERAL
+### APPLICABLE TO THE RDL SUITE
+### CORE SENSOR - SHT40 CHIP
+### CORE SENSOR - OPERATION MODES
+### PRINTED CIRCUIT BOARD
+### LEVEL SHIFTING
+### OTHER
+### COMMENTS
 **Atmospheric Humidity Sensor Revision A2 - Design Overview**  
 =======================================
 Copyright: Jericho Laboratory Inc. Documentation license: CC-BY-SA.  
