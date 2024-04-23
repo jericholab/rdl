@@ -5,7 +5,21 @@ Revision: 1.
 
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version. For a full list of components, refer to the Bill of Materials (BoM).
 
-GENERAL
+**Table of Contents**
+
+
+  1. [GENERAL](#general)
+  2. [SINGLE BOARD COMPUTER (SBC)](#single-board-computer-sbc)
+  3. [RESISTANCE DATA LOGGER (RDL)](#resistance-data-logger-rdl)
+  4. [USB HUB](#usb-hub)
+  5. [MAIN ENCLOSURE](#main-enclosure)
+  6. [CABLE GLANDS](#cable-glands)
+  7. [WIFI IPEX ANTENNA](#wifi-ipex-antenna)
+  8. [POWER BAR](#power-bar)
+  9. [ENCLOSURE LAYOUT](#enclosure-layout)
+  10. [OTHERS](#others)
+
+## GENERAL
 
 - The main hub is the central point in the WIRED system infrastructure. Each installation (i.e. experiment) has only one main hub.
 - The main hub design is based on continuous access to grid electricity and WiFi. This design is not for remote areas and/or battery powered systems.
@@ -27,7 +41,7 @@ GENERAL
   - 2x Silica gel packs
 - All empty connectors are filled with plastic plugs to avoid oxidation and dust accumulation. This includes RDL and SBC connectors as well as USB and RJ45 ports. This ensures that all connectors are in good state if the need ever comes, over the years.
 
-SINGLE BOARD COMPUTER (SBC)
+## SINGLE BOARD COMPUTER (SBC)
 
 - Due to a global shortage and increased cost, the decision was made in 2023 to use Orange Pi 4 LTE instead of the traditional Raspberry Pi. The decision might be reversed in the future.
 - The native OS provided by Orange Pi is used (Ubuntu-based).
@@ -37,20 +51,20 @@ SINGLE BOARD COMPUTER (SBC)
 - The fan also has a role of increasing heat transfer from the Pi to the enclosure, helping to maintain an acceptable temperature inside the enclosure during the winter.
 - There is no screen or visual interface to the SBC. The HDMI connector can be used in the lab; in the field, remote access with a laptop is recommended.
 
-RESISTANCE DATA LOGGER (RDL)
+## RESISTANCE DATA LOGGER (RDL)
 
 - The RDL is installed on the bottom mounting panel.
 - The RDL includes the optional I2C shield(s), which are stacked under it. The quantity of shields (one or two) depends on the quantity of I2C channels required.
 - Inside the main hub, flat CAT cables are favored due to their compact form and increased flexibility, compared with traditional round CAT cables.
 - The RDL is installed close to the cable glands to reduce the length of wire inside.
 
-USB HUB
+## USB HUB
 
 - The USB hub allows the RDL and the IR camera (1 or 2) to communicate with the SBC. It also provides the 5V power supply.
 - The USB hub can only draw a maximum of 500mA on its USB port. This means that it could theoretically pose a limit to the RDL operation under certain circumstances. The power supply multiplexing of course reduces the likelihood, but nonetheless. In that scenario, the RDL USB cable could be directly connected to one of the three USB port of the SBC.
 - The USB hub (indoor rated) has been disassembled, coated with a conformal coating for increased protection against oxidation and reassembled.
 
-MAIN ENCLOSURE
+## MAIN ENCLOSURE
 
 - The main enclosure is an ABS IP65 white junction box with a hinged door and two snaps. Plastic was selected to reduce cost and weight. It is also easier to drill. The outer dimensions are 15.4"x11.4"x6.3" (391 mm x 290 mm x 160 mm).
 - The enclosure contains and protects the equipment against the hardship of the northern climates (-40 to +40°C). With the sun exposure, the enclosure is expected to endure a 100°C temperature range. This waterproof enclosure is tolerant to freeze, direct sunlight (UV) and dust. The door has a black rubber seal.
@@ -64,7 +78,7 @@ MAIN ENCLOSURE
 - The enclosure size is optimized for the current content. If additional components are added to the system, it is recommended to increase the size of the main enclosure.
 - It is recommended to NOT open the main enclosure during bad weather (rain, snow, dust) to minimize the risk of component damage and safety issues.
 
-CABLE GLANDS
+## CABLE GLANDS
 
 - There are five (5) cable glands on one of the side panel of the enclosure.
 - A single size of cable gland (M25X1.5, 25mm diameter passage) was selected to reduce cost and complexity (standardization).
@@ -73,11 +87,11 @@ CABLE GLANDS
 - The cable glands are installed on a **single row** to spread out the cables and reduce the cable density in this region of the enclosure.
 - The enclosure holes for the cable glands are done with a hand drill and a 1-in diameter (2.54mm) Forstner drill bit.
 
-WIFI IPEX ANTENNA
+## WIFI IPEX ANTENNA
 
 - The antenna is installed on the side of the box to reduce the risk of leaks (compared with the top surface). This antenna is outside the enclosure to increase range. It might not be necessary in all setups.
 
-POWER BAR
+## POWER BAR
 
 - A waterproof IPX4 power bar with six (6) plugs is installed inside the enclosure.
 - The power bar provides electricity for the following power supplies: SBC, ethernet switch, surveillance camera. Other components are indirectly powered via the SBC.
@@ -86,7 +100,7 @@ POWER BAR
 - The power bar has surge protection (1000 Joules) and overload protection (15A fuse).
 - The power bar has a LED light to indicate that power is on.
 
-ENCLOSURE LAYOUT
+## ENCLOSURE LAYOUT
 
 The exact position of each component on each mounting plate is standardized for improved quality control and production speed. The components installed on the bottom mounting plate were selected based on their size, cost, sensitivity to water and number of cabled connections.
 
@@ -100,7 +114,7 @@ The exact position of each component on each mounting plate is standardized for 
   - All power supplies
   - Two silica gel pack
 
-OTHERS
+## OTHERS
 
 - Two silica gel pack are installed inside the enclosure to absorb moisture and reduce the long-term air humidity content. The pack changes from purple to orange as it absorbs humidity. The pack should be changed or replenished via the microwave oven when they are saturated (orange). Reducing humidity is important to ensure proper function of all electronic and electric components inside the enclosure (short-circuit, oxidation). The silica gel pack are installed with the transparent side up to allow users to monitor the color evolution.
 - A user could install a SHT40 board inside the enclosure to monitor the air humidity, if humidity problems are suspected.
@@ -108,7 +122,7 @@ OTHERS
 - Residual heat from the system, mostly the SBC, helps reduce the relative humidity inside the enclosure by maintaining a constantly warmer temperature than outdoors. This is the same phenomenon that keeps heated houses very dry in the winter time.
 - Inside the enclosure, cable organization is improved with 3M adhesive devices and tie-wraps.
 
-  COMMENTS
+  ## COMMENTS
 1) Add logo and footer.
  
 2) Do I conserve the ‘SBC setup’ doc? Or merge it here?
