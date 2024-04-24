@@ -5,7 +5,7 @@
 
 
   1. [Overview](#overview)
-  2 [Features](#features)
+  2. [Features](#features)
   3. [Prerequisites](#prerequisites)
   4. [Configuration](#configuration)
      - [Script Settings](#script-settings)
