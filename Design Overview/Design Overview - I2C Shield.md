@@ -11,8 +11,8 @@ Documentation licence: CC-BY-SA.
 2. [I2C Communication](#i2c-communication)
 3. [I2C Extender (LTC4311)](#i2c-extender-ltc4311)
 4. [I2C Multiplexer (TCA9548)](#i2c-multiplexer-tca9548)
-5. [GPIO I2C Expander (PCF8574)](#gpio-i2c-expander-pcf8574)
-6. [MOSFET Transistors (AO3401/AO3406)](#mosfet-transistors-ao3401ao3406)
+5. [GPIO I2C Expander (PCF8574)](#gpio-i2c-expander-pcf8574)  
+  a. [MOSFET Transistors (AO3401/AO3406)](#mosfet-transistors-ao3401ao3406)
 7. [Cables](#cables)
 8. [Other](#other)
 
@@ -91,7 +91,7 @@ Documentation licence: CC-BY-SA.
 
 <figure>
 <p align="center">
-<img src="../Design Overview/images/I12 shield RevA2.png" style="width:50%">
+<img src="../Design Overview/images/I12 shield RevA2.png" style="width:40%">
   </p>
 </figure>
 <p align="center">
