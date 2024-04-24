@@ -7,16 +7,14 @@ Documentation licence: CC-BY-SA.
 
 **TABLE OF CONTENTS**
 
-1. [General](#general)
-2. [Notes Applicable to the RDL Suite](#notes-applicable-to-the-rdl-suite)
-3. [Generalities About the I2C Shield](#generalities-about-the-i2c-shield)
-4. [I2C Communication](#i2c-communication)
-5. [Cables](#cables)
-6. [I2C Extender (LTC4311)](#i2c-extender-ltc4311)
-7. [GPIO I2C Expander (PCF8574)](#gpio-i2c-expander-pcf8574)
-8. [I2C Multiplexer (TCA9548)](#i2c-multiplexer-tca9548)
-9. [MOSFET Transistors](#mosfet-transistors)
-10. [Other](#other)
+1. [Generalities About the I2C Shield](#generalities-about-the-i2c-shield)
+2. [I2C Communication](#i2c-communication)
+3. [Cables](#cables)
+4. [I2C Extender (LTC4311)](#i2c-extender-ltc4311)
+5. [GPIO I2C Expander (PCF8574)](#gpio-i2c-expander-pcf8574)
+6. [I2C Multiplexer (TCA9548)](#i2c-multiplexer-tca9548)
+7. [MOSFET Transistors](#mosfet-transistors)
+8. [Other](#other)
 
 
 ## GENERALITIES ABOUT THE I2C SHIELD
