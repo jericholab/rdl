@@ -80,3 +80,28 @@ ATM HUMIDITY VERSION:
  6
  7
  8
+
+
+
+GENERAL FROM I2C SHIELD DOCUMENT
+
+**GENERAL**
+
+- This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2. This board is the successor of revision E1 (prototype).
+- The RDL rev E2 hardware is released under the MIT open-source license.
+- The current board revision only works with the corresponding source code version.
+- Allowable wire gauges are written on the silkscreen (AWG 20-26). This interval is the ideal size to avoid wires slipping out. The order of the terminals is also printed (i.e. VCC, GND, SIG, VCC, GND, SIG, etc.)
+- Starting with revision E2, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced.
+- The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
+- A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
+
+
+**NOTES APPLICABLE TO THE RDL SUITE**
+
+- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
+- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
+- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
+- The complete PCB design, ready for production, is available on Github. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
+- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
+- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
+- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.

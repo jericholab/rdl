@@ -1,8 +1,21 @@
 JL- P1.5 - Ice Bath Procedure
 =============================
 by Jericho Lab
+Copyright: 
+Document license:
 
 **WARNING**: Jericho Laboratory is not responsible for any damage or your safety if you attempt to reproduce this procedure or any other procedure shared by Jericho Laboratory. DO NOT move a vessel filled with fluid.
+
+**Table of Contents**
+
+1. [Introduction](#introduction)
+2. [Required Material](#required-material)
+3. [Possibly Required](#possibly-required)
+4. [Procedure](#procedure)
+5. [Comments](#comments)
+6. [References](#references)
+7. [Images](#images)
+
 
 **Introduction**
 
