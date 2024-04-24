@@ -1,5 +1,20 @@
 # Seek Thermal Data Logging Script
 
+
+**Table of Contents**
+
+
+  1. [Overview](#overview)
+  2. [Features](#features)
+  3. [Prerequisites](#prerequisites)
+  4. [Configuration](#configuration)
+     - [Script Settings](#script-settings)
+     - [config.json](#configjson)
+  5. [File Structure](#file-structure)
+  6. [Usage](#usage)
+  7. [Function Descriptions](#function-descriptions)
+  8. [Scheduling](#scheduling)
+
 ## Overview
 
 This script is designed for capturing thermographic data from Seek Thermal cameras. It continuously monitors the camera for new frames and logs the temperature data to dynamically named CSV files based on the date and time. The script is suitable for continuous monitoring and logging applications in industrial, environmental, and scientific research settings.

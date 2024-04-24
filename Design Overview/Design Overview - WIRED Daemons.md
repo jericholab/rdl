@@ -2,7 +2,16 @@
 =======================================
 Copyright: Jericho Laboratory Inc. License: CC-BY-SA.
 
-**GENERAL**
+**Table of Contents**
+
+
+1. [GENERAL](#general)
+2. [CONFIGURATION FILES](#configuration-files)
+3. [BASH SCRIPTS](#bash-scripts)
+4. [How to operate more sensors](#how-to-operate-more-sensors)
+5. [Updates](#updates)
+
+## GENERAL
 
 A daemon is the name given to services in the Linux environment and more generally to any background process that runs independently of interactive user interfaces. In this document, the two names "daemons" and "services" are used interchangeably. It is pronounced like "demon" but the Linux programmers decided to use the latin spelling of the word.
 
@@ -14,7 +23,7 @@ The daemon makes the data logging resilient by solving these two problems. Note 
 
 Various types of daemons exist, but in this sub-project we only use services type.
 
-**CONFIGURATION FILES**
+## CONFIGURATION FILES
 
 Each daemon is controlled by a configuration file with extension file ".service". In the WIRED project, there are 5 configuration files:
 
@@ -56,7 +65,7 @@ A configuration file is structured in sections, each denoted by square brackets,
     [Install] Section: Controls how the unit is "installed" by enabling it.
     WantedBy: Defines the target that this unit should be started under, influencing when the service starts during the boot process.
 
-**BASH SCRIPTS**  
+## BASH SCRIPTS  
 The bash scripts are heavily commented but a short description is given below.
 
 **wired-enable-start-all-daemons.sh**  
@@ -69,8 +78,8 @@ To verify that each python script is running properly, open a terminal in the "/
 **wired-disable-stop-all-daemons.sh**  
 To stop the services, run this script once.
 
-**How to operate more sensors**  
+## How to operate more sensors
 In the advent where you would like to run more than one surveillance camera or one infrared camera or one data logger, you must duplicate the whole system (script, service) and adapt the names and port numbers. There is presently no automatic detection of devices or quantities, but this is a potential future development.
 
-**Updates**  
+## Updates
 The revision number in the title (e.g. 1.1.0) refers to the revision of the set of scripts and configuration files. In the future, there will be independent revisions of the files and of the documentation (whose versions are managed by the Github system).

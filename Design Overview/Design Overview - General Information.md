@@ -9,16 +9,28 @@ Warning: The following material is for educational purposes only. Always refer t
 **Introduction**  
 Information found in this document applies to all designs, except where written otherwise.
 
-CURRENT SENSOR VERSION:  
+**Table of Contents**
+1. [CURRENT SENSOR VERSION](#current-sensor-version)
+   - [GENERAL](#general)
+2. [NOTES APPLICABLE TO THE RDL SUITE](#notes-applicable-to-the-rdl-suite)
+3. [STRAIN VERSION](#strain-version)
+   - [GENERAL](#general)
+4. [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
+5. [ATM HUMIDITY VERSION](#atm-humidity-version)
+   - [GENERAL](#general)
+6. [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
 
-GENERAL
+
+## CURRENT SENSOR VERSION:  
+
+### GENERAL
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
 - The original design of the voltage regulation circuit was done by Sparkfun under CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
 - A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
 - The allowable wire gauges for the PCB screw terminals are AWG 20-26.
 - For this product, a “long wire” is defined as 30 m. The device was designed with a target of 30m wire. This applies for both CAT cables and ordinary two-conductor cables.
 
-NOTES APPLICABLE TO THE RDL SUITE
+## NOTES APPLICABLE TO THE RDL SUITE
 
 - Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
@@ -29,9 +41,9 @@ NOTES APPLICABLE TO THE RDL SUITE
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
 
-STRAIN VERSION:
+## STRAIN VERSION:
 
-## GENERAL
+### GENERAL
 
 - This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
@@ -49,9 +61,9 @@ STRAIN VERSION:
 - Unless stated otherwise, all libraries required to run the RDL suite are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
-ATM HUMIDITY VERSION:
+## ATM HUMIDITY VERSION:
 
-## GENERAL
+### GENERAL
 
 - This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.

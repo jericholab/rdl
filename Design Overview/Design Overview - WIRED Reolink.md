@@ -1,5 +1,20 @@
 # WIRED Reolink Camera Image Capture Script
 
+
+**Table of Contents**
+
+
+  1. [Overview](#overview)
+  2. [Features](#features)
+  3. [Prerequisites](#prerequisites)
+  4. [Configuration](#configuration)
+     - [Script Settings](#script-settings)
+     - [Dynamic Scheduling](#dynamic-scheduling)
+  5. [File Structure](#file-structure)
+  6. [Usage](#usage)
+  7. [Function Descriptions](#function-descriptions)
+  8. [Scheduling](#scheduling)
+
 ## Overview
 
 This Python script is specifically designed to interface with Reolink RLC-520a cameras to capture images periodically based on a specified time interval. The images are saved in a structured directory system with timestamps to ensure easy tracking and retrieval. This script is ideal for surveillance, monitoring, or data collection scenarios where periodic visual data capture is required.

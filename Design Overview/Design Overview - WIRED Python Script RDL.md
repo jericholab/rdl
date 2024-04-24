@@ -1,5 +1,17 @@
 # WIRED - RDL Data Logging Script
 
+**Table of Contents**
+
+  1. [Overview](#overview)
+  2. [Features](#features)
+  3. [Prerequisites](#prerequisites)
+  4. [Configuration](#configuration)
+     - [Script Settings](#script-settings)
+  5. [File Structure](#file-structure)
+  6. [Usage](#usage)
+  7. [Function Descriptions](#function-descriptions)
+  8. [Scheduling](#scheduling)
+
 ## Overview
 
 This script is designed to capture data continuously from a USB-connected RDL device. It logs data received via serial communication into timestamped text files, facilitating real-time data acquisition and storage. The script is particularly useful in settings requiring regular monitoring of serial data, such as in laboratory experiments or industrial data collection.

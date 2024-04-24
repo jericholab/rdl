@@ -10,13 +10,23 @@ Copyright: Jericho Laboratory Inc. Document license: CC-BY-SA.
 
 **Warning**: This product is neither intended nor warranted for use in following equipment or devices: Special application (such as for medical devices, transportation equipment, traffic signal control equipment, fire and crime prevention equipment, aeronautics and space devices, nuclear power control, fuel control, in vehicle equipment safety devices, and so on) in which extremely high quality and high reliability is required, or if the malfunction or failures of product could be cause for loss of human life, bodily injury.
 
-**GENERAL**
+**Table of Contents** 
+
+1. [GENERAL](#general)
+2. [CURRENT SENSOR (L01Z050S05) GENERALITIES AND INSTALLATION](#current-sensor-l01z050s05-generalities-and-installation)
+3. [OPERATION](#operation)
+4. [ANALOG OPERATION MODE](#analog-operation-mode)
+5. [DIGITAL OPERATION MODE](#digital-operation-mode)
+6. [VOLTAGE REGULATOR TPS630701](#voltage-regulator-tps630701)
+
+
+## GENERAL
 
 - For general information about PCB designs of Jericho sensors, please refer to 'Design Overview - General information.md'.  
 - The original design of this board was provided by Sparkfun (CC-BY-SA).
 - The license for the Jericho improvements of the hardware is CC-BY-SA.
 
-**CURRENT SENSOR (L01Z050S05) GENERALITIES AND INSTALLATION**
+## CURRENT SENSOR (L01Z050S05) GENERALITIES AND INSTALLATION
 
 - The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA. The L01Z module, based on the Hall effect, can measure both DC and AC (up to 100kHz) current up to 50A DC. The maximum frequency readable by the Jericho board however is much less, limited by the sampling speed of the processor. The LZ01 series offers module with a capacity up to 600A DC.
 - The L01Z component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
@@ -27,7 +37,7 @@ Copyright: Jericho Laboratory Inc. Document license: CC-BY-SA.
 - Jericho recommends the addition of silica gel packet inside the enclosure to reduce humidity.
 - The NAU7802 board is able to operate in two modes: analog and digital.
 
-**OPERATION**
+## OPERATION
 
 - To make a measurement, a single conductor must pass through the core. If both the supply and return conductors pass through, the sensor will measure a value near zero, since the two electrical fields will cancel each other.
 - The TAMURA design is NOT a clamp. The cable has to be securely disconnected from the source and passed through the core.
@@ -39,7 +49,7 @@ Copyright: Jericho Laboratory Inc. Document license: CC-BY-SA.
 - Due to its two RJ45 connectors, the NAU7802 board is compatible with daisy-chain, if there is no I2C addresses conflict.
 
 
-**ANALOG OPERATION MODE**  
+## ANALOG OPERATION MODE
 
 - The analog mode consist of taking direct measurements of the TAMURA sensor output (0-5V) with the RDL ADS1115 chip.
 - This mode is less precise due to: 
@@ -49,7 +59,7 @@ Copyright: Jericho Laboratory Inc. Document license: CC-BY-SA.
 - The analog mode is therefore not recommended if the digital mode is available.
 
 
-**DIGITAL OPERATION MODE**
+## DIGITAL OPERATION MODE
 
 - The digital mode builds upon the analog mode. A high-accuracy ADC chip, NAU7802, measures the analog signal and converts it to a digital I2C signal that is transmitted to the data logger.
 - The NAU7802 defaults to differential measurements (A+, A-) but for the current measurements, it operates in unipolar mode (A+, GND). The PGA is also deactivated to increase the measurement range to a full 0-5V.
@@ -59,7 +69,7 @@ Copyright: Jericho Laboratory Inc. Document license: CC-BY-SA.
     b) Output calibration (offset & slope)
 
 
-**VOLTAGE REGULATOR TPS630701**
+## VOLTAGE REGULATOR TPS630701
 
 - To supply a high accuracy 5V line to the current sensor, the TPS630701 chip (buck-boost converter with switch current) is used.
 - The circuitry around the TPS630701 is based on the manufacturer recommendation presented in the specification sheet.

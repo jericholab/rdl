@@ -1,6 +1,19 @@
 
 # JerichoLab RDL - Python Syncing Script
 
+
+**Table of Contents**
+
+
+  1. [Overview](#overview)
+  2. [Features](#features)
+  3. [Prerequisites](#prerequisites)
+  4. [Configuration File](#configuration-file)
+  5. [File Structure](#file-structure)
+  6. [Usage](#usage)
+  7. [Function Description](#function-description)
+  8. [Scheduling](#scheduling)
+
 ## Overview
 
 This Python script is designed for use in Jericho Laboratory's data logging system. It handles the automatic continuous synchronization of data files from the local system to Dropbox. The script utilizes configuration settings from a JSON file to manage paths and some of the synchronization behaviors.
