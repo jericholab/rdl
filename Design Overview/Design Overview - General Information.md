@@ -2,7 +2,8 @@
 =======================================
 by Jericho Lab
 
-Copyright: Jericho Laboratory Inc. Documentation license: CC-BY-SA.  
+Copyright: Jericho Laboratory Inc.  
+Documentation license: CC-BY-SA.  
 
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version. 
 
@@ -93,7 +94,10 @@ Information found in this document applies to all designs, except where written 
  7
  8
 
-
+- a silica gel bag :  
+-brand?
+- Silica gel bag remove humidity from the water sensitive enclosures
+- Silica gel bag a replenishable with heat. Follow instructions.
 
 GENERAL FROM I2C SHIELD DOCUMENT
 
