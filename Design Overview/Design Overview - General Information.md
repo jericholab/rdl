@@ -117,3 +117,28 @@ GENERAL FROM I2C SHIELD DOCUMENT
 - Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
 - Unless stated otherwise, all libraries required to run the RDL suite are open-source.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
+
+
+**SECTION INFRARED CAMERA DESIGN OVERVIEW **  
+
+
+## GENERAL
+
+- This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2.
+- While great efforts have been put into affordability, the IR camera remains the most expensive sensor in the RDL suite. This is partly due to its high-tech nature, but one limiting factor was the high requirements of the WIRED project (i.e. radiometric capability, high resolution). An ultra-low-cost alternative could be the MLX90640 ($C100). However, its image resolution (24x32 pixels) would be of limited use in the context of solar panel monitoring, for example.
+- The IR camera board hardware is released under the CC-BY-SA-4.0 open-source license.
+- The current board revision only works with the corresponding source code version.
+- For the IR camera, a “long” wire or cable is defined as 22m.
+- Since October 2023, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced in China.
+- Long wires (>10m) between the RDL and its sensors will cause significant voltage loss. This means that some devices will require a voltage regulator at the other end to make sure that the chip is supplied with the proper voltage.
+
+## NOTES APPLICABLE TO THE RDL SUITE
+
+- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
+- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
+- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
+- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
+- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
+- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
+- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
+- Generally speaking, most key components of the RDL suite have their datasheet on the Jericho GitHub (e.g. chips).

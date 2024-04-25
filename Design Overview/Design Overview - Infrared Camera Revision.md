@@ -1,13 +1,14 @@
-**Infrared Camera Revision A1 - Design Overview**  
+**Infrared Camera Module Revision A2 - Design Overview**  
 =======================================
-Copyright: Jericho Laboratory Inc. License: CC-BY-SA-4.0.  
-Revision: 1.  
+Copyright: Jericho Laboratory Inc.  
+License: CC-BY-SA-4.0.  
+ 
 
-Warning: The following material is for educational purposes only. Always refer to the most recent schematic and PCB layout files associated with your product version.
+**Warning**: The following material is for educational purposes only. Always refer to the most recent schematic and PCB layout files associated with your product version.
 
-Safety warning: It is imperative to avoid inhalation of germanium dust due to its potential health hazards. Therefore, meticulous care is required during the handling of these optical components. The utilization of protective gloves is strongly recommended to minimize direct contact. Additionally, adherence to standard operating procedures, including thorough handwashing post-handling, is essential to ensure safety.
+**Safety warning**: It is imperative to avoid inhalation of germanium dust due to its potential health hazards. Therefore, meticulous care is required during the handling of these optical components. The utilization of protective gloves is strongly recommended to minimize direct contact. Additionally, adherence to standard operating procedures, including thorough handwashing post-handling, is essential to ensure safety.
 
-**Table of Contents**
+**Table of Contents**  (UPDATE AT THE END*******)
 
 1. [GENERAL](#general)
 2. [NOTES APPLICABLE TO THE RDL SUITE](#notes-applicable-to-the-rdl-suite)
@@ -26,99 +27,153 @@ Safety warning: It is imperative to avoid inhalation of germanium dust due to it
 15. [COMMENTS](#comments)
 
 
-## GENERAL
+## INTRODUCTION
 
-- This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2.
-- While great efforts have been put into affordability, the IR camera remains the most expensive sensor in the RDL suite. This is partly due to its high-tech nature, but one limiting factor was the high requirements of the WIRED project (i.e. radiometric capability, high resolution). An ultra-low-cost alternative could be the MLX90640 ($C100). However, its image resolution (24x32 pixels) would be of limited use in the context of solar panel monitoring, for example.
-- The IR camera board hardware is released under the CC-BY-SA-4.0 open-source license.
-- The current board revision only works with the corresponding source code version.
-- For the IR camera, a “long” wire or cable is defined as 22m.
-- Since October 2023, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced in China.
-- Long wires (>10m) between the RDL and its sensors will cause significant voltage loss. This means that some devices will require a voltage regulator at the other end to make sure that the chip is supplied with the proper voltage.
-
-## NOTES APPLICABLE TO THE RDL SUITE
-
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
-- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
-- Generally speaking, most key components of the RDL suite have their datasheet on the Jericho GitHub (e.g. chips).
+- The infrared camera module consists of:
+  - a Seek C214SPX camera core;
+  - a Seek coprocessor (also called an interface board);
+  - a 3D-printed camera adapter;
+  - a USB-C adapter;
+  - a support PCB for components integration and auxiliary functions;*********
+  - a weatherproof protective germanium window (optional);
+  - 2x USB-over-CAT adapter;
+  - a CAT cable (variable length).
+  - an ABS enclosure
 
 ## THERMAL CAMERA MODULE
 
-- To our knowledge, there is no open-source infrared (IR) camera hardware available on the market, as of writing this document. The decision was therefore taken to integrate as best as possible a proprietary device into the open-source framework.
+- To our knowledge, there is no open-source infrared (IR) camera hardware available on the market, as of writing this document. The decision was therefore taken to integrate as best as possible a proprietary device into an open-source framework. 
 - The main component of the IR module is the C214SPX camera core. It is a long-wave infrared (LWIR) uncooled vanadium oxide microbolometer with a 4.0mm fixed chalcogenide lens, 12µm pixel pitch and a 200 X 150 pixels resolution. Chalcogenide is a class of cost-effective glass that can be molded instead of machined. The pixel pitch describes the pixel density on the camera sensor surface. The higher the density, the more compact the camera core for a given resolution.
 - In a micro bolometer, each pixel's electrical signal corresponds to the amount of infrared radiation it has absorbed, which is directly related to the temperature of the part of the scene that pixel is viewing. The surface of each pixel is vanadium oxide, chosen for its highly temperature-dependent electrical resistance.
-- This core is manufactured in the U.S. by Seek Thermal Inc., a private U.S. company. It was selected in part due to its open-source python wrapper, that allows easier integration in an open-source project. The SDK (Software Development Kit) is available with Linux, Windows and Mac, allowing operation on the Pi. This was also a decision factor.
+- This core is manufactured in the U.S. by Seek Thermal Inc., a private U.S. company. It was selected in part due to its open-source python wrapper, that allows easier integration in an open-source project. The SDK (Software Development Kit) is available with Linux, Windows and Mac, allowing operation on the Raspberry Pi.
 - Chalcogenide lenses are more affordable than crystalline lens/windows (e.g. germanium) due to their molding manufacturing process instead of machining. The chalcogenide lens has an anti-reflective (AR) coating with an optimal transmittivity in **XXX-XXX** um range
-- The C214SPX cameras are sold as transition kits. A transition kit is a 10-units pack sold to customers who want to have a small-scale production with improved pricing compared to the Starter Kit, which is sold individually.
-- The camera module consists of:
-  - a camera core;
-  - a camera bracket, 3D printed;
-  - a coprocessor (also called an interface board);
-  - a USB-C adapter;
-  - a support PCB for components integration and auxiliary functions;
-  - a weatherproof protective germanium window;
-  - a 5V heater;
-  - 2x USB-over-CAT adapter;
-  - a long CAT cable.
-- The coprocessor transforms the raw data from the sensor (core). The image processing includes applying algorithms for noise reduction, image enhancement, scaling, or applying color palettes. It can be configured to output different formats (RGB, thermographic array). Whether a camera can produce both RGB and thermographic outputs simultaneously for a single frame would depend on the specific capabilities and configuration of its processing hardware and software.
-- Seek manufactures the camera core, the coprocessor and the USB-C adapter. The support PCB is manufactured by Jericho, who also does the general assembly and final quality control.
-- The camera core takes pictures, which are then pre-processed by the coprocessor. The USB-C adapter makes it possible to connect the USB-C cable. The Seek Starter Kit (S214SPX) also contains a USB-C connector but this connector is deemed more fragile than the USB-C adapter. Hence, the manufacturer does not recommend permanent setup using the Starter Kit.
-- One limitation of the thermal camera is that accuracy is only known when the body camera is 25°C. This is a common limitation of thermal cameras. Accuracy and resolution will decrease as the camera temperature gets further away from this ideal temperature. Systematic tests remain to be done to evaluate accuracy at various body temperature. The simple case heater will limit the phenomenon at low temperature. A possible contingency is to retrofit an autonomous temperature-controlled Peltier heater (with on-board PID controller) inside the enclosure. This would enable hot and cold control.
-- The camera magnetic shutter is noisy but not a problem according to discussions with the manufacturer. By default, the shutter action is left to automatic control. This gives a pseudo-random clicking sound, which is increased at startup, when the camera is heating up. The manufacturer has had very few shutter dysfunctions reported over the years.
-- The shutter is used to perform what is known as Non-Uniformity Correction (NUC). By periodically closing the shutter, the camera can capture a uniform temperature image (as the shutter is a uniform temperature surface) and use this to calibrate and correct the pixel output.
-- The shutter interrupts image capture process, which can be problematic for time sensitive operating like missile guidance thermal videos. However, with a low-speed system dedicated to periodic image capture, there is no added value in a shutterless camera.
-- The SV1 filter is a new software option (in the SDK) which can be activated for improved image resolution. Its algorithm improves the image clarity, but its effect on the thermographic data is uncertain at this point.
-- Thermographic data is the ability of some higher quality cameras to output arrays of temperature field, with units (e.g. celcius).
+- The C214SPX cameras are sold as so-called "transition kits". A transition kit is a 10-units pack sold to customers who want to have a small-scale production with improved pricing compared to the Starter Kit, which is sold individually.
+- The coprocessor transforms the raw data from the sensor (core). The image processing includes applying algorithms for noise reduction, image enhancement, scaling, or applying color palettes. It can be configured to output different formats (RGB, thermographic array). 
+- Seek manufactures the camera core, the coprocessor and the USB-C adapter. The support PCB is manufactured by Jericho, who also does the general assembly and final system quality control.
+- The camera core takes pictures, which are then pre-processed by the coprocessor. The USB-C adapter makes it possible to connect the USB-C cable. The Seek Starter Kit (S214SPX) also contains a USB-C connector but this connector is deemed more fragile than the USB-C adapter. Hence, Seek does not recommend permanent setup using the Starter Kit.
+- Thermographic data is the ability of some higher quality cameras to output arrays of temperature field, with units (e.g. celcius). The C214SPX has this ability.
+- The camera has the ability to output JPG and CSV, but these are done by distinct Python scripts due to completely different code architectures.
+  - The **JPG script** obtains an image directly from the coprocessor/SDK. This image has no temperature scale and has a color scheme chosen from a set of options.
+  - The **CSV script** obtains a CSV file, which is converted to JPEG by the CSV-to-JPEG() function. The resulting image has a title, axis titles and temperature scale. 
+- The SV1 filter is a software option in the SDK which can be activated for improved image resolution. Its algorithm improves the image clarity, but its effect on the thermographic data is unclear.
 - Note that the field of view (FoV) is not equal in both axes, due to the Seek design. The horizontal FoV (35 degrees) is larger than the vertical FoV (26 degrees).
 - For more information about the software aspects of the thermal camera, consult the Software Architecture Documentation (SAD).
 
+  ## CAMERA SHUTTER
+
+  - The camera magnetic shutter is noisy but not a problem according to discussions with the manufacturer. By default, the shutter action is left to automatic control. This gives a pseudo-random clicking sound, which is increased at startup, when the camera is heating up (Joule effect). The manufacturer has had very few shutter dysfunctions reported over the years.
+  - The shutter is used to perform what is known as Non-Uniformity Correction (NUC). By periodically closing the shutter, the camera can capture a uniform temperature image (as the shutter is a uniform temperature surface) and use this to calibrate and correct the pixel output.
+  - The shutter interrupts image capture process, which can be problematic for time sensitive operating like missile guidance thermal videos. However, with a low-speed system dedicated to periodic image capture, there is no added value in a shutterless camera.
+
+
+  ## 3D-PRINTED CAMERA ADAPTER (rev A2)
+
+  - The camera core needs a 3D-printed adapter which is made out of 2 parts:
+    - camera holder
+    - camera nut
+  - The open-source design is available in the Github Jericho repo (/3DCAD folder) in the FreeCAD, Fusion 360 and STL formats.
+  - The adapter is printed in PETG for weatherproofness.
+  - Assembly: The C214SPX core is inserted (with its rubber) in the camera holder, which is then inserted through the enclosure hole. The camera nut locks the assembly in place.
+
+  <figure>
+  <p align="center">
+    <img src="../Design Overview/images/camera_holder_v10.JPG"
+    style="width:50%;">
+      </p>
+  </figure>
+  <p align="center"> 3D view of the camera holder (v10)
+
+  <figure>
+  <p align="center">
+    <img src="../Design Overview/images/camera_nut_v6.JPG"
+    style="width:50%;">
+      </p>
+  </figure>
+  <p align="center"> 3D view of the camera holder nut (v6)
+
 ## CUSTOM PCB
 
+**OHHHHHHHH** This description assumes a mechanical PCB, not the latest PCB idea I had that would include USB, etc.
 - The custom PCB has mostly mechanical functions. Its custom size and holes pattern allow to secure in place the camera core, the coprocessor, the USB-C adapter.
 - The PCB size is optimized for the enclosure and is directly screwed into the enclosure pre-drilled holes.
 - The camera modularity has the side-benefit of reducing repair cost.
-- The heater takes its power supply from the PCB (5V).
 - A LED is added to the PCB to indicate that the camera is powered.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
 - A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
 
+## HEATER (work-in-developement)
+
+One limitation of the C214SPX camera is that its measurement accuracy is only known when the body camera is 25°C. This information limitation is common for thermal cameras. It is only known that accuracy and resolution will decrease as the camera temperature gets further away from this ideal temperature. Systematic tests remain to be done by Jericho to evaluate accuracy at various body temperature. 
+
+In order to improve accuracy when the weather temperature is not nominal (25C), a regulated source of heat is required. This feature is still under development, but the concept consists of small 5V heater that is self-regulated at 25C via a PID controller software on a small processor. To limit the required power, the heat will be applied directly to the camera adapter; the processor and other components not being as sensitive to temperature.
+
+ An even more advanced concept would use an inexpensive Peltier module instead of resistor. This would enable hot and cold control for a year-round accuracy improvement.
+
 ## USB-OVER-CAT ADAPTER
 
-- USB cables are limited in the maximum length they can achieve without an active signal booster. This is due to the higher EM noise sensitivity, higher latency and higher power loss than CAT cables. Conversion from USB to CAT cable is one method to increase cable length. It retains the USB protocol but it removes the problems caused by the USB cable, while also actively maintaining voltage levels.
-- This strategy requires two low-cost USB-over-CAT adapters - a transmitter and a receiver - with a CAT cable in between. A conversion is made at each end of the cable.
-- This adapter is designed for indoor use (not weatherproof) and must be installed in an enclosure.
-- Its official rating temperature is 0C to 80°C. The adapter on the RDL side is less concerning, since it will be located in the heated main enclosure. The other adapter will be inside the IR camera enclosure, which will have a temperature around 0°C. Jericho tested the adapter at -10°C. Despite the low risk of issues, Jericho will test the converter performance at -40°C in the near future.
+- USB cables are limited in the maximum length they can achieve without an active signal booster. This is due to the higher EM noise sensitivity, higher latency and higher power loss than CAT cables. Conversion from USB to CAT cable is one method to increase cable length. It retains the USB protocol but it removes the problems caused by the USB cable, while also actively maintaining voltage levels. (********* Is this true? I thought the USB-over-CAT adapter was converting to serial signal?)
+- This strategy requires two low-cost USB-over-CAT adapters - a transmitter and a receiver - with a CAT cable in between. A conversion is made at each end of the cable, providin seamless integration to the system.
+- The adapter is designed for indoor use (not weatherproof) and must be installed in the enclosure(s).
+- The official rating operating temperature is 0C to 80°C. Jericho successfully tested the adapter at -10°C. Despite the low risk of issues, Jericho will test the converter performance at -40°C in the near future.
 - A product disassembly showed that the core component of the USB-over-CAT adapter is a chip with silkscreen inscriptions “CJS1037A AN9MRS.1” and “CJS1037A-D2”, for which no information was found online.
-- The chip identity being unknown, the maximum current that can be drawn through the chip is unknown but should be assumed to be very limited. This will have to be tested, but we know that it can supply the thermal camera and its coprocessor (300mW) at the very least. This has implications for the IR camera heater. This might pose a limitation to the power available, which would require us to heat only the camera (not the casing volume) and/or add insulation. A more sophisticated solution would continuously heat the camera at 300mW with a pause each time the camera is turned on.
-- The USB-over-CAT has a USB 1.0 rating, which is limited to 15 Mbps. This has not proven to be a problem with the IR camera in picture mode.
-- Some users report a very short life (months) for some low-cost USB-over-CAT adapters. This will have to be tested and addresses, if necessary.
+- Despite the adapter being widely available on platform like Amazon, the chip identity is unknown. Therefore, the maximum current that can be drawn through the chip is unknown but should be assumed to be very limited. This will have to be tested, but we know that it can supply the thermal camera and its coprocessor (300mW) at the very least. The exact limit has implications for the IR camera heater.
+- The USB-over-CAT has a USB 1.0 rating, which is limited to 15 Mbps. This has proven not to be a problem with the IR camera in picture mode (video not tested).
+- Some users report a very short life (months) for some low-cost USB-over-CAT adapters available online. This will have to be tested and addressed, if necessary.
 
 ## FLEX CABLES
 
 - The data transmission inside the enclosure is done by two flexible cables:
   - Sensor flex
   - USB flex (in between the coprocessor and the USB-C adapter)
-- These polyimide cables are delicate and should not be folded.
+- These polyimide cables are very delicate and should not be folded.
 - The PCB, by fixing the components, minimizes movement and the mechanical stress on the flex cables.
 
-## THERMAL INSULATION
+(insert image of flex cables, some people don't know what it is)
 
-- Optional thermal insulation is added to the top and bottom surface of the enclosure. This reduces heat loss in the winter. Assuming a horizontal installation, the top insulation also reduces solar heat gain in the summer.
+## ENCLOSURE - THERMAL INSULATION
+
+- Optional thermal insulation can be added to the top and bottom surface of the enclosure. This reduces heat loss in the winter. Assuming a horizontal installation, the top insulation also reduces solar heat gain in the summer.
 
 ## PROTECTIVE WINDOW
 
-- For harsh environment like a multi-year permanent installation in the Canadian climate, the IR camera manufacturer recommends a supplementary protective window, despite the IP67 rating. The window must be made of material with high transmittivity in the light frequencies of interest. Since the Seek Thermal C214SPX has a detection range of 7.8 to 14 microns, there are only a few materials that can possibly meet the criteria: germanium, chalcogenide and zinc selenide (ZnSe). The manufacturer recommends a 17mm x 1mm lens. There needs to have a minimum diameter, to make sure that the field view is covered (when close enough to the camera) - so 17mm or more is suitable. The thickness must be as small as possible to reduce the influence of the material, despite the fact that the transmittivity is high for both Ge and ZnSe.
+- For harsh environment like a multi-year permanent installation in the Canadian climate, the IR camera manufacturer recommends a supplementary protective window, despite the IP67 rating. The window must be made of material with high transmittivity in the light frequencies of interest. Since the Seek Thermal C214SPX has a detection range of 7.8 to 14 microns, there are only a few materials that can possibly meet the criteria: germanium, chalcogenide and zinc selenide (ZnSe).    
+- The manufacturer recommends a 17mm x 1mm lens. 
+  - There needs to have a minimum diameter, to make sure that the field view is covered (when close enough to the camera) - so 17mm or more is suitable.
+  - The thickness is minimized to reduce the transmissio loss of the window.
 - Germanium is non-toxic, while zinc selenide is mildly toxic.
+
+************** If Germanium is non-toxic, why do I put a safety warning at the beginning of the document?
+
 - Both materials require an anti-reflection coating to transmit light effectively. The transmittivity being high but imperfect (>95%?), the signal loss has to be accounted for in the software.
 - The difference between a window and a lens is the absence of focal point. A window is as flat as possible, having no converging/diverging effect.
-- There are multiple germanium window suppliers such as ThorLabs, Sunny Optical, Lightpath, Rochester Precision Optics, Knight Optical. There are also some affordable unknown-quality Chinese suppliers on Alibaba.com. The germanium window cost per unit depends on window size, thickness and quantity ordered. The Seek manufacturer recommends a 17mm diameter, 1mm thick germanium window for long term operation in northern climates. This window can cost in the order of 130CAD. Cost is lower for a chalcogenide window.
+- Multiple germanium window suppliers are available: ThorLabs, Sunny Optical, Lightpath, Rochester Precision Optics, Knight Optical. There are also some affordable unknown-quality Chinese suppliers on Alibaba.com. The germanium window cost per unit depends on window size, thickness and quantity ordered.  This window can cost in the order of 130CAD **UPDATE**xxxxxxxxxxxxxxxxxx. Cost is lower for a chalcogenide window.
 
-## CAMERA HEATER
+
+- Current design uses a Chinese D20mm X 1mm germanium window.
+
+(insert optical properties like flatness)
+
+
+  <figure>
+  <p align="center">
+    <img src="../Design Overview/images/Shenyang Wanquan Germanium.JPG"
+    style="width:50%;">
+      </p>
+  </figure>
+  <p align="center"> Shenyang germanium window in front of the camera adapter and the enclosure
+
+  <figure>
+  <p align="center">
+    <img src="../Design Overview/images/Shenyang Wanquan Germanium Transmittivity.png"
+    style="width:80%;">
+      </p>
+  </figure>
+  <p align="center"> Window transmittivity for the Shenyang germanium window with AR/AR coating
+
+
+
+
+## CAMERA HEATER (OLD SECTION)
 
 - The camera core and the coprocessor do NOT have internal heaters. Like any electronics however, they do consume some amount of electric power, which ultimately is dissipated in the form of heat.
 - While the camera can detect temperature surfaces from -40 to +330°C, the camera core can operate from -10°C to **XXX**. This means that the camera cannot operate on the complete range of weather in Canada. Therefore some heat must be applied.
@@ -130,10 +185,10 @@ Safety warning: It is imperative to avoid inhalation of germanium dust due to it
 
 ## CALIBRATION
 
-- The Seek Mosaic IR camera has automatic inner calibration of its bolometer array, via the shutter. This default operation is maintained. Shutter operation could be put into manual or completely suspended, but the absence of frequent NUC would eventually cause a drift in measured values. Continuous pointing directly at the sun would also have a severe aging effect on the corresponding array pixels.
-- The default emissivity parameter is 0.97 (verify). This parameter (0.00 – 1.00) depends on each object and must be adjusted within the SBC Python program. Many daily surfaces have emissivity above 0.9.
+- By default, the Seek Mosaic IR camera has automatic inner calibration of its bolometer array, via the shutter. This operation is currently maintained. Shutter operation could be put into manual mode or completely suspended, but the absence of frequent NUC would eventually cause a drift in measured values. Continuous pointing directly at the sun would also have a severe aging effect on the array pixels aligned with the sun.
+- The default emissivity parameter is 0.97 (verify**********). This parameter (0.00 – 1.00) depends on each object and must be adjusted within the SBC Python program (which one? xxxxx). Many daily surfaces have emissivity above 0.9 but varies greatly. This calibration must be done by the final user.
 - To determine the emissivity of the surface, comparison must be made between a reference thermometer on the object being filmed and the thermography data output for that location.
-- Rain and heavy fog will interfere with the image quality of an infrared camera, because is not transparent to IR. Distance will also affect accuracy, since the accuracy is rated for objects at distance of 30cm.
+- Rain and heavy fog will interfere with the image quality of an infrared camera, because these elements are not transparent to infrared light. Distance will also affect accuracy, since the accuracy is rated for objects at distance of 30cm.
 
 ## 3D PRINTED CAMERA CORE HOLDER
 
