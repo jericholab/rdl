@@ -8,7 +8,6 @@ Document License: CC-BY-SA-4.0.
 
 **Safety warning**: It is imperative to avoid inhalation of germanium dust due to its potential health hazards. Therefore, meticulous care is required during the handling of these optical components. The utilization of protective gloves is strongly recommended to minimize direct contact. Additionally, adherence to standard operating procedures, including thorough handwashing post-handling, is essential to ensure safety.
 
-
 # Table of Contents
 
 1. [Introduction](#introduction)
@@ -51,7 +50,7 @@ Document License: CC-BY-SA-4.0.
   - 1 free USB port
 - RDL RevE4 with thermistor(s) (optional, required for emissivity calibration)
 
-*Note: The thermal camera is independent from the RDL.
+*Note: The thermal camera operation is independent from the RDL.
 
 ## THERMAL CAMERA CORE (C214SPX)
 
@@ -69,7 +68,7 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 - The main component of the IR module is the C214SPX camera core, manufactured in the U.S. by Seek Thermal Inc.. It is a long-wave infrared (LWIR) uncooled vanadium oxide microbolometer with a 4.0mm fixed chalcogenide lens, 12µm pixel pitch and a 200 X 150 pixels resolution. Chalcogenide is a class of cost-effective glass that can be molded instead of machined. The pixel pitch describes the pixel density on the camera sensor surface. The higher the density, the more compact the camera core for a given resolution.
 - In a micro bolometer, each pixel's electrical signal corresponds to the amount of infrared radiation it has absorbed, which is directly related to the temperature of the part of the scene that pixel is viewing. The surface of each pixel is made of vanadium oxide, chosen for its highly temperature-dependent electrical resistance.
 - This core was selected in part due to its open-source python wrapper, that allows easier integration in an open-source project. The SDK (Software Development Kit) is available with Linux, Windows and Mac, allowing operation on the Raspberry Pi.
-- Chalcogenide lenses are more affordable than crystalline lens/windows (e.g. germanium) due to their molding manufacturing process instead of machining. The chalcogenide lens has an anti-reflective (AR) coating with an optimal transmittivity in **XXX-XXX** um range
+- Chalcogenide lenses are more affordable than crystalline lens/windows (e.g. germanium) due to their molding manufacturing process instead of machining. The chalcogenide lens has an anti-reflective (AR) coating with an optimal transmittivity in **XXX-XXX** um range (****** That raises the question: does the camera have an inner transmittivity curve?)
 - The C214SPX cameras are sold as so-called "transition kits". A transition kit is a 10-units pack sold to customers who want to have a small-scale production with improved pricing compared to the Starter Kit, which is sold individually.
 - The coprocessor transforms the raw data from the sensor (core). The image processing includes applying algorithms for noise reduction, image enhancement, scaling, or applying color palettes. It can be configured to output different formats (RGB, thermographic array). 
 - Seek manufactures the camera core, the coprocessor and the USB-C adapter. The support PCB is manufactured by Jericho, who also does the general assembly and final system quality control.
@@ -77,7 +76,7 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 - Thermographic data is the ability of some higher quality cameras to output arrays of temperature field, with units (e.g. celcius). The C214SPX has this ability.
 - The camera has the ability to output JPG and CSV, but these are done by distinct Python scripts due to completely different code architectures.
   - The **JPG script** obtains an image directly from the coprocessor/SDK. This image has no temperature scale and has a color scheme chosen from a set of options.
-  - The **CSV script** obtains a CSV file, which is converted to JPEG by the CSV-to-JPEG() function. The resulting image has a title, axis titles and temperature scale. 
+  - The **CSV script** obtains a CSV file, which is converted to PNG by the CSV-to-IMG() function. The resulting image has a title, axis titles and temperature scale.
 - The SV1 filter is a software option in the SDK which can be activated for improved image resolution. Its algorithm improves the image clarity, but its effect on the thermographic data is unclear.
 - Note that the field of view (FoV) is not equal in both axes, due to the Seek design. The horizontal FoV (35 degrees) is larger than the vertical FoV (26 degrees).
 - For more information about the software aspects of the thermal camera, consult the Software Architecture Documentation (SAD).
