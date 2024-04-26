@@ -1,4 +1,4 @@
-#jericholab rdl - test script with python with daily file 
+#jericholab - syncing RDL data with cloud
 #!/usr/bin/env python3
 import serial
 from datetime import datetime
@@ -71,13 +71,13 @@ def thermography_plot(csv_filename):
         plt.savefig(output_filepath)
         plt.close()  # Close the plot to free up memory
 
-    elif file_extension.lower() in ['.jpg', '.jpeg']:
-        # Handle JPEG files differently, or simply print a message
-        print(f"CSV-to-JPEG: Skipping JPEG file: {csv_filename}")
+    elif file_extension.lower() in ['.jpg', '.jpeg', '.png']:
+        # Handle images files differently (no conversion required)
+        print(f"CSV-to-IMG: Skipping JPEG file: {csv_filename}")
 
     else:
         # Optionally handle other file types or raise an exception
-        print(f"CSV-to-JPEG: Unsupported file type: {csv_filename}")
+        print(f"CSV-to-IMG: Unsupported file type: {csv_filename}")
     
 def syncToDropbox():
     print("move from /tosync to /transit folder")
