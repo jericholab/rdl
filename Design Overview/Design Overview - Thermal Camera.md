@@ -8,14 +8,35 @@ Document License: CC-BY-SA-4.0.
 
 **Safety warning**: It is imperative to avoid inhalation of germanium dust due to its potential health hazards. Therefore, meticulous care is required during the handling of these optical components. The utilization of protective gloves is strongly recommended to minimize direct contact. Additionally, adherence to standard operating procedures, including thorough handwashing post-handling, is essential to ensure safety.
 
+
+# Table of Contents
+
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Thermal Camera Core (C214SPX)](#thermal-camera-core-c214spx)
+4. [Camera Core Shutter](#camera-core-shutter)
+5. [3D-Printed Camera Adapter (Rev A2)](#3d-printed-camera-adapter-rev-a2)
+6. [USB-over-CAT Adapter](#usb-over-cat-adapter)
+7. [Flex Cables](#flex-cables)
+8. [Custom PCB](#custom-pcb)
+9. [3D Printed Camera Core Holder](#3d-printed-camera-core-holder)
+10. [Protective Window](#protective-window)
+11. [Enclosure](#enclosure)
+12. [Calibration](#calibration)
+13. [Heater (Work-in-Development)](#heater-work-in-development)
+14. [Other](#other)
+15. [References](#references)
+16. [Comments](#comments)
+
+
 ## INTRODUCTION
 
-- The Jericho thermal camera module consists of:
+- The Jericho Thermal Camera Module consists of:
   - a Seek C214SPX camera core;
   - a Seek coprocessor (also called an interface board);
   - a 3D-printed camera adapter;
   - a USB-C adapter;
-  - a support PCB for components integration and auxiliary functions;*********
+  - a support PCB for components integration and auxiliary functions;
   - a weatherproof protective germanium window (optional);
   - 2x USB-over-CAT adapter;
   - a CAT cable (variable length).
@@ -93,17 +114,7 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 </figure>
 <p align="center"> 3D view of the camera holder nut (v6)
 
-## HEATER (work-in-developement)
 
-- The camera core and the coprocessor do NOT have internal heaters. Like any electronics however, they do consume a small amount of electric power, which ultimately is dissipated in the form of heat.
-
-- While the camera can detect temperature surfaces from -40 to +330°C, the camera core can operate from -10°C to **XXX**. This means that the camera cannot operate reliably on the complete range of weather in Canada, without more testing.
-
-- Another limitation of the C214SPX camera is that its measurement accuracy is only known when the body camera is 25°C. This information limitation is common for thermal cameras. It is only known that accuracy and resolution will decrease as the camera temperature gets further away from this ideal temperature. Systematic tests remain to be done by Jericho to evaluate accuracy at various body temperature. 
-
-- In order to improve accuracy when the weather temperature is not nominal (25°C), a regulated source of heat is required. This feature is still under development, but the concept consists of a 5V/400mA resistive heater that is regulated at 25°C via a PID controller software on a small processor. To limit the required power, the heat will be applied directly to the camera adapter; the processor and other components not being as sensitive to temperature.
-
- - An even more advanced concept would use an inexpensive Peltier module instead of resistor. This would enable hot and cold control for a year-round accuracy improvement.
 
 ## USB-OVER-CAT ADAPTER
 
@@ -136,30 +147,28 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
 - A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
 
-## ENCLOSURE - THERMAL INSULATION
 
-- Optional thermal insulation can be added to the top and bottom surface of the enclosure. This reduces heat loss in the winter. Assuming a horizontal installation, the top insulation also reduces solar heat gain in the summer.
+## 3D PRINTED CAMERA CORE HOLDER
+
+- The camera adapter eases the assembly and ensures that the camera core is parallel to the PCB and the enclosure bottom surface. This is a simple way to guarantee that a leveled enclosure will generate leveled images.
+
+- One function of the camera adapter is to maintain the camera lens perfectly aligned with the thermal window to avoid any error due to refraction, reflection, absorption or field of view. For the same reason, make sure that the camera core, cushion and gasket are well positioned within the adapter, without any debris. A deviation as small as a degree can compromise the quality of the measurements.
 
 ## PROTECTIVE WINDOW
 
-- For harsh environment like a multi-year permanent installation in the Canadian climate, the IR camera manufacturer recommends a supplementary protective window, despite the IP67 rating. The window must be made of material with high transmittivity in the light frequencies of interest. Since the Seek Thermal C214SPX has a detection range of 7.8 to 14 microns, there are only a few materials that can possibly meet the criteria: germanium, chalcogenide and zinc selenide (ZnSe).    
-- The manufacturer recommends a 17mm x 1mm lens. 
+- For harsh environment like a multi-year permanent installation in the Canadian climate, the IR camera manufacturer recommends a supplementary protective window, despite the IP67 rating. The window must be made of material with high transmittivity in the light frequencies of interest. Since the Seek Thermal C214SPX has a detection range of 7.8 to 14 microns, only a few materials can possibly meet the criteria: germanium, chalcogenide and zinc selenide (ZnSe).    
+- The manufacturer recommends a window of at least 17mm x 1mm. 
   - There needs to have a minimum diameter, to make sure that the field view is covered (when close enough to the camera) - so 17mm or more is suitable.
   - The thickness is minimized to reduce the transmissio loss of the window.
-- Germanium is non-toxic, while zinc selenide is mildly toxic.
+- Germanium, in its solid form, is non-toxic, while zinc selenide is mildly toxic. Germanium dust is harmful however (see warning).
 
-************** If Germanium is non-toxic, why do I put a safety warning at the beginning of the document?
-
-- Both materials require an anti-reflection coating to transmit light effectively. The transmittivity being high but imperfect (>95%?)*******, the signal loss has to be accounted for in the software.
-- The transmittivity is significantly reduced without an AR coating on each face.
+- Both materials require an anti-reflection coating to transmit light effectively. The overall transmittivity being high but imperfect (90-95%), the signal loss has to be accounted for in the software via emissivity or other parameters.
+- The transmittivity would be significantly reduced without an AR coating on each side.
 - Note: the difference between a window and a lens is the absence of focal point. A window is as flat as possible, having no converging/diverging effect.
-- Multiple germanium window suppliers are available: ThorLabs, Sunny Optical, Lightpath, Rochester Precision Optics, Knight Optical. There are also some affordable unknown-quality Chinese suppliers on Alibaba.com. The germanium window cost per unit depends on window size, thickness and quantity ordered.  This window can cost in the order of 130CAD **UPDATE**xxxxxxxxxxxxxxxxxx. Cost can be lower for a chalcogenide window.
-- Current design uses a Chinese D20mm X 1mm germanium window. This is the size the thermal camera adapter can support. A gasket is also required on the outside face of the germanium. It is not required on the inside face since the camera rubber acts as a gasket. 
+- Multiple germanium window suppliers are available: ThorLabs, Sunny Optical, Lightpath, Rochester Precision Optics, Knight Optical. There are also some affordable unknown-quality Chinese suppliers on Alibaba.com. The germanium window cost per unit depends on window size, thickness, quantity and origin, with a cost typically between 50-150CAD. Cost can be lower for a chalcogenide window.
+- Current design uses a Chinese D20mm X 1mm germanium window. The thermal camera adapter is sized for the D20mm window. A gasket is also required on the outside face of the germanium. It is not required on the inside face since the camera rubber acts as a gasket. 
 
-A chalcogenide can also be used. Despite its reduced hardness, it can be used as a sacrificial component to protect the permanent camera chalcogenide lense.
-
-
-(insert Chinese germanium window optical properties like flatness)
+- A chalcogenide can also be used. Despite its reduced hardness, it can be used as a sacrificial component to protect the permanent camera chalcogenide lense.
 
 
   <figure>
@@ -182,40 +191,46 @@ A chalcogenide can also be used. Despite its reduced hardness, it can be used as
 
 
 
-
-## CALIBRATION
-
-- By default, the Seek Mosaic thermal camera has automatic inner calibration of its bolometer array, via the shutter. This operation is currently maintained. Shutter operation could be put into manual mode or completely suspended, but the absence of frequent NUC would eventually cause a drift in measured values. Continuous pointing directly at the sun would also have a severe aging effect on the array pixels aligned with the sun.
-- The default emissivity parameter is 0.97 (verify**********). This parameter (0.00 – 1.00) depends on each object and must be adjusted within the SBC Python program (which one? xxxxx). Many daily surfaces have emissivity above 0.9 but varies greatly. This calibration must be done by the final user.
-- To determine the emissivity of the surface, comparison must be made between a reference thermometer on the object being filmed and the thermography data output for that location.
-- Rain and heavy fog will interfere with the image quality of an thermal camera, because these elements are not transparent to infrared light. Distance will also affect accuracy, since the accuracy is rated for objects at distance of 30cm.
-
-## 3D PRINTED CAMERA CORE HOLDER
-
-
-- The camera adapter eases the assembly and ensures that the camera core is parallel to the PCB and the enclosure bottom surface. This is a simple way to guarantee that a leveled enclosure will generate leveled images.
-
-One function of the camera adapter is to maintain the camera lens perfectly aligned with the thermal window to avoid any error due to refraction, reflection, absorption or field of view. For the same reason, make sure that the camera core, cushion and gasket are well positioned within the adapter, without any debris. A deviation as small as a degree can compromise the quality of the measurements.
-
 ## ENCLOSURE
 
 - The camera enclosure is based on a low-cost ABS plastic rectangular enclosure. The enclosure is weatherproof, with an IP65 rating.
 - Its role is to protect the electronic components, which have no conformal coating. If desired, Seek confirms that the board should tolerate both the silicone or acrylic conformal coating, when applied with a brush. Spray coating should not be used due to the risk of sending coating inside the critical components.
-- The enclosure holds the protective window, with its sealant.
+- The enclosure holds the protective window, with its sealant (rubber gasket or silicone seal) Silicone does not react with germanium and any high-temperature outgasing would be have a limited impact on the germanium window as it is only applied on the outer side.
 - The cable glands are on a single side only. This reduces exposition to water ingress.
 -Note: The enclosure should be positioned face up to avoid having all thermal pictures upside down.
 - Flexible closed-cell foam is used to help seal the cable gland gap around the cable(s).
 - The camera core is aligned with the enclosure bottom with an accuracy of +/- 5deg. An adjustment is possible. We **STRONGLY** encourage you to test the alignment of pictures before installation.
 
-- Condensation must be avoided on the thermal camera . (Rating is 10 to 90%HR). This is why the enclosure sealing is important, as it minimizes the humidity ingress. The residual humidity is absorbed by the silica gel bag inside. The gel change of colour tells the user when it is time to replenish the bag.
+- Condensation must be avoided on the thermal camera (camera rating is 10 to 90%HR). This is why the enclosure sealing is important, as it minimizes the humidity ingress. The residual humidity is absorbed by the silica gel bag inside. The gel change of colour tells the user when it is time to replenish the bag.
 - The enclosure openings (cable gland, camera core) are drilled in the lab.
+
+- Optional thermal insulation can be added to the top and bottom surface of the enclosure. This reduces heat loss in the winter. Assuming a horizontal installation, the top insulation also reduces solar heat gain in the summer.
+
+## CALIBRATION
+
+- By default, the Seek Mosaic thermal camera has automatic inner calibration of its bolometer array, via the shutter. This operation is currently maintained. Shutter operation could be put into manual mode or completely suspended, but the absence of frequent NUC would eventually cause a drift in measured values. Continuous pointing directly at the sun would also have a severe aging effect on the array pixels aligned with the sun.
+- The default emissivity parameter is 0.97 [1]. This parameter (0.00 – 1.00) depends on each object and must be adjusted within the SBC Python program. Many daily surfaces have emissivity above 0.9 but varies greatly. This calibration must be done by the final user.
+- To determine the emissivity of the surface, comparison must be made between a reference thermometer on the object being filmed and the thermography data output for that location.
+- Rain and heavy fog will interfere with the image quality of an thermal camera, because these elements are not transparent to infrared light. Distance will also affect accuracy, since the accuracy is rated for objects at distance of 30cm.
+
+## HEATER (WORK-IN-DEVELOPMENT)
+
+- The camera core and the coprocessor do NOT have internal heaters. Like any electronics however, they do consume a small amount of electric power, which ultimately is dissipated in the form of heat.
+
+- While the camera can detect temperature surfaces from -40 to +330°C, the camera core can operate from -10°C to **XXX**. This means that the camera cannot operate reliably on the complete range of weather in Canada, without more testing.
+
+- Another limitation of the C214SPX camera is that its measurement accuracy is only known when the body camera is 25°C. This information limitation is common for thermal cameras. It is only known that accuracy and resolution will decrease as the camera temperature gets further away from this ideal temperature. Systematic tests remain to be done by Jericho to evaluate accuracy at various body temperature. 
+
+- In order to improve accuracy when the weather temperature is not nominal (25°C), a regulated source of heat is required. This feature is still under development, but the concept consists of a 5V/400mA resistive heater that is regulated at 25°C via a PID controller software on a small processor. To limit the required power, the heat will be applied directly to the camera adapter; the processor and other components not being as sensitive to temperature.
+
+ - An even more advanced concept would use an inexpensive Peltier module instead of resistor. This would enable hot and cold control for a year-round accuracy improvement.
 
 ## OTHER
 
 - The Seek camera hardware is proprietary. This includes the camera core, the coprocessor, and the SDK kit. The Python wrapper provided by Seek Thermal is open-source, however (Apache license 2.0).
-- The Software Development Kit (SDK) is a proprietary C/C++ software required to operate the thermal cameras. Despite the copyright, the Seek license gives the permission, free of charge, to use, copy, modify, sell the code examples. The SDK is pre-installed on the Pi computer.
+- The Software Development Kit (SDK) is a proprietary C/C++ software required to operate the thermal cameras. Despite the copyright, the Seek license gives the permission, free of charge, to use, copy, modify, sell the code examples. The SDK is pre-installed on the Pi computer provided by Jericho.
 - To help users who would like to add functionalities or troubleshoot something, the free Seek Developer Portal will give you access to: SDKs for app and software development, design documentation for easy integration, pre-built examples to get you up and running faster, access to Seek's developer support team, community forums to share ideas, instructional video tutorials.
-- A future area of development is to manufacture the coprocessor, based on the design provided for free by Seek Thermal for customers who want a better product integration. This could reduce the overall cost.
+- A future area of development is to manufacture the coprocessor, based on the design provided for free by Seek Thermal for customers who want a better product integration.
 
 <figure>
 <p align="center">
@@ -228,13 +243,13 @@ Figure 2 An example of Starter Kit (SPX214). (Copyright Seek Thermal)
 
 ## REFERENCES
 
-
+[1] Seek Mosaic Core Specifications: xxxxxxx.com........
 
 
 ## COMMENTS
 
 If we don't use the camera support angle, how are we gonna make sure that the camera takes pictures that are parallel to the enclosure? (This is the reason I wanted a support angle beside the heat transfer!!)
 
-What is the sealant used? Are there some incompatible sealant materials with Germanium or Chalcogenide?
+What is the sealant used? Are there some incompatible sealant materials with Germanium or Chalcogenide? Silicone is okay, especially or the outer face (degassing on the open side)
 
-what is the size of the hole in the enclosure to allow the insertion of the camera adapter?
+what is the size of the hole in the enclosure to allow the insertion of the camera adapter? (we can either measure the existing hole OR measure the thread on FreeCAD.)
