@@ -68,7 +68,7 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 - The main component of the IR module is the C214SPX camera core, manufactured in the U.S. by Seek Thermal Inc.. It is a long-wave infrared (LWIR) uncooled vanadium oxide microbolometer with a 4.0mm fixed chalcogenide lens, 12µm pixel pitch and a 200 X 150 pixels resolution. Chalcogenide is a class of cost-effective glass that can be molded instead of machined. The pixel pitch describes the pixel density on the camera sensor surface. The higher the density, the more compact the camera core for a given resolution.
 - In a micro bolometer, each pixel's electrical signal corresponds to the amount of infrared radiation it has absorbed, which is directly related to the temperature of the part of the scene that pixel is viewing. The surface of each pixel is made of vanadium oxide, chosen for its highly temperature-dependent electrical resistance.
 - This core was selected in part due to its open-source python wrapper, that allows easier integration in an open-source project. The SDK (Software Development Kit) is available with Linux, Windows and Mac, allowing operation on the Raspberry Pi.
-- Chalcogenide lenses are more affordable than crystalline lens/windows (e.g. germanium) due to their molding manufacturing process instead of machining. The chalcogenide lens has an anti-reflective (AR) coating with an optimal transmittivity in **XXX-XXX** um range (****** That raises the question: does the camera have an inner transmittivity curve?)
+- Chalcogenide lenses are more affordable than crystalline lens/windows (e.g. germanium) due to their molding manufacturing process instead of machining. The chalcogenide lens has an anti-reflective (AR) coating with an optimal transmittivity in **XXX-XXX** um range (****** That raises the question: does the seek camera have an inner transmittivity curve?)
 - The C214SPX cameras are sold as so-called "transition kits". A transition kit is a 10-units pack sold to customers who want to have a small-scale production with improved pricing compared to the Starter Kit, which is sold individually.
 - The coprocessor transforms the raw data from the sensor (core). The image processing includes applying algorithms for noise reduction, image enhancement, scaling, or applying color palettes. It can be configured to output different formats (RGB, thermographic array). 
 - Seek manufactures the camera core, the coprocessor and the USB-C adapter. The support PCB is manufactured by Jericho, who also does the general assembly and final system quality control.
@@ -117,7 +117,7 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
 
 ## USB-OVER-CAT ADAPTER
 
-- USB cables are limited in the maximum length they can achieve without an active signal booster. This is due to the higher EM noise sensitivity, higher latency and higher power loss than CAT cables. Conversion from USB to CAT cable is one method to increase cable length. It retains the USB protocol but it removes the problems caused by the USB cable, while also actively maintaining voltage levels. (********* Is this true? I thought the USB-over-CAT adapter was converting to serial signal?)
+- USB cables are limited in the maximum length they can achieve without an active signal booster. This is due to the higher EM noise sensitivity, higher latency and higher power loss than CAT cables. Conversion from USB to CAT cable is one method to increase cable length. It retains the USB protocol but it actively maintains the voltage required for USB-protocol and transfers the signal to a CAT cable which is better suited for long distances due to shielding and twisted pairs of wires.
 - This strategy requires two low-cost USB-over-CAT adapters - a transmitter and a receiver - with a CAT cable in between. A conversion is made at each end of the cable, providin seamless integration to the system.
 - The adapter is designed for indoor use (not weatherproof) and must be installed in the enclosure(s).
 - The official rating operating temperature is 0C to 80°C. Jericho successfully tested the adapter at -10°C. Despite the low risk of issues, Jericho will test the converter performance at -40°C in the near future.
@@ -248,7 +248,5 @@ Figure 2 An example of Starter Kit (SPX214). (Copyright Seek Thermal)
 ## COMMENTS
 
 If we don't use the camera support angle, how are we gonna make sure that the camera takes pictures that are parallel to the enclosure? (This is the reason I wanted a support angle beside the heat transfer!!)
-
-What is the sealant used? Are there some incompatible sealant materials with Germanium or Chalcogenide? Silicone is okay, especially or the outer face (degassing on the open side)
 
 what is the size of the hole in the enclosure to allow the insertion of the camera adapter? (we can either measure the existing hole OR measure the thread on FreeCAD.)
