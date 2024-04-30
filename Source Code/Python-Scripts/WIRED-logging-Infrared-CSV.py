@@ -55,13 +55,15 @@ def on_frame(camera, camera_frame, file):
         to log data.
     """
     while True:
-
-        # Open a new CSV file with the unique camera chip ID embedded.
         now = datetime.now()
         now = now.strftime(formatExpected)
+        dailyFolderNow = datetime.now()
+        dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
+        folder_name = setUpFolders() #rerun the function to create the daily folder, if applicable
+        
         try:
             csvName = Path('./'+ folder_name + '/' + camera.chipid +'-'+ str(now)).with_suffix('.csv')
-            file = open(csvName, "w")
+            file = open(csvName, "w")  # Open a new CSV file with the unique camera chip ID embedded.
 
         except OSError as e:
             print("Failed to open file: %s" % str(e))
@@ -79,6 +81,7 @@ def on_frame(camera, camera_frame, file):
         np.savetxt(file, frame.data, fmt="%.1f")
         # Wait ten seconds in between frames
         sleep(10.0)
+        #sleep(60.0)
 
 
 
@@ -126,13 +129,19 @@ def createFolder(folder_name):
         print("Folder already exists: ", folder_name)
         
 def setUpFolders():
+    now = datetime.now()
+    now = now.strftime(formatExpected)
+    dailyFolderNow = datetime.now()
+    dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
     level1 = "./logging-folder"
     level2 = level1 + "/tosync"
     level3 = level2 + "/cameras/"
-    folder_name = level3 + CAMERA_NAME
+    level4 = level3 + CAMERA_NAME
+    folder_name = level4 + "/" + dailyFolderNow
     createFolder(level1)
     createFolder(level2)
     createFolder(level3)
+    createFolder(level4)
     createFolder(folder_name)
     return folder_name
 
@@ -140,13 +149,18 @@ def setUpFolders():
 def main():
 
     #initializing
+    global formatExpected
+    global dailyFolderNow
+    global formatDailyFolder
+    global folder_name
     #formatExpected = "%Y-%m-%d"  #log into different file every day
     #formatExpected = "%Y-%m-%d_%H"  #log into different file every hour
-    global formatExpected
     #formatExpected = "-%Y-%m-%d_%H%M"  #log into different file every minute
     formatExpected = "%Y-%m-%d_%H%M%S"  #log into different file every second
-
-    global folder_name
+    dailyFolderNow = datetime.now()
+    #formatDailyFolder = "%Y-%m-%d_%H_%M"  #daily folder (temporarily a minute folder for testing)
+    formatDailyFolder = "%Y-%m-%d"  #daily folder
+    dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
     folder_name = setUpFolders()  # Run once
     
     # Create a context structure responsible for managing all connected USB cameras.
@@ -157,9 +171,6 @@ def main():
         manager.register_event_callback(on_event)
 
         while True:
-            #we constantly update variable NOW
-#             now = datetime.now()
-#             now = now.strftime(formatExpected)
             
             sleep(1.0)
 
