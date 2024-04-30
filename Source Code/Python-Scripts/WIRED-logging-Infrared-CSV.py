@@ -26,8 +26,9 @@ from PIL import Image, ImageFont, ImageDraw
 from pathlib import Path
 from time import sleep
 from datetime import datetime
-
+import json
 import numpy as np
+import matplotlib.pyplot as plt
 
 from seekcamera import (
     SeekCameraIOType,
@@ -62,7 +63,7 @@ def on_frame(camera, camera_frame, file):
         folder_name = setUpFolders() #rerun the function to create the daily folder, if applicable
         
         try:
-            csvName = Path('./'+ folder_name + '/' + camera.chipid +'-'+ str(now)).with_suffix('.csv')
+            csvName = Path('./' + folder_name + '/' + camera.chipid +'-'+ str(now)).with_suffix('.csv')
             file = open(csvName, "w")  # Open a new CSV file with the unique camera chip ID embedded.
 
         except OSError as e:
@@ -79,6 +80,9 @@ def on_frame(camera, camera_frame, file):
 
         # Append the frame to the CSV file.
         np.savetxt(file, frame.data, fmt="%.1f")
+        s = os.path.join('./', csvName)
+        print(s)
+        thermography_plot(s)
         # Wait ten seconds in between frames
         sleep(10.0)
         #sleep(60.0)
@@ -145,6 +149,57 @@ def setUpFolders():
     createFolder(folder_name)
     return folder_name
 
+def thermography_plot(csv_filename):
+    # Check if the file exists
+    if not os.path.exists(csv_filename):
+        raise FileNotFoundError("File does not exist.")
+
+    # Check the file extension
+    _, file_extension = os.path.splitext(csv_filename)
+    
+    # Set a new default save format, for example to 'jpeg'
+    plt.rcParams['savefig.format'] = 'jpeg'
+
+    if file_extension.lower() in ['.csv']:
+        # If it's a CSV file, proceed with reading and plotting
+        data = np.loadtxt(csv_filename, delimiter=' ')
+
+        # Create the graphic using imshow for better control over aspect ratio
+        plt.imshow(data, cmap='jet', aspect='auto')
+        plt.colorbar()  # Add a color bar to indicate the temperature scale
+
+        # Additional options for better visualization
+        plt.title('Infrared Thermography Temperature Map')
+        plt.xlabel('Column Index')
+        plt.ylabel('Row Index')
+
+        # Define the output directory
+        output_directory = './logging-folder/tosync/cameras/infrared1/'
+        if not os.path.exists(output_directory):
+            os.makedirs(output_directory)  # Create the directory if it doesn't exist
+
+        # Split the file path into the file name and extension
+        filename_with_extension = os.path.basename(csv_filename)
+        filename_without_extension, _ = os.path.splitext(filename_with_extension)
+        folder_path = os.path.dirname(csv_filename)
+        #print(folder_path)
+        #print(filename_without_extension)
+
+        # Save the figure as an image file
+        #output_filepath = os.path.join(output_directory, filename_without_extension)
+        output_filepath = os.path.join(folder_path, filename_without_extension)
+        plt.savefig(output_filepath)
+        #print(folder_name)
+        #plt.savefig(folder_name) #testxxxxxxxxxxxxx
+        plt.close()  # Close the plot to free up memory
+
+    elif file_extension.lower() in ['.jpg', '.jpeg']:
+        # Handle JPEG files differently, or simply print a message
+        print(f"CSV-to-JPEG: Skipping JPEG file: {csv_filename}")
+
+    else:
+        # Optionally handle other file types or raise an exception
+        print(f"CSV-to-JPEG: Unsupported file type: {csv_filename}")
 
 def main():
 
