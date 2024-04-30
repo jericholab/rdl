@@ -31,12 +31,12 @@ time.sleep(2)
 #initializing
 now = datetime.now()
 dailyFolderNow = datetime.now()
-#formatExpected = "%Y-%m-%d_%H"  #log once every hour
-formatExpected = "%Y-%m-%d_%H_%M"  #log once every minute
+formatExpected = "%Y-%m-%d_%H"  #create a new file every hour
+#formatExpected = "%Y-%m-%d_%H_%M"  #create a new file every minute
 now = now.strftime(formatExpected)
 then = now
-formatDailyFolder = "%Y-%m-%d_%H_%M"  #daily folder (temporarily a minute folder for testing)
-#formatDailyFolder = "%Y-%m-%d"  #daily folder
+#formatDailyFolder = "%Y-%m-%d_%H_%M"  #daily folder 
+formatDailyFolder = "%Y-%m-%d"  #create a new folder every hour
 dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
 
 def createFolder(folder_name):
