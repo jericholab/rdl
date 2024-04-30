@@ -84,8 +84,8 @@ def on_frame(camera, camera_frame, file):
         print(s)
         thermography_plot(s)
         # Wait ten seconds in between frames
-        sleep(10.0)
-        #sleep(60.0)
+        #sleep(10.0)
+        sleep(60.0)
 
 
 
