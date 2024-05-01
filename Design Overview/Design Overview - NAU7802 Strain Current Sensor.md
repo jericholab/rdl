@@ -13,27 +13,36 @@ License: CC-BY-SA.
 
 *** OH WAIT **** DOES THE NAU7802 OPERATE IN SIMILAR WAY? i THINK NOT BECAUSE STRAIN IS DIFFERENTIAL AND CURRENT IS UNIPOLAR.
 
-## Table of Contents  (UPDATE **********)
-- [INTRODUCTION](#introduction)
-- [NAU7802 CHIP](#nau7802-chip)
-  - [NAU7802 CHIP - GENERALITIES](#nau7802-chip---generalities)
-  - [NAU7802 CHIP - I2C COMMUNICATION](#nau7802-chip---i2c-communication)
-  - [NAU7802 CHIP - MEASUREMENTS](#nau7802-chip---measurements)
-- [STRAIN GAUGE LOAD CELL](#strain-gauge-load-cell)
-- [SOFTWARE](#software)
-- [SENSOR CALIBRATION](#sensor-calibration)
-  - [INTERNAL CALIBRATION](#internal-calibration)
-  - [EXTERNAL CALIBRATION](#external-calibration)
-- [RJ45 CONNECTORS](#rj45-connectors)
-- [OTHER](#other)
-- [CURRENT SENSOR (L01Z050S05) GENERALITIES AND INSTALLATION](#current-sensor-l01z050s05-generalities-and-installation)
-  - [SENSOR OPERATION](#sensor-operation)
-  - [ANALOG OPERATION MODE](#analog-operation-mode)
-  - [DIGITAL OPERATION MODE](#digital-operation-mode)
-- [VOLTAGE REGULATOR TPS630701](#voltage-regulator-tps630701)
-- [REFERENCES](#references)
+*** what is the accuracy of these two sensors? how do we know that accuracy  ***
 
-************ ADD SECTION ABOUT THE 3 ALGORITHMS (True RMS, Sine RMS (Work in dev), Average DC)
+**Table of Contents**
+
+1. [Introduction](#introduction)
+2. [NAU7802 (COMMON SECTION)](#nau7802-common-section)
+   - 2.1 [GENERALITIES](#generalities)
+   - 2.2 [I2C COMMUNICATION](#i2c-communication)
+   - 2.3 [MEASUREMENTS](#measurements)
+3. [VOLTAGE REGULATOR SUBCIRCUIT (TPS630701)](#voltage-regulator-subcircuit-tps630701)
+4. [STRAIN GAUGE LOAD CELL (TAL220)](#strain-gauge-load-cell-tal220)
+   - 4.1 [GENERALITIES AND INSTALLATION](#generalities-and-installation)
+   - 4.2 [SOFTWARE](#software)
+   - 4.3 [STRAIN SENSOR CALIBRATION](#strain-sensor-calibration)
+     - 4.3.1 [INTERNAL CALIBRATION](#internal-calibration)
+     - 4.3.2 [EXTERNAL CALIBRATION](#external-calibration)
+   - 4.4 [RJ45 CONNECTORS](#rj45-connectors)
+5. [CURRENT SENSOR (L01Z050S05)](#current-sensor-l01z050s05)
+   - 5.1 [GENERALITIES AND INSTALLATION](#generalities-and-installation)
+   - 5.2 [SENSOR OPERATION](#sensor-operation)
+   - 5.3 [ANALOG OPERATION MODE](#analog-operation-mode)
+   - 5.4 [DIGITAL OPERATION MODE](#digital-operation-mode)
+   - 5.5 [ALGORITHMS (DC & RMS)](#algorithms-dc--rms)
+     - 5.5.1 [DC AVERAGE](#dc-average)
+     - 5.5.2 [SINE RMS](#sine-rms)
+     - 5.5.3 [TRUE RMS](#true-rms)
+   - 5.6 [SOFTWARE](#software)
+6. [OTHER](#other)
+7. [REFERENCES](#references)
+
 
 
 ## INTRODUCTION
@@ -49,11 +58,11 @@ License: CC-BY-SA.
 - The license for the Jericho improvements of the hardware is also CC-BY-SA.
 
 
-## NAU7802 CHIP (COMMON SECTION)
+## NAU7802 (COMMON SECTION)
 
 - This section describes the details of the Analog-to-Digital NAU7802 chip. The information is relevant to both current and strain measurements.
 
-  ## NAU7802 CHIP - GENERALITIES  
+  ## GENERALITIES  
 - The NAU7802 chip by Nuvoton is a high-accuracy voltage measurement device. It includes a 24-bit ADC (Analog-to-Digital Converter) and has I2C communication.
 - The NAU7802 has two main capabilities: it can provide a regulated voltage  and it measures the analog signals from sensors with two channels. The regulated voltage is typically used to excite a Wheatstone bridge (not used in this product).
 - Very high accuracy ADC is required because the strain gauge, by their nature, creates very weak signals in the order of millivolts. The current sensor also needs the accuracy as it distributes a -50A/+50A input range on a 3V range output (1.0-4.0V).
@@ -65,7 +74,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - Note that the NAU7802 can accept various voltage supply values but the reading voltage range will be limited by the supply voltage value (“AVDD should not exceed DVDD supply voltage”).
 - When used with the RDL, the NAU7802 PCB is only supplied in power when a measurement is required by the RDL. This means that over the course of its life, the sensor will be powered up thousands of times. The NAU7802 chip does not require a delay between power up and reading; it deals with the necessary delays autonomously.
 
-  ### NAU7802 CHIP - I2C COMMUNICATION
+  ### I2C COMMUNICATION
 
 - Like all sensors from the RDL suite, the NAU7802 board has been designed for long wire operation (30m). However, the NAU7802 chip appears to have a weaker native signal and achieves shorter cable lengths for a given I2C bus frequency. When combined with I2C shield, RDL, a CAT5 cable and low EM noise environment, the maximum cable length for continuous communication is currently 30 m.
 - Apart from Sparkfun, there is another popular board design based on the NAU7802, by Adafruit. When comparing the two schematics, the stronger pullup resistors on the SDA/SCL lines (2.2kohm) seem to be the reason why longer cables are possible with Sparkfun than Adafruit (10kohm). On the Jericho design, as well as Sparkfun, these pullup resistors are in series with solder junctions (normally ON) that can be cut with a knife if the user wants to disconnect them.
@@ -73,7 +82,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - The presence of two RJ45 connectors on the board allows to daisy chain I2C devices. For example, the cabling cost can be reduced by using a single long cable to reach the strain sensor PCB and, from there, only add a short CAT cable to connect to the SHT40 PCB. This is possible because the two PCBs do not have the I2C address.
 - The NAU7802 chip has a single permanent I2C address: 0x2A. Therefore, one cannot daisy-chain two strain boards, it can only daisy chain a different sensor. Using two strain sensors on a given system requires two separate channels.
 
-  ### NAU7802 CHIP - MEASUREMENTS
+  ### MEASUREMENTS
 
 - Although the strain and current measurements both use the same chip, NAU7802, they use it differently.
   - STRAIN: Differential mode
@@ -88,7 +97,25 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - The measurement output by the NAU7802 is the average of a large sample. This is configured within the Arduino code. 
 - The ADC output follows this equation: “ADC Output Value = Gain_Calibration\* (ADC measurement - Offset_Calibration)”.
 
-  ## STRAIN GAUGE LOAD CELL
+## VOLTAGE REGULATOR SUBCIRCUIT (TPS630701) (COMMON SECTION)
+
+- To supply a high accuracy 5V line to the current sensor, the TPS630701 chip (buck-boost converter with switch current) is used.
+- The circuitry around the TPS630701 is based on the manufacturer recommendation presented in the specification sheet.
+- Four (4) decoupling capacitors are added on the input and output of the TPS630701 to improve the performance and stability.
+- This chip has two operation modes: PFM mode (Pulse Frequency Modulation) and PWM (Pulse Width Modulation). One mode is more efficient, the other is more accurate. The PWM mode has a +1/-3% accuracy, which is insufficient for the need of the TAMURA sensor. The PFM mode achieves a +/-1% accuracy, which is the minimum requirement for the TAMURA sensor. To activate the PFM mode, the pin ‘PS/SYNC’ is pulled high.
+- A male header is added to give access to some of the TPS63070 pins, but in normal operations they are not required. These pins are: VOUT, PG, GND, PS, GND, EN, VIN.
+- Note: A heat sink of dimension 0.19x0.25x0.30" is optional but generally recommended for the TPS630701 chip. No heat sink is added for the current sensor since the power consumption is so low (15mA) compared with the nominal capacity (2A).
+- TPS630701 is the fixed output version (5V) of the TPS63070 (adjustable output 2.5 - 9V). Contrarily to the Sparkfun original design, this circuit uses the fixed 5V output version. It has no feedback resistor to adjust the output between 2.5 and 9V. Instead, it has a feedback resistor inside the chip. The feedback resistor has an effect on the accuracy of the output, and so the accuracy (unknown) of the inner resistor probably limits the maximum accuracy achievable (i.e. 1%). Using the fixed 5V output has the advantage of avoiding any confusion that could occur with the variable voltage version.
+- A LED is added to the PCB to indicate that the sensor is powered on. If the voltage regulator circuit is out of service, the LED will not turn on. However, the LED turning on does not confirm that the regulation is within specs, as the LED can turn on at lower voltages than 5V.
+- You will notice a high-frequency noise while the ADS1115 operates. You will also notice a ticking sound at power startup, due to the coil being energized. These two sounds are considered normal with this design.
+- The L01Z sensor has no voltage protection against voltage spike or surge. However, the voltage regulator circuit adds some protection against voltage protection that might occur in the power supply. On the measurement side, a sudden spike in current can produce an unexpectedly strong magnetic field, which could lead to erroneous readings or potentially damage the sensor if it exceeds the sensor's maximum current rating.
+
+ ## STRAIN GAUGE LOAD CELL (TAL220)
+
+ - This section describes the current measurement section of the PCB.  
+
+
+   ## GENERALITIES AND INSTALLATION  
 
 - To operate, a strain sensor board requires a separate strain gauge load cell. This section details the relationship of the sensor with the required load cell.
 - The J3 screw terminal allows the PCB to connect with the strain gauge load cell. The load cell should be a full Wheatstone bridge. The wire colors are an indication only and might differ on your specific load cell. In case of contradiction, the wire function (VDDA, GND, A-, A+) has priority over color.
@@ -138,12 +165,12 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - Strain gauge load cells are very sensitive to temperature variation. There are multiple components to this relationship (e.g. load cell thermal expansion, strain gauge film expansion). Load cell temperature compensation is specific to each installation setup and must be addressed separately than the chip temperature compensation.
 
 
-
-
 ## CURRENT SENSOR (L01Z050S05)  
-This section describes the current measurement section of the PCB.  
+
+- This section describes the current measurement section of the PCB.  
 
   ## GENERALITIES AND INSTALLATION  
+
 - The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA. The L01Z module, based on the Hall effect, can measure both DC and AC (up to 100kHz) current up to 50A DC. The maximum frequency readable by the Jericho board however is much less, limited by the sampling speed of the processors. The LZ01 series offers module with a capacity up to 600A DC.
 - The L01Z component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
 - The TAMURA component is readily available at global suppliers like DigiKey or Mouser. PCB manufacturers like JLCPCB can source from those suppliers for their SMD and through-hole assembly line.
@@ -184,18 +211,24 @@ This section describes the current measurement section of the PCB.
     b) Output calibration (offset & slope)
 
 
-  ## VOLTAGE REGULATOR (TPS630701)
+  ## ALGORITHMS (DC & RMS)
 
-- To supply a high accuracy 5V line to the current sensor, the TPS630701 chip (buck-boost converter with switch current) is used.
-- The circuitry around the TPS630701 is based on the manufacturer recommendation presented in the specification sheet.
-- Four (4) decoupling capacitors are added on the input and output of the TPS630701 to improve the performance and stability.
-- This chip has two operation modes: PFM mode (Pulse Frequency Modulation) and PWM (Pulse Width Modulation). One mode is more efficient, the other is more accurate. The PWM mode has a +1/-3% accuracy, which is insufficient for the need of the TAMURA sensor. The PFM mode achieves a +/-1% accuracy, which is the minimum requirement for the TAMURA sensor. To activate the PFM mode, the pin ‘PS/SYNC’ is pulled high.
-- A male header is added to give access to some of the TPS63070 pins, but in normal operations they are not required. These pins are: VOUT, PG, GND, PS, GND, EN, VIN.
-- Note: A heat sink of dimension 0.19x0.25x0.30" is optional but generally recommended for the TPS630701 chip. No heat sink is added for the current sensor since the power consumption is so low (15mA) compared with the nominal capacity (2A).
-- TPS630701 is the fixed output version (5V) of the TPS63070 (adjustable output 2.5 - 9V). Contrarily to the Sparkfun original design, this circuit uses the fixed 5V output version. It has no feedback resistor to adjust the output between 2.5 and 9V. Instead, it has a feedback resistor inside the chip. The feedback resistor has an effect on the accuracy of the output, and so the accuracy (unknown) of the inner resistor probably limits the maximum accuracy achievable (i.e. 1%). Using the fixed 5V output has the advantage of avoiding any confusion that could occur with the variable voltage version.
-- A LED is added to the PCB to indicate that the sensor is powered on. If the voltage regulator circuit is out of service, the LED will not turn on. However, the LED turning on does not confirm that the regulation is within specs, as the LED can turn on at lower voltages than 5V.
-- You will notice a high-frequency noise while the ADS1115 operates. You will also notice a ticking sound at power startup, due to the coil being energized. These two sounds are considered normal with this design.
-- The L01Z sensor has no voltage protection against voltage spike or surge. However, the voltage regulator circuit adds some protection against voltage protection that might occur in the power supply. On the measurement side, a sudden spike in current can produce an unexpectedly strong magnetic field, which could lead to erroneous readings or potentially damage the sensor if it exceeds the sensor's maximum current rating.
+- The RDL has three algorithms for acquisition. The algorithm affects the sampling method and the data treatment. It does not affect the current sensor itself. For this reason, the detailed description of the algorithms can be found in the SAD (Sofware Architecture Documentation)[xx].
+
+    ### DC AVERAGE
+
+  - A simple arithmetic average of a variable-size sample. Useful for DC currents only.
+
+  ### SINE RMS
+
+  - Sine RMS (Root Mean Square) is used for AC measurements where the waveform is predominantly sinusoidal. This method provides an efficient computation by leveraging the properties of a sine wave. It rectifies the signal and applies a correction factor.
+
+  ### TRUE RMS
+
+  -  True RMS calculation provides accurate readings for AC currents regardless of waveform shape, making it essential for electronic applications involving non-linear loads.
+  - The True RMS algorithm, and to a lesser extent the Sine RMS, require high-speed data processing. The limited Arduino Nano speed therefore poses a limit to the maximum allowable frequency of AC signal that can be measured.
+
+
 
   ## SOFTWARE
 
@@ -216,3 +249,4 @@ NAU7802 specsheet
 TAMURA Specsheet
 
 TAL220 Specsheet
+
