@@ -1,148 +1,54 @@
 **RDL SUITE - GENERAL INFORMATION**
 =======================================
-by Jericho Lab
 
-Copyright: Jericho Laboratory Inc.  
-Documentation license: CC-BY-SA.  
+**Copyright:** Jericho Laboratory Inc.  
+**Documentation License:** CC-BY-SA  
 
-Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version. 
+**Warning:** This material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
 
-**Introduction**  
-Information found in this document applies to all designs, except where written otherwise.
+### Introduction
+This document provides general information applicable to all PCB designs (sensors, data loggers, shields) within the RDL suite unless specified otherwise.
 
-**Table of Contents**
-1. [CURRENT SENSOR VERSION](#current-sensor-version)
-   - [GENERAL](#general)
-2. [NOTES APPLICABLE TO THE RDL SUITE](#notes-applicable-to-the-rdl-suite)
-3. [STRAIN VERSION](#strain-version)
-   - [GENERAL](#general)
-4. [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
-5. [ATM HUMIDITY VERSION](#atm-humidity-version)
-   - [GENERAL](#general)
-6. [APPLICABLE TO THE RDL SUITE](#applicable-to-the-rdl-suite)
+### General Design Information
+- All boards are 2-layer PCBs with lead-free-HASL and SMD components on the top surface only.
+- Copper planes (ground) are on the bottom surface to reduce EM noise.
+- Default PCB trace width is 0.25mm for normal traces and 0.5mm for power traces (VCC, GND). 
+- Board design are done with KiCAD 7.0 and above.
+- Board routing done mostly with Freerouting and some manual traces in KiCAD. Freerouting is used in stand-alone mode (Java package).
+- All designs are available on GitHub, including KiCAD project files, Gerber files, BoM, and Component Position Placement files.
+- Libraries required for the RDL suite are generally open-source.
+- The sensors are designed to support cable lengths up to 30 meters for both CAT cables and two-conductor cables.
+- Aimed at optimizing design and cost for JLCPCB's manufacturing capabilities. Efforts were made to use Standard parts (no assembly fee) instead of Extended Parts.
 
+### PCB Manufacturing and Assembly Information
 
-## CURRENT SENSOR VERSION:  
+- PCB manufacturing is done at JLCPCB, a low-cost Chinese company.
+- Most boards include Surface Mount (SMD) and Through-Hole components. SMD components are soldered via an automated process, while Through-Hole components are placed by hand and soldered with a wave soldering machine.
+- Final quality control is done in Canada by Jericho.
+- No-rinse flux is used and there is no cleaning done after the soldering.
 
-### GENERAL
-- The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
-- The original design of the voltage regulation circuit was done by Sparkfun under CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
-- A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
-- The allowable wire gauges for the PCB screw terminals are AWG 20-26.
-- For this product, a “long wire” is defined as 30 m. The device was designed with a target of 30m wire. This applies for both CAT cables and ordinary two-conductor cables.
+### RJ45 Connectors
 
-## NOTES APPLICABLE TO THE RDL SUITE
+- For RJ45 connectors, the Jericho standard pin order is:  
+1- VCC  
+2- VCC  
+3- GND  
+4- GND  
+5- SDA  
+6- SDA  
+7- SCL  
+8- SCL  
 
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on Github. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been partially optimized for JLCPCB manufacturing abilities and components pricing at the time of design, for small batches.
-- Unless stated otherwise, all libraries required to make the RDL suite run are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
+- Since CAT cables with the 568A/B wiring standard are twisted in pairs (1-2, 3-6, 4-5, 7-8), there is some shielding of the SDA line with the GND line. The SCL line is not protected however (being twisted on itself), so there is improvement potential.
 
+### Silica Gel Bag
 
-## STRAIN VERSION:
+- To avoid high humidity in enclosures, it recommended to add one or more silica gel bags in each enclosure. This is especially recommended for enclosure that have multiple cables per cable gland and/or enclosures that have sensitive electronics (e.g. main hub).
+- Multiple brands are available worldwide. The ability to see a color change with humidity saturation is an important feature.
+- Silica gel bags are replenishable via heat following instructions provided by manufacturer.
 
-### GENERAL
+### References
 
-- This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
-- The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
-- The original design of the voltage regulation circuit was done by Sparkfun Industries under the CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
-- There are holes around the board to help attach the wires and reduce mechanical stress on the wires.
-- A copper plane (ground) is poured on the bottom surface of the PCB to reduce EM noise. There is no copper plane on the top surface.
+- JLCPCB. http://jlcpcb.com
+- Freerouting. https://freerouting.org
 
-## APPLICABLE TO THE RDL SUITE
-
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
-- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
-
-## ATM HUMIDITY VERSION:
-
-### GENERAL
-
-- This document refers to the strain sensor system associated with the Jericho Strain Sensor PCB revision A1.
-- The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
-- The original design of the voltage regulation circuit was done by Adafruit under CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
-- There are holes around the board to help attach the wires and reduce mechanical stress on the wires.
-- A copper plane (ground) is poured on the bottom surface of the PCB to reduce EM noise. There is no copper plane on the top surface.
-
-## APPLICABLE TO THE RDL SUITE
-
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 7.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement (CPL) files.
-- Design and cost have been partially optimized for JLCPCB manufacturing abilities and components pricing at the time of design, for small batches.
-- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
-
-
-**RJ45 connectors
- For RJ45 connectors, the standardized pin order is:
- 1- VCC?
- 2- VCC?
- 3- GND?
- 4
- 5
- 6
- 7
- 8
-
-- a silica gel bag :  
--brand?
-- Silica gel bag remove humidity from the water sensitive enclosures
-- Silica gel bag a replenishable with heat. Follow instructions.
-
-GENERAL FROM I2C SHIELD DOCUMENT
-
-**GENERAL**
-
-- This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2. This board is the successor of revision E1 (prototype).
-- The RDL rev E2 hardware is released under the MIT open-source license.
-- The current board revision only works with the corresponding source code version.
-- Allowable wire gauges are written on the silkscreen (AWG 20-26). This interval is the ideal size to avoid wires slipping out. The order of the terminals is also printed (i.e. VCC, GND, SIG, VCC, GND, SIG, etc.)
-- Starting with revision E2, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced.
-- The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
-- A copper plane (ground) is poured on the bottom surface on the PCB to reduce EM noise. There is no copper plane on the top surface.
-
-
-**NOTES APPLICABLE TO THE RDL SUITE**
-
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on Github. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
-- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
-
-
-**SECTION INFRARED CAMERA DESIGN OVERVIEW **  
-
-
-## GENERAL
-
-- This document refers to the Resistance Data Logger (RDL) system associated with the Jericho RDL PCB revision E2.
-- While great efforts have been put into affordability, the IR camera remains the most expensive sensor in the RDL suite. This is partly due to its high-tech nature, but one limiting factor was the high requirements of the WIRED project (i.e. radiometric capability, high resolution). An ultra-low-cost alternative could be the MLX90640 ($C100). However, its image resolution (24x32 pixels) would be of limited use in the context of solar panel monitoring, for example.
-- The IR camera board hardware is released under the CC-BY-SA-4.0 open-source license.
-- The current board revision only works with the corresponding source code version.
-- For the IR camera, a “long” wire or cable is defined as 22m.
-- Since October 2023, the objective of maintaining at least 50% of the product cost (material and labor) has been abandoned. This was a requirement for the ‘Made in Canada’ label, which appeared contrary to the goal of maximizing affordability and access. Therefore, an increased number of manufacturing operations are outsourced in China.
-- Long wires (>10m) between the RDL and its sensors will cause significant voltage loss. This means that some devices will require a voltage regulator at the other end to make sure that the chip is supplied with the proper voltage.
-
-## NOTES APPLICABLE TO THE RDL SUITE
-
-- Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
-- For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
-- Default PCB trace width is 0.25mm. For power traces (VCC, GND), the trace width is 0.5mm, with some exceptions (e.g. a power trace connecting to a very compact chip package format). In those cases, the 0.25mm default is applied.
-- The complete PCB design, ready for production, is available on GitHub. This includes KiCAD project files, Gerber files, BoM and Component Position Placement files.
-- Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
-- Unless stated otherwise, all libraries required to run the RDL suite are open-source.
-- If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
-- Generally speaking, most key components of the RDL suite have their datasheet on the Jericho GitHub (e.g. chips).

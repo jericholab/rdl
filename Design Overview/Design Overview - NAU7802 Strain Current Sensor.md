@@ -1,7 +1,7 @@
 **NAU7802 Board For Strain and Current Revision B1 - Design Overview**  
 =======================================
 Copyright: Jericho Laboratory Inc.  
-License: CC-BY-SA.  
+Document license: CC-BY-SA.  
  
 
 **Warning**: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version, as well as the latest specification sheets of the associated electronic components.
@@ -17,31 +17,32 @@ License: CC-BY-SA.
 
 **Table of Contents**
 
-1. [Introduction](#introduction)
-2. [NAU7802 (COMMON SECTION)](#nau7802-common-section)
+1. [INTRODUCTION](#introduction)
+2. [ADC SUBCIRCUIT (NAU7802) (COMMON SECTION)](#adc-subcircuit-nau7802-common-section)
    - 2.1 [GENERALITIES](#generalities)
    - 2.2 [I2C COMMUNICATION](#i2c-communication)
    - 2.3 [MEASUREMENTS](#measurements)
-3. [VOLTAGE REGULATOR SUBCIRCUIT (TPS630701)](#voltage-regulator-subcircuit-tps630701)
-4. [STRAIN GAUGE LOAD CELL (TAL220)](#strain-gauge-load-cell-tal220)
+3. [VOLTAGE REGULATOR SUBCIRCUIT (TPS630701) (COMMON SECTION)](#voltage-regulator-subcircuit-tps630701-common-section)
+4. [STRAIN & FORCE MEASUREMENTS](#strain--force-measurements)
    - 4.1 [GENERALITIES AND INSTALLATION](#generalities-and-installation)
-   - 4.2 [SOFTWARE](#software)
-   - 4.3 [STRAIN SENSOR CALIBRATION](#strain-sensor-calibration)
-     - 4.3.1 [INTERNAL CALIBRATION](#internal-calibration)
-     - 4.3.2 [EXTERNAL CALIBRATION](#external-calibration)
-   - 4.4 [RJ45 CONNECTORS](#rj45-connectors)
-5. [CURRENT SENSOR (L01Z050S05)](#current-sensor-l01z050s05)
-   - 5.1 [GENERALITIES AND INSTALLATION](#generalities-and-installation)
+   - 4.2 [STRAIN GAUGE LOAD CELL (TAL220)](#strain-gauge-load-cell-tal220)
+   - 4.3 [SOFTWARE](#software)
+   - 4.4 [STRAIN SENSOR CALIBRATION](#strain-sensor-calibration)
+       - 4.4.1 [INTERNAL CALIBRATION](#internal-calibration)
+       - 4.4.2 [EXTERNAL CALIBRATION](#external-calibration)
+   - 4.5 [RJ45 CONNECTORS](#rj45-connectors)
+5. [ELECTRICAL CURRENT MEASUREMENTS](#electrical-current-measurements)
+   - 5.1 [TAMURA L01Z050S05 SENSOR DESCRIPTION](#tamura-l01z050s05-sensor-description)
    - 5.2 [SENSOR OPERATION](#sensor-operation)
    - 5.3 [ANALOG OPERATION MODE](#analog-operation-mode)
    - 5.4 [DIGITAL OPERATION MODE](#digital-operation-mode)
    - 5.5 [ALGORITHMS (DC & RMS)](#algorithms-dc--rms)
-     - 5.5.1 [DC AVERAGE](#dc-average)
-     - 5.5.2 [SINE RMS](#sine-rms)
-     - 5.5.3 [TRUE RMS](#true-rms)
-   - 5.6 [SOFTWARE](#software)
+       - 5.5.1 [DC AVERAGE](#dc-average)
+       - 5.5.2 [SINE RMS](#sine-rms)
+       - 5.5.3 [TRUE RMS](#true-rms)
 6. [OTHER](#other)
 7. [REFERENCES](#references)
+
 
 
 
@@ -58,9 +59,9 @@ License: CC-BY-SA.
 - The license for the Jericho improvements of the hardware is also CC-BY-SA.
 
 
-## NAU7802 (COMMON SECTION)
+## ADC SUBCIRCUIT (NAU7802)
 
-- This section describes the details of the Analog-to-Digital NAU7802 chip. The information is relevant to both current and strain measurements.
+- This section describes the details of the Analog-to-Digital (ADC) NAU7802 chip. The information is relevant to both current and strain measurements.
 
   ## GENERALITIES  
 - The NAU7802 chip by Nuvoton is a high-accuracy voltage measurement device. It includes a 24-bit ADC (Analog-to-Digital Converter) and has I2C communication.
@@ -81,6 +82,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - NAU7802 is designed to operate at 100kHz or 400kHz (high-speed I2C bus). However, it has shown no difficulties at operating at low bus frequency, down to 31kHz (Jericho present default on hardware-based I2C protocol).
 - The presence of two RJ45 connectors on the board allows to daisy chain I2C devices. For example, the cabling cost can be reduced by using a single long cable to reach the strain sensor PCB and, from there, only add a short CAT cable to connect to the SHT40 PCB. This is possible because the two PCBs do not have the I2C address.
 - The NAU7802 chip has a single permanent I2C address: 0x2A. Therefore, one cannot daisy-chain two strain boards, it can only daisy chain a different sensor. Using two strain sensors on a given system requires two separate channels.
+- There is a supplementary 6-pin male header (2.54mm spacing) for quick connections and testing: GND, 5V, SDA, SCL, INT, VCC.
 
   ### MEASUREMENTS
 
@@ -97,22 +99,25 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - The measurement output by the NAU7802 is the average of a large sample. This is configured within the Arduino code. 
 - The ADC output follows this equation: “ADC Output Value = Gain_Calibration\* (ADC measurement - Offset_Calibration)”.
 
-## VOLTAGE REGULATOR SUBCIRCUIT (TPS630701) (COMMON SECTION)
+## VOLTAGE REGULATOR SUBCIRCUIT (TPS630701)
+
+- This section describes the details of the voltage regulation subcircuit. The information is relevant to both current and strain measurements.
 
 - To supply a high accuracy 5V line to the current sensor, the TPS630701 chip (buck-boost converter with switch current) is used.
 - The circuitry around the TPS630701 is based on the manufacturer recommendation presented in the specification sheet.
 - Four (4) decoupling capacitors are added on the input and output of the TPS630701 to improve the performance and stability.
 - This chip has two operation modes: PFM mode (Pulse Frequency Modulation) and PWM (Pulse Width Modulation). One mode is more efficient, the other is more accurate. The PWM mode has a +1/-3% accuracy, which is insufficient for the need of the TAMURA sensor. The PFM mode achieves a +/-1% accuracy, which is the minimum requirement for the TAMURA sensor. To activate the PFM mode, the pin ‘PS/SYNC’ is pulled high.
 - A male header is added to give access to some of the TPS63070 pins, but in normal operations they are not required. These pins are: VOUT, PG, GND, PS, GND, EN, VIN.
-- Note: A heat sink of dimension 0.19x0.25x0.30" is optional but generally recommended for the TPS630701 chip. No heat sink is added for the current sensor since the power consumption is so low (15mA) compared with the nominal capacity (2A).
+- A heat sink of dimension 0.19x0.25x0.30" is optional but generally recommended for the TPS630701 chip. No heat sink is added for the current sensor since the power consumption is so low (15mA) compared with the nominal capacity (2A).
 - TPS630701 is the fixed output version (5V) of the TPS63070 (adjustable output 2.5 - 9V). Contrarily to the Sparkfun original design, this circuit uses the fixed 5V output version. It has no feedback resistor to adjust the output between 2.5 and 9V. Instead, it has a feedback resistor inside the chip. The feedback resistor has an effect on the accuracy of the output, and so the accuracy (unknown) of the inner resistor probably limits the maximum accuracy achievable (i.e. 1%). Using the fixed 5V output has the advantage of avoiding any confusion that could occur with the variable voltage version.
-- A LED is added to the PCB to indicate that the sensor is powered on. If the voltage regulator circuit is out of service, the LED will not turn on. However, the LED turning on does not confirm that the regulation is within specs, as the LED can turn on at lower voltages than 5V.
+- A LED is added to the subcircuit to indicate that the sensor is powered on. If the voltage regulator circuit is out of service, the LED will not turn on. However, the LED turning on does not confirm that the regulation is within specs, as the LED can turn on at lower voltages than 5V.
 - You will notice a high-frequency noise while the ADS1115 operates. You will also notice a ticking sound at power startup, due to the coil being energized. These two sounds are considered normal with this design.
 - The L01Z sensor has no voltage protection against voltage spike or surge. However, the voltage regulator circuit adds some protection against voltage protection that might occur in the power supply. On the measurement side, a sudden spike in current can produce an unexpectedly strong magnetic field, which could lead to erroneous readings or potentially damage the sensor if it exceeds the sensor's maximum current rating.
 
- ## STRAIN GAUGE LOAD CELL (TAL220)
+ ## STRAIN & FORCE MEASUREMENTS
 
- - This section describes the current measurement section of the PCB.  
+ 
+ - This section describes the subcircuit responsible for strain and force measurements.
 
 
    ## GENERALITIES AND INSTALLATION  
@@ -126,6 +131,8 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - Since strain gauge load cell wires are usually quite small, this PCB design uses smaller crew terminals: 3.5mm pitch instead of the typical 5mm pitch. The small gauge wire can slip out of the 5mm terminal.
 - By their nature, strain gauges do not tolerate well long-term static loads (> 1 day). It causes measurement drift for multiple reasons (gauge deformation, adhesive breakdown). For precise long-term measurements, periodic recalibration and the use of multiple gauges for redundancy may also be necessary.
 
+  ## STRAIN GAUGE LOAD CELL (TAL220)
+  - text xxxxxxxxxxxxxxxxxx
   ## SOFTWARE
 
 - The standard RDL code can operate the strain sensor. The number of allowable strain sensors is only limited by the number of I2C channels.
@@ -165,20 +172,17 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - Strain gauge load cells are very sensitive to temperature variation. There are multiple components to this relationship (e.g. load cell thermal expansion, strain gauge film expansion). Load cell temperature compensation is specific to each installation setup and must be addressed separately than the chip temperature compensation.
 
 
-## CURRENT SENSOR (L01Z050S05)  
+## ELECTRICAL CURRENT MEASUREMENTS
 
 - This section describes the current measurement section of the PCB.  
 
-  ## GENERALITIES AND INSTALLATION  
+  ## SENSOR DESCRIPTION (TAMURA L01Z050S05)
 
 - The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA. The L01Z module, based on the Hall effect, can measure both DC and AC (up to 100kHz) current up to 50A DC. The maximum frequency readable by the Jericho board however is much less, limited by the sampling speed of the processors. The LZ01 series offers module with a capacity up to 600A DC.
 - The L01Z component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
 - The TAMURA component is readily available at global suppliers like DigiKey or Mouser. PCB manufacturers like JLCPCB can source from those suppliers for their SMD and through-hole assembly line.
 - The TAMURA module was designed for indoor use and is not weatherproof. Therefore, the sensor MUST be installed in a weatherproof enclosure to avoid any damage or safety risk.
 - The TAMURA is a through-hole component soldered on the PCB. Two soldered mechanical pins reduce the strain on the electronic pins.
-- Jericho recommend the use of two adequate size cable glands (inlet, outlet) on the main cable to avoid any water entry in the enclosure.
-- Jericho recommends the addition of silica gel packet inside the enclosure to reduce humidity.
-- The NAU7802 board is able to operate in two modes: analog and digital.
 
   ## SENSOR OPERATION
 
@@ -211,7 +215,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
     b) Output calibration (offset & slope)
 
 
-  ## ALGORITHMS (DC & RMS)
+  ## EFFECTIVE CURRENT ALGORITHMS
 
 - The RDL has three algorithms for acquisition. The algorithm affects the sampling method and the data treatment. It does not affect the current sensor itself. For this reason, the detailed description of the algorithms can be found in the SAD (Sofware Architecture Documentation)[xx].
 
@@ -237,16 +241,20 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 
 ## OTHER
 
-- A LED is added to the PCB to indicate that the sensor powered.
 - The board has 3.5mm diameter holes in each corner for installation purposes.
-- There is a supplementary 6-pin male header (2.54mm spacing) for quick connections and testing: GND, 5V, SDA, SCL, INT, VCC.
+
+- Jericho recommends the use of two adequate size cable glands (inlet, outlet) on the main cable to avoid any water entry in the enclosure.
+- Jericho recommends the addition of silica gel packet inside the enclosure to reduce humidity.
 
 ## REFERENCES
 
-xxxxxxxxxxx 
 NAU7802 specsheet
+https://www.nuvoton.com/resource-files/NAU7802%20Data%20Sheet%20V1.7.pdf
 
-TAMURA Specsheet
+TAMURA LZ01 Series Specsheet
+https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L01ZXXXS05.pdf
+
+****** Wait you NEED A MEASUREMENT RESISTOR? THIS IS A CURRENT OUTPUT???
 
 TAL220 Specsheet
 
