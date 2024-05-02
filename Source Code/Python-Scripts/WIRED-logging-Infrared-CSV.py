@@ -55,7 +55,7 @@ def on_frame(camera, camera_frame, file):
         but in this case it is a reference to the open CSV file to which
         to log data.
     """
-    while True:
+    if True:
         now = datetime.now()
         now = now.strftime(formatExpected)
         dailyFolderNow = datetime.now()
@@ -86,8 +86,6 @@ def on_frame(camera, camera_frame, file):
         # Wait ten seconds in between frames
         #sleep(10.0)
         sleep(60.0)
-
-
 
 def on_event(camera, event_type, event_status, _user_data):
     """Async callback fired whenever a camera event occurs.
