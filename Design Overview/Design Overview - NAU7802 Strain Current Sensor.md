@@ -178,7 +178,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 
   ## SENSOR DESCRIPTION (TAMURA L01Z050S05)
 
-- The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA. The L01Z module, based on the Hall effect, can measure both DC and AC (up to 100kHz) current up to 50A DC. The maximum frequency readable by the Jericho board however is much less, limited by the sampling speed of the processors. The LZ01 series offers module with a capacity up to 600A DC.
+- The core component of the board is the L01Z050S05 current sensor module manufactured by TAMURA Corporation (a global company with head offices in Japan). The L01Z module, based on the Hall effect, can measure both DC and AC (up to 100kHz) current up to 50A DC. The maximum frequency readable by the Jericho board however is much less, limited by the sampling speed of the processors. The LZ01 series offers module with a capacity up to 600A DC.
 - The L01Z component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
 - The TAMURA component is readily available at global suppliers like DigiKey or Mouser. PCB manufacturers like JLCPCB can source from those suppliers for their SMD and through-hole assembly line.
 - The TAMURA module was designed for indoor use and is not weatherproof. Therefore, the sensor MUST be installed in a weatherproof enclosure to avoid any damage or safety risk.
@@ -192,11 +192,11 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
     - Current limiting
     - Signal conditioning (provide a predicatble load impedance)
     - Interface Matching (Match the input impedance to avoid signal loss)
- - The manufacturer specifications require a 10 kohms load resistor.
+ - The manufacturer specifications require a 10 kohms load resistor. More information is available in the L01Z Series Application Manual.
 
   <figure>
   <p align="center">
-   <img src="../Design Overview/images/tamura-resistor.png" style="width:50%"
+   <img src="../Design Overview/images/tamura-resistor2.png" style="width:70%"
   </p>
  </figure>
  <p align="center"> Recommended electrical circuit for the L01Z sensor (Copyright TAMURA CORP)
@@ -259,7 +259,6 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 ## OTHER
 
 - The board has 3.5mm diameter holes in each corner for installation purposes.
-
 - Jericho recommends the use of two adequate size cable glands (inlet, outlet) on the main cable to avoid any water entry in the enclosure.
 - Jericho recommends the addition of silica gel packet inside the enclosure to reduce humidity.
 
@@ -271,7 +270,7 @@ https://www.nuvoton.com/resource-files/NAU7802%20Data%20Sheet%20V1.7.pdf
 TAMURA LZ01 Series Specsheet
 https://www.tamuracorp.com/clientuploads/pdfs/engineeringdocs/L01ZXXXS05.pdf
 
-****** Wait you NEED A MEASUREMENT RESISTOR? THIS IS A CURRENT OUTPUT???
+L01Z Series Application Manual. https://www.tamuracorp.com/file.jsp?id=18591
 
 TAL220 Specsheet
 
