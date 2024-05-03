@@ -26,11 +26,15 @@ fi
 
 sleep 5  # 5sec delay  
 
+sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py; echo Press enter to exit; read'" &
+sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py; echo Press enter to exit; read'" &
+sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-CSV.py; echo Press enter to exit; read'" &
+lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-syncing.py; echo Press enter to exit; read'" &
 
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py" &
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py" &
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py" &
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py" &
 #sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-JPG.py" &
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-CSV.py" &
-lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-syncing.py" &
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-CSV.py" &
+#lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-syncing.py" &
 
 exit 0
