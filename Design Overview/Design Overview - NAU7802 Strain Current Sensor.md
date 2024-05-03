@@ -10,12 +10,10 @@ Document license: CC-BY-SA.
 
 **Warning**: This product is neither intended nor warranted for use in following equipment or devices: Special application (such as for medical devices, transportation equipment, traffic signal control equipment, fire and crime prevention equipment, aeronautics and space devices, nuclear power control, fuel control, in vehicle equipment safety devices, and so on) in which extremely high quality and high reliability is required, or if the malfunction or failures of product could be cause for loss of human life, bodily injury.
  
-
-*** OH WAIT **** DOES THE NAU7802 OPERATE IN SIMILAR WAY? i THINK NOT BECAUSE STRAIN IS DIFFERENTIAL AND CURRENT IS UNIPOLAR.
-
+XXXXXXXXXXXXXXXXXXXXXXX
 *** what is the accuracy of these two sensors? how do we know that accuracy  ***
 
-**Table of Contents**
+**Table of Contents**   (TO BE UPDATED)..........................
 
 1. [INTRODUCTION](#introduction)
 2. [ADC SUBCIRCUIT (NAU7802) (COMMON SECTION)](#adc-subcircuit-nau7802-common-section)
@@ -90,7 +88,7 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
   - STRAIN: Differential mode
   - CURRENT: Unipolar mode
 
-******* IS THIS THE ONLY DIFFERENCE BETWEEN THE TWO? *********
+******* IS THIS THE ONLY DIFFERENCE IN OPERATION BETWEEN THE TWO SENSORS? YOU SURE?   *********
 
 - The measurements can be done at various speed: 10, 20, 40, 80, 320 SPS (Samples Per Second). To reduce sampling time, RDL runs at 320 SPS by default.
 - DVDD is the digital power supply input (2.7 - 5.5V). It is externally provided by the on-board regulating circuit (5V).
@@ -131,8 +129,10 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - Since strain gauge load cell wires are usually quite small, this PCB design uses smaller crew terminals: 3.5mm pitch instead of the typical 5mm pitch. The small gauge wire can slip out of the 5mm terminal.
 - By their nature, strain gauges do not tolerate well long-term static loads (> 1 day). It causes measurement drift for multiple reasons (gauge deformation, adhesive breakdown). For precise long-term measurements, periodic recalibration and the use of multiple gauges for redundancy may also be necessary.
 
-  ## STRAIN GAUGE LOAD CELL (TAL220)
+  ## STRAIN GAUGE LOAD CELL (TAL220)  
+
   - text xxxxxxxxxxxxxxxxxx
+
   ## SOFTWARE
 
 - The standard RDL code can operate the strain sensor. The number of allowable strain sensors is only limited by the number of I2C channels.
@@ -182,7 +182,24 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - The L01Z component was selected because it can be used with DC current, while as induction-based sensors are only compatible with AC current.
 - The TAMURA component is readily available at global suppliers like DigiKey or Mouser. PCB manufacturers like JLCPCB can source from those suppliers for their SMD and through-hole assembly line.
 - The TAMURA module was designed for indoor use and is not weatherproof. Therefore, the sensor MUST be installed in a weatherproof enclosure to avoid any damage or safety risk.
-- The TAMURA is a through-hole component soldered on the PCB. Two soldered mechanical pins reduce the strain on the electronic pins.
+
+
+  ## PCB INTEGRATION
+
+ - The TAMURA is a through-hole component soldered on the PCB. Two soldered mechanical pins reduce the strain on the electronic pins.
+ - The analog output is a 0-5V output, but for several reasons, it requires a load resistor (RL):
+    - Voltage Division (scale down the voltage to ADC level)  
+    - Current limiting
+    - Signal conditioning (provide a predicatble load impedance)
+    - Interface Matching (Match the input impedance to avoid signal loss)
+ - The manufacturer specifications require a 10 kohms load resistor.
+
+  <figure>
+  <p align="center">
+   <img src="../Design Overview/images/tamura-resistor.png" style="width:50%"
+  </p>
+ </figure>
+ <p align="center"> Recommended electrical circuit for the L01Z sensor (Copyright TAMURA CORP)
 
   ## SENSOR OPERATION
 
