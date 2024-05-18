@@ -15,4 +15,11 @@ https://jericholab.com
 For more information about the user permissions and responsibilities associated with each license, 
 please refer to our website or contact us via email at info@jericholab.com. Thank you! 
 
-![20220727_163815 - Cropped](https://user-images.githubusercontent.com/99691909/183455297-a81224b9-2fcf-4524-9ee1-423d9b2cfd38.jpg)
+<figure>
+<p align="center">
+<img src="/PCB Design/images/Picture-RDL-revE4-croppedCopy.jpg" style="width:70%">
+  </p>
+</figure>
+<p align="center">
+Resistance Data Logger (RDL) Revision E4
+</p>
