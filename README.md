@@ -20,3 +20,12 @@ WEBSITE & DOCUMENTS: Creative Commons CC-BY-NC-SA (Non-commercial use only)
 For more information about the user permissions and responsibilities associated with each license, please refer to our website or contact us via email at info@jericholab.com. Thank you! 
 
 ![20220727_163815 - Cropped](https://user-images.githubusercontent.com/99691909/183455297-a81224b9-2fcf-4524-9ee1-423d9b2cfd38.jpg)
+
+<figure>
+<p align="center">
+<img src="../Images/EDITED Picture-NAU7802-revB1.png" style="width:70%">
+  </p>
+</figure>
+<p align="center">
+NAU7802 RevB1 for strain, force and current measurements
+</p>
