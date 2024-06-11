@@ -19,6 +19,16 @@ WEBSITE & DOCUMENTS: Creative Commons CC-BY-NC-SA (Non-commercial use only)
 
 For more information about the user permissions and responsibilities associated with each license, please refer to our website or contact us via email at info@jericholab.com. Thank you! 
 
+
+<figure>
+<p align="center">
+<img src="../Design Overview/images/1 IR Camera RevA1.png" style="width:80%">
+  </p>
+<p align="center">
+Exploded view of the core and the interface board kit (Copyright Seek Thermal)
+  </p>
+</figure>
+
 <figure>
 <p align="center">
 <img src="RDL/Images/EDITED-Picture-NAU7802-revB1.jpg" style="width:70%">
