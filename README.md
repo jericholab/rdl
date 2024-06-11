@@ -29,11 +29,3 @@ Exploded view of the core and the interface board kit (Copyright Seek Thermal)
   </p>
 </figure>
 
-<figure>
-<p align="center">
-<img src="RDL/Images/EDITED-Picture-NAU7802-revB1.jpg" style="width:70%">
-  </p>
-</figure>
-<p align="center">
-NAU7802 RevB1 for strain, force and current measurements
-</p>
