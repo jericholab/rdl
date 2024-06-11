@@ -22,7 +22,7 @@ For more information about the user permissions and responsibilities associated 
 
 <figure>
 <p align="center">
-<img src="Design Overview/images/1 IR Camera RevA1.png" style="width:80%">
+<img src="Images/EDITED-Picture-NAU7802-revB1.jpg" style="width:80%">
   </p>
 <p align="center">
 Exploded view of the core and the interface board kit (Copyright Seek Thermal)
