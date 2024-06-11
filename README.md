@@ -21,7 +21,7 @@ For more information about the user permissions and responsibilities associated 
 
 <figure>
 <p align="center">
-<img src="../Images/EDITED-Picture-NAU7802-revB1.png" style="width:70%">
+<img src="RDL/Images/EDITED-Picture-NAU7802-revB1.jpg" style="width:70%">
   </p>
 </figure>
 <p align="center">
