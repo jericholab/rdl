@@ -40,3 +40,12 @@ RDL I2C Shield, revA4
 </figure>
 
 
+<figure>
+<p align="center">
+<img src="Images/Picture-SHT4x-revA3.jpg" style="width:40%">
+  </p>
+<p align="center">
+SHT4X revA4 for temperature and air humidity measurements
+  </p>
+</figure>
+
