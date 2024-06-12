@@ -22,6 +22,15 @@ For more information about the user permissions and responsibilities associated 
 
 <figure>
 <p align="center">
+<img src="Images/Picture-RDL-revE4-croppedCopy.jpg" style="width:60%">
+  </p>
+<p align="center">
+RDL Data Logger revE4 with two I2C Shields
+  </p>
+</figure>
+
+<figure>
+<p align="center">
 <img src="Images/Picture-NAU7802-revB1.jpg" style="width:40%">
   </p>
 <p align="center">
@@ -58,3 +67,6 @@ SHT4X revA4 for temperature and air humidity measurements
 Carrier board for EZO PH (Atlas Scientific), revA1
   </p>
 </figure>
+
+
+
