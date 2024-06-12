@@ -49,3 +49,12 @@ SHT4X revA4 for temperature and air humidity measurements
   </p>
 </figure>
 
+
+<figure>
+<p align="center">
+<img src="Images/Picture-pHCarrier-revA1-img2.jpg" style="width:40%">
+  </p>
+<p align="center">
+Carrier board for EZO PH (Atlas Scientific), revA1
+  </p>
+</figure>
