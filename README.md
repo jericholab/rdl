@@ -32,10 +32,10 @@ NAU7802 RevB1 for strain, force and current measurements
 
 <figure>
 <p align="center">
-<img src="Images/Picture-NAU7802-revB1.jpg" style="width:40%">
+<img src="Images/Picture-i2cShield-revA4-.jpg" style="width:40%">
   </p>
 <p align="center">
-NAU7802 RevB1 for strain, force and current measurements
+RDL I2C Shield, revA4
   </p>
 </figure>
 
