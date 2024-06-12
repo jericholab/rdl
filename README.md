@@ -22,10 +22,21 @@ For more information about the user permissions and responsibilities associated 
 
 <figure>
 <p align="center">
-<img src="Images/EDITED-Picture-NAU7802-revB1.jpg" style="width:80%">
+<img src="Images/Picture-NAU7802-revB1.jpg" style="width:40%">
   </p>
 <p align="center">
-Exploded view of the core and the interface board kit (Copyright Seek Thermal)
+NAU7802 RevB1 for strain, force and current measurements
   </p>
 </figure>
+
+
+<figure>
+<p align="center">
+<img src="Images/Picture-NAU7802-revB1.jpg" style="width:40%">
+  </p>
+<p align="center">
+NAU7802 RevB1 for strain, force and current measurements
+  </p>
+</figure>
+
 
