@@ -84,19 +84,22 @@ void printHeader(){
               Serial.print(currentText1);
               spacing2(currentText1,12);
 
-              String currentText4 = F("T_comp");
-              Serial.print(currentText4);
-              spacing2(currentText4,12);
-                            
-              String currentText2 = F("Raw");
+              String currentText2 = F("T_comp");
               Serial.print(currentText2);
               spacing2(currentText2,12);
-
-              
-              String currentText3 = F("Amps_C");
+                            
+              String currentText3 = F("Raw1");
               Serial.print(currentText3);
-              Serial.print(channels_current[i]);
               spacing2(currentText3,12);
+
+              String currentText4 = F("Raw2");
+              Serial.print(currentText4);
+              spacing2(currentText4,12);
+              
+              String currentText5 = F("Amps_C");
+              Serial.print(currentText5);
+              Serial.print(channels_current[i]);
+              spacing2(currentText5,12);
             }
         }
 
