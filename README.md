@@ -68,5 +68,3 @@ Carrier board for EZO PH (Atlas Scientific), revA1
   </p>
 </figure>
 
-
-
