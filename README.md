@@ -4,22 +4,67 @@ The RDL is an open-source suite of ready-to-use data logger and sensors designed
 
 The RDL is an open-source ready-to-use data logger designed for scientists and engineers.
 
-SOFTWARE: GPL 3.0 
+For bugs and suggestions, users are invited to submit issues via Github.
 
-HARDWARE: MIT  
 
-WEBSITE, DOCUMENTS: Creative Commons CC-BY-NC-SA (Non-commercial use only) 
+Visit the official website: https://jericholab.com
 
-https://jericholab.com
+**Purchase orders**  
+Contact us via email or Linkedin.
  
-For more information about the user permissions and responsibilities associated with each license, 
-please refer to our website or contact us via email at info@jericholab.com. Thank you! 
+**Licenses**  
+SOFTWARE: GPL 3.0 license  
+HARDWARE: MIT license  
+WEBSITE & DOCUMENTS: Creative Commons CC-BY-NC-SA (Non-commercial use only)
+
+For more information about the user permissions and responsibilities associated with each license, please refer to our website or contact us via email at info@jericholab.com. Thank you! 
+
 
 <figure>
 <p align="center">
-<img src="/PCB Design/images/Picture-RDL-revE4-croppedCopy.jpg" style="width:70%">
+<img src="Images/Picture-RDL-revE4-croppedCopy.jpg" style="width:60%">
+  </p>
+<p align="center">
+RDL Data Logger revE4 with two I2C Shields
   </p>
 </figure>
+
+<figure>
 <p align="center">
-Resistance Data Logger (RDL) Revision E4
-</p>
+<img src="Images/Picture-NAU7802-revB1.jpg" style="width:40%">
+  </p>
+<p align="center">
+NAU7802 RevB1 for strain, force and current measurements
+  </p>
+</figure>
+
+
+<figure>
+<p align="center">
+<img src="Images/Picture-i2cShield-revA4-.jpg" style="width:40%">
+  </p>
+<p align="center">
+RDL I2C Shield, revA4
+  </p>
+</figure>
+
+
+<figure>
+<p align="center">
+<img src="Images/Picture-SHT4x-revA3.jpg" style="width:40%">
+  </p>
+<p align="center">
+SHT4X revA4 for temperature and air humidity measurements
+  </p>
+</figure>
+
+
+<figure>
+<p align="center">
+<img src="Images/Picture-pHCarrier-revA1-img2.jpg" style="width:40%">
+  </p>
+<p align="center">
+Carrier board for EZO PH (Atlas Scientific), revA1
+  </p>
+</figure>
+

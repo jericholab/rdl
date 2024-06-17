@@ -10,7 +10,23 @@ WIP – FIRST PASS. MULTIPLE BLANKS. LOTS TO VERIFY. STILL UNCLEAR PICK.
 
 Warning: The following material is for educational purposes only. Always refer to the schematic and PCB layout files associated with your product version.
 
-GENERAL
+**Table of Contents**
+
+
+  1. [GENERAL](#general)
+  2. [NOTES APPLICABLE TO THE RDL SUITE](#notes-applicable-to-the-rdl-suite)
+  3. [DESIGN GENESIS AND LICENSES](#design-genesis-and-licenses)
+  4. [PROBE](#probe)
+  5. [PH METER CIRCUIT](#ph-meter-circuit)
+  6. [ANALOG ISOLATOR CIRCUIT](#analog-isolator-circuit)
+  7. [I2C COMMUNICATION](#i2c-communication)
+  8. [CALIBRATION](#calibration)
+  9. [STEP-BY-STEP CALIBRATION PROCEDURE (DRAFT)](#step-by-step-calibration-procedure-draft)
+  10. [OTHER](#other)
+  11. [COMMENTS](#comments)
+
+
+## GENERAL
 
 - This document refers to the pH meter system associated with the Jericho pH Meter PCB revision A1.
 - The board is a simple 2-layer PCB, with no lead content (lead-free-HASL). There are SMD components on the top surface of the PCB only.
@@ -21,7 +37,7 @@ GENERAL
 - Typical pH measurements target solutions, but this design was done with soil measurements in mind.
 - The design is made to be compatible with the RDL code. The pH measurement of the RDL code use the OS (?) library XXXX by XXXXX.
 
-NOTES APPLICABLE TO THE RDL SUITE
+## NOTES APPLICABLE TO THE RDL SUITE
 
 - Board routing is done mostly with Freerouting (stand-alone version), with some traces made manually with KiCAD 6.
 - For the RDL suite, PCB manufacturing is done mostly in China (SMD and wave soldering), but some through-hole components are installed in Canada (soldering iron and/or solder bath). Final quality control is done in Canada.
@@ -30,7 +46,7 @@ NOTES APPLICABLE TO THE RDL SUITE
 - Design and cost have been optimized for JLCPCB manufacturing abilities and components pricing at the time of design.
 - If conformal coating has been applied to your PCB, the serial number ends with a ‘C’. Conformal coating on the PCB surface increases durability and reliability.
 
-DESIGN GENESIS AND LICENSES
+## DESIGN GENESIS AND LICENSES
 
 - The Analog Isolator circuit is based on the non-patented design by Atlas Scientific.
 - The digital pH meter from Atlas could not be used as inspiration (US Patent 9571121B2, with equivalents in Canada, Japan, Great Britain, South Korea and WIPO). The theoretical basis for the Jericho pH meter is therefore XXXXXXX.
@@ -40,7 +56,7 @@ DESIGN GENESIS AND LICENSES
 - The original design of the voltage regulation circuit was done by XXX under the CC-BY-SA-4.0 license. The license for this Jericho hardware is the same.
 - Most libraries required to make the RDL suite run are open-source.
 
-PROBE
+## PROBE
 
 - The pH meter revA1 must be used with a traditional pH electrode (combination silver-glass probe). Jericho recommends the industrial probe by Atlas Scientific.
 - The use of a shielded cable can be beneficial to the signal integrity of the probe. Cables are generally pre-assembled with the probe, and many will be shielded. In the case of the Atlas Industrial pH probe, the cable is NOT shielded (verify).
@@ -49,7 +65,7 @@ PROBE
 - The pH probe wires have a polarity. The black wire is XXX and the copper wire is XXX.
 - Why is there a hole beneath the white tape of the pH probe cover? To let pressure out? Air was compressed when screwing the cap. Water leaked out and the next day the cap did not leak.
 
-PH METER CIRCUIT
+## PH METER CIRCUIT
 
 - The pH meter subcircuit is the core of the device. It transforms raw electric potential from the probe into an analog signal, measurable by a data logger.
 - The main components of a pH meter are an operational amplifier (op amp) and instrumentation amplifier and XXXXX.
@@ -60,20 +76,20 @@ PH METER CIRCUIT
 - The measurement signal output is expressed as a 0-3V signal, which is to be measured by one of the analog channels of the RDL. With the default values, 0.265V means a pH of 14 and 2.745V means a pH of 0.
 - The equation for pH conversion from voltage is pH = (-5.6548 \* voltage) + 15.509 (Atlas equation for analog meter).
 
-ANALOG ISOLATOR CIRCUIT
+## ANALOG ISOLATOR CIRCUIT
 
 - The main components of an analog isolator are XXXXXX.
 - The PCB has a measurement circuit and an isolator circuit. The signal isolator definition is an electrical device which is used to remove **earth loop** (also called ground loop) errors which are caused by noise & signal interference problems. The isolator circuit ensures that the measurement is not biased by the nearby electrical fields, such as the one from a conductivity probe or a pump. The effect is more significant in a solution, but can also happen in soil.
 - The analog isolator requires a 3.3V or 5.0V power supply. For standardization reasons, the 5V is selected. A voltage regulator circuit is added to improve the accuracy of the pH meter, since it is sensitive to the power supply fluctuations. It is the same circuit than the Jericho current sensor board. It operates in PFM mode with 1% accuracy on its 5V nominal value. For more information, consult the design overview for the current sensor.
 
-I2C COMMUNICATION
+## I2C COMMUNICATION
 
 - The circuit has a secondary mean of communication, via the digital I2C protocol. This offers an alternative in environments that are too high in EM noise for accurate transmission via a 0-5V analog signal. The final choice between the two means depends on user preference, as well as the available channels. In some installations, the RDL shields might not have a I2C channel left empty.
 - The NAU7802 is a 24-bit ADC chip that measures the 0-5V signal produced by the analog circuit. The Sparkfun NAU7802 library is used by the RDL code to decode the signal. It is basically the same strategy than the strain sensor.
 - When the I2C communication is chosen, the RJ45 connector must be used, along with a CAT cable.
 - A second RJ45 connectors is present to allow daisy chaining.
 
-CALIBRATION
+## CALIBRATION
 
 - For pH measurements, the calibration is done with three buffer solutions that cover a large range of values. The three-point calibration is required because the response of the pH probe is not perfectly linear. The default pH values are 4, 7, 10 for pre-mixed liquid buffer solution. For powders, the pH values most often seen are 4.01, 6.86, 9.18. These powders are mixed with distilled water before use. Buffer powders have different pH values because they do not use the same chemicals. The limited range of the buffer solutions means that accuracy outside this range is unknown. The powders are generally more economic, more practical for transportation and more available. Their accuracy is sufficient (+/- 0.01 pH @ 25C) (Solution temperature must be known at calibration time. And the reference value must be adjusted in the code. For example, if the temperature is 21C, the pH is XXX, and this value must be entered in the code as the reference value for the middle point.). Once mixed with water however, they have a limited shelf-life (how much??). For these reasons, the powder values are the default one in the code.
 - The calibration procedure is convenient since the pH solution are low risk, ranging between vinegar and baking soda pH.
@@ -84,7 +100,7 @@ CALIBRATION
 - It is not recommended to use the analog and digital communication simultaneously. Only one type of cable should be connected.
 - The NAU7802 must also be calibrated (see strain sensor design overview).
 
-STEP-BY-STEP CALIBRATION PROCEDURE (DRAFT)
+## STEP-BY-STEP CALIBRATION PROCEDURE (DRAFT)
 
 - Required material: Buy the buffer solution powder and room temperature distilled water.
 - Verify that the powder is the right values. Otherwise, the regression table will not be accurate.
@@ -92,11 +108,11 @@ STEP-BY-STEP CALIBRATION PROCEDURE (DRAFT)
 - Pour 250mL of distilled water into each of the four jars.
 - Let each of the three powder
 
-OTHER
+## OTHER
 
 - A LED is added to the PCB to indicate that the sensor is powered ON.
 
-COMMENTS
+## COMMENTS
 
 1) I really think we are coming back to an I2C EZO-pH based system. See paper scribings.
 
