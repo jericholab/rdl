@@ -78,3 +78,14 @@ Carrier board for EZO PH (Atlas Scientific), revA1
   </p>
 </figure>
 
+
+
+<figure>
+<p align="center">
+<img src="Images/SeekThermalMosaicJericho.jpg" style="width:50%">
+  </p>
+<p align="center">
+Outdoor radiographic camera based on Seek Thermal Mosaic Core
+  </p>
+</figure>
+
