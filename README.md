@@ -71,6 +71,15 @@ Carrier board for EZO PH (Atlas Scientific), revA1
 
 <figure>
 <p align="center">
+<img src="Images/20220714_114125.jpg" style="width:50%">
+  </p>
+<p align="center">
+NTC Thermistor probes TH-1 and TH-2 for temperature measurements
+  </p>
+</figure>
+
+<figure>
+<p align="center">
 <img src="Images/Reolink-RLC-520.jpg" style="width:50%">
   </p>
 <p align="center">
