@@ -35,7 +35,7 @@ Document License: CC-BY-SA.
 ## NANO
 
 - The Nano refers to the Arduino Nano clones that are sold throughout the world by third party manufacturers. ELEGOO is one such manufacturer, which has the benefits of containing the new bootloader (see Arduino IDE). The "old bootloader" tends to provoke errors when uploading the RDL code.
-- The Nano clone is inserted in the dedicated female headers and is removable by hand for purposes of replacement or maintenance. This modularity reduces cost and increases product resilience. It allows the user to bring the Nano indoors to upload a new code. It also opens the door to upgrades, such as the Arduino XXXXXXXXXXXXX, which has the same pinout than the Nano.
+- The Nano clone is inserted in the dedicated female headers and is removable by hand for purposes of replacement or maintenance. This modularity reduces cost and increases product resilience. It allows the user to bring the Nano indoors to upload a new code. It also opens the door to major upgrades, such as the Arduino Nano ESP32, which can run Python and AI Edge but has the same pinout than the Nano. Only the 3.3V supply would be challenging.
 - Of course, since the Nano ELEGOO is removable, it can be substituted with any other Nano manufacturer.
 - A second row of female header is present to allow temporary connections to all pins via hookup wires. 
 - Decoupling capacitors are added to all devices to reduce voltage variations on the power supply. This includes the Nano and the following chips: DS3231, CD74HC4051, PCF8574T, LTC4311, ADS1115. All decoupling capacitors are done with a 0.1uF and 10uF caps. Note that the Nano has internal decoupling capacitors, creating a redundancy.
@@ -45,7 +45,7 @@ Document License: CC-BY-SA.
 
 - The RTC chip is the DS3231MZ+. The internal oscillator of the clock chip is temperature compensated internally. Operation in cold temperatures should have minimal impact on long-term timestamp accuracy.
 - The chip has backup power via the 3V CR1220 battery holder. At extremely low temperature, the voltage of an ordinary CR1220 battery is reduced and can become insufficient for the RTC operation (not tested). The phenomenon is reduced by locating the RDL inside the main enclosure, which benefits from the Pi waste heat.
-- The DS3231 communicates via I2C protocol to the Nano. In theory, it only communicates at the standard bus rate of 100Khz. However, tests have shown that it performs well even at 100 Hz. xxxxxxxxxxxxxxx 31 kHz............ Being able to operate all I2C devices on the same bus speed simplifies the product (there is a single I2C bus on the system).
+- The DS3231 communicates via I2C protocol to the Nano. In theory, it only communicates at the standard bus rate of 100Khz. However, tests have shown that it performs well even at 31. Being able to operate all I2C devices on the same bus speed simplifies the product (there is a single I2C bus on the system).
 - The positive side of the CR1220 battery is only connected to the RTC clock, and so the I2C bus will not be activated and drawing power from the battery (the RTC chip is a slave I2C device).
 
 ## THERMISTOR/RESISTIVE CHANNELS
