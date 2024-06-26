@@ -11,7 +11,8 @@ void terosFunc(uint8_t channel){
   setMultiplexer(channel);                       // select the multiplexer channel
   pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
   pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
-  delay(500);
+  delay(500);  //TEMPORARY COMMENT TO MAKE LONG MEASUREMENT VIA MULTIMETER
+  //delay (5000);  //TEMPORARY COMMENT TO MAKE LONG MEASUREMENT VIA MULTIMETER
   
   bool readMode = 1;
   float sensorValue = getVoltFunc(readMode);           // read the voltage while assuming a 5000mV voltage reference

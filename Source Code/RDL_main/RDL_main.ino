@@ -13,20 +13,20 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {2};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1,4};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
-int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
+int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 
 
@@ -269,7 +269,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
         //delay(200); 
-        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
         Wire.endTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
@@ -287,14 +287,14 @@ if (timePassed >= readInterval)                     // if enough time has passed
     
     if (currentDisplay==1){
       for (int i=0; i<qty_current; i++) {
-        addr = channels_current[i];     // we choose the analog channel X
-        uint8_t tCompChannel= 1;                // we choose the thermistor channel used for temperature compensation of all current sensors
-        currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).        
+        addr = channels_current[i];       // we choose the analog channel X
+        uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
+        currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
       }
     }
 
     if (terosDisplay==1){
-      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
+      terosFunc(0);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
