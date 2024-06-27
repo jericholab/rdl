@@ -13,12 +13,12 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
@@ -28,7 +28,7 @@ int i2cChannels_sht40[] = {2};          // define array to store the list of shi
 int i2cChannels_strain[] = {1,4};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
-
+int channels_teros[] = {1};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -58,6 +58,7 @@ uint8_t units_T = 0;                    // default temperature units are Celcius
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
 NAU7802 nau;                           //Create instance of the NAU7802 class
+NAU7802 nau_current;                   //Create instance of the NAU7802 class dedicated to the current measurements
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
@@ -103,6 +104,7 @@ int qty_sht40;                           // define the variable that holds the n
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
+int qty_teros;                           // define the variable that holds the number of teros devices connected to the RDL
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
@@ -166,8 +168,8 @@ void setup(void) {
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
-    
-    
+    qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
+   
 
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -289,12 +291,20 @@ if (timePassed >= readInterval)                     // if enough time has passed
       for (int i=0; i<qty_current; i++) {
         addr = channels_current[i];       // we choose the analog channel X
         uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
-        currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
+        //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
+        currentNAU7802();               //run the NAU7802 version of the current measurement function
       }
     }
 
     if (terosDisplay==1){
-      terosFunc(0);             // run soil humidity function for with channel selection (0-7)
+      for (int i=0; i<qty_teros; i++) {
+        addr = channels_teros[i];       // we choose the analog channel X
+        terosFunc(addr);
+      }
+      
+
+      
+      //terosFunc(0);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
