@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-// FONCTION: currentFunc
+// FONCTION: currentFunc ********************* (OLD, UNUSUED FUNCTION, KEPT FOR REFERENCE (ALGORITHS (3)))
 // PURPOSE: calculates the current value of the Hall effect sensor, based on DC, SineRMS or TrueRMS algorithm.
 // INPUT: averaging algorithm, selected ADC, input channel
 // OUTPUT: none

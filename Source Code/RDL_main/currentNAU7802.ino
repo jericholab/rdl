@@ -9,14 +9,14 @@ void currentNAU7802() {
 
   float val = -1.00;            // define a default value.
   float val2 = -1.00;           // define a default value.
-  float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
-  float slope= 1662407;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
+  float offset = 26700;         // offset for conversion of ADC to vols (temporary approximation based on early experimental measurements)
+  float slope= 1662407;         // offset for conversion of ADC to vols (temporary approximation based on early experimental measurements)
   int n = 20;                                    // size of the sample to be collected
   int i;                                         // integer for loop iteration
   float raw_value = 0;                           // initialize raw value
   float val_sum = 0;                           // initialize average value
   float volts;                                   // initialize variable 
-  float zeroValue = 2.6106;                      // sensor output value when null current //TEMPORARY DUMMY VALUE
+  float zeroValue = 2.480;                      // sensor output value when null current //TEMPORARY DUMMY VALUE
   float offsetTdrift = 0;                        // initialize variable to zero
   float T_comp =0;                               // initialize variable to zero
   float hallRatio = 33.33333;                    // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05 (50/1.5 = 33.33333)
@@ -28,7 +28,7 @@ void currentNAU7802() {
       {
         Serial.print("NA");
         //Serial.println("Scale not detected. Please check wiring. Freezing...");
-        while (1);
+        //while (1);
       }
     
     nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate
