@@ -15,19 +15,19 @@ bool timeDisplay=1;                     // optional display of timestamp (1 = ye
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 int i2cChannels_sht40[] = {2};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {1,4};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_strain[] = {1};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int channels_current[] = {2};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -115,10 +115,7 @@ int qty_teros;                           // define the variable that holds the n
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
 
-
 //sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
-
-
 
 ////// SETUP ////////
 
@@ -139,7 +136,7 @@ void setup(void) {
         Serial.println(F(__TIME__));
         startMessage();    // print informations after startup 
     }
-    
+
     analogReference(EXTERNAL);                         // tells the Nano to use the external voltage as a reference (value used at the top of the Nano ADC range)
 
     pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
@@ -201,11 +198,47 @@ void setup(void) {
     pcf3.digitalWrite(p, HIGH); // initialize each channel off 
     pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
-
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
 
+//////////////////// TEST BLOCK1
+//    // Initialize the NAU7802 instance dedicated to strain
+//    if (nau.begin()) {
+//      Serial.println("NAU7802 initialized for strain measurements");
+//    } else {
+//      Serial.println("Failed to initialize NAU7802 for strain measurements");
+//    }
+//////////////////// END OF TEST BLOCK1
+
+//////////////////// TEST BLOCK2
+//initialize the multiplexed strain sensor  (we use the first
+
+if (strainDisplay == 1) {
+
+        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        Wire.beginTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        Wire.setClock(clockSpeed); 
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        if (nau.begin()) {
+          Serial.println("NAU7802 initialized for strain measurements");
+        } else {
+          Serial.println("Failed to initialize NAU7802 for strain measurements");
+        }
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+      
+    }
+//////////////////// TEST BLOCK2
 
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }

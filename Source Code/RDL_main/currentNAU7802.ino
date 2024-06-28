@@ -23,7 +23,7 @@ void currentNAU7802() {
   strainDevice = 1;                 // TEMPORARY STATEMENT TO FORCE READING.
   
   if(strainDevice == 1){        // if sensor found by strain_init()
-    //nau_current.begin();                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
+    nau_current.begin();                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
     if (nau_current.begin(Wire) == false)   //Pass the Wire port to the library
       {
         Serial.print("NA");

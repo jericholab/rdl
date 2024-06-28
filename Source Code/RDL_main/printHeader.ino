@@ -75,33 +75,55 @@ void printHeader(){
             }
         }
 
+
         if (currentDisplay == 1){
           for (int i=0; i<qty_current; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
 
-              String currentText1 = F("T_sensor");
+              String currentText1 = F("ADC");
               Serial.print(currentText1);
               spacing2(currentText1,12);
 
-              String currentText2 = F("T_comp");
+              String currentText2 = F("Volts");
               Serial.print(currentText2);
               spacing2(currentText2,12);
-                            
-              String currentText3 = F("Raw1");
-              Serial.print(currentText3);
-              spacing2(currentText3,12);
-
-              String currentText4 = F("Raw2");
-              Serial.print(currentText4);
-              spacing2(currentText4,12);
               
-              String currentText5 = F("Amps_C");
-              Serial.print(currentText5);
+              String currentText3 = F("Amps_C");
+              Serial.print(currentText3);
               Serial.print(channels_current[i]);
-              spacing2(currentText5,12);
+              spacing2(currentText3,12);
             }
         }
+
+//BELOW IS THE OLD HEADER FOR CURRENT FUNCTION (ANALOG)
+//        if (currentDisplay == 1){
+//          for (int i=0; i<qty_current; i++) {
+//              Serial.print(F("*"));
+//              spacing2("*",12);
+//
+//              String currentText1 = F("T_sensor");
+//              Serial.print(currentText1);
+//              spacing2(currentText1,12);
+//
+//              String currentText2 = F("T_comp");
+//              Serial.print(currentText2);
+//              spacing2(currentText2,12);
+//                            
+//              String currentText3 = F("Raw1");
+//              Serial.print(currentText3);
+//              spacing2(currentText3,12);
+//
+//              String currentText4 = F("Raw2");
+//              Serial.print(currentText4);
+//              spacing2(currentText4,12);
+//              
+//              String currentText5 = F("Amps_C");
+//              Serial.print(currentText5);
+//              Serial.print(channels_current[i]);
+//              spacing2(currentText5,12);
+//            }
+//        }
 
         if (terosDisplay == 1){
               Serial.print(F("*"));

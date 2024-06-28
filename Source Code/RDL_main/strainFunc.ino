@@ -12,7 +12,7 @@ void strainFunc() {
   strainDevice = 1;             // TEMPORARY STATEMENT TO FORCE READING.
   
   if(strainDevice == 1){        // if sensor found by strain_init()
-    nau.begin();                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
+    //nau.begin();                // Seems to cause bad readings near zero. // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
     val = nau.getReading();     // Read sensor
    
     Serial.print(F("*"));
