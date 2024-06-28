@@ -14,10 +14,10 @@ bool headerDisplay=1;                   // optional display of headerprint (1 = 
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
@@ -267,7 +267,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
       for (int i=0; i< (numberC); i++) {                      
           setMultiplexer(i);                            // select the multiplexer channel
           int channel = i+1;                            //channel being measured
-          bool readMode =1;                             // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
+          bool readMode =0;                             // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
           struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C,channel,readMode );   //call 'thermistor' function and store results in a structure
           arrayV[i] = valeurs.t;                        // storing temperature to array
           arrayR[i] = valeurs.o;                        // storing resistances (ohm) to array       
