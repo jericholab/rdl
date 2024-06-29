@@ -22,11 +22,11 @@ void strainFunc() {
 //        nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
 //        nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
 //        nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
-//        // Take 10 readings to flush out readings
-//        for (uint8_t i=0; i<10; i++) {
-//          while (! nau_ada.available()) delay(1);
-//          nau_ada.read();
-//        }
+        // Take 10 readings to flush out readings
+        for (uint8_t i=0; i<10; i++) {
+          while (! nau_ada.available()) delay(1);
+          nau_ada.read();
+        }
 //        while (! nau_ada.calibrate(NAU7802_CALMOD_INTERNAL)) {
 //          Serial.println("Failed to calibrate internal offset, retrying!");
 //          delay(1000);
