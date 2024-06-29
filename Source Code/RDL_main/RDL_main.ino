@@ -13,18 +13,18 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
-bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {2};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {1,2,3};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
@@ -212,32 +212,32 @@ void setup(void) {
 //////////////////// END OF TEST BLOCK1
 
 //////////////////// TEST BLOCK2
-//initialize the multiplexed strain sensor  (we use the first
+//initialize the multiplexed strain sensor  (we use the first active channel to initialize all strain sensors)
 
-if (strainDisplay == 1) {
-
-        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
-        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
-        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        i2c_select(addr);                  
-        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        Wire.beginTransmission(addr);
-        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        Wire.setClock(clockSpeed); 
-        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        if (nau.begin()) {
-          Serial.println("NAU7802 initialized for strain measurements");
-        } else {
-          Serial.println("Failed to initialize NAU7802 for strain measurements");
-        }
-        Wire.endTransmission(addr);
-        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
-        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
-      
-    }
+//if (strainDisplay == 1) {
+//
+//        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
+//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+//        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
+//        i2c_select(addr);                  
+//        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
+//        Wire.beginTransmission(addr);
+//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+//        Wire.setClock(clockSpeed); 
+//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+//        if (nau.begin()) {
+//          Serial.println("NAU7802 initialized for strain measurements");
+//        } else {
+//          Serial.println("Failed to initialize NAU7802 for strain measurements");
+//        }
+//        Wire.endTransmission(addr);
+//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+//        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+//        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+//        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
+//      
+//    }
 //////////////////// TEST BLOCK2
 
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
@@ -292,7 +292,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
        }
  
     if (SHT40Display == 1){
-
       for (int i=0; i<qty_sht40; i++) {
         addr = i2cChannels_sht40[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
@@ -335,9 +334,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
         terosFunc(addr);
       }
       
-
-      
-      //terosFunc(0);             // run soil humidity function for with channel selection (0-7)
     }
 
     if (strainDisplay==1){  
@@ -351,8 +347,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(300);//1000
         Wire.beginTransmission(addr);
         Wire.setClock(clockSpeed); 
-        delay(300);//1000    
-        //currentNAU7802();               //// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        delay(1000);//1000    
         strainFunc();                      // run Strain sensor function  
         Wire.endTransmission(addr);       
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
