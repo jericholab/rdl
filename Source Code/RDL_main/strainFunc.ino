@@ -14,9 +14,11 @@ void strainFunc() {
   strainDevice = 1;             // TEMPORARY STATEMENT TO FORCE READING.
   
   if(strainDevice == 1){        // If sensor found by strain_init()
+    nau_ada.begin();              // Test for the Adafruit library
     //nau.begin();              // Includes a full reset. // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
-    nau.begin(Wire, false);     // TEST to avoid full reset
-    val = nau.getReading();     // Read sensor
+    //nau.begin(Wire, false);     // TEST to avoid full reset (call for the Sparkfun library only)
+    //val = nau.getReading();     // Read sensor  //Sparkfun library only
+    val= nau_ada.read();            // Read sensor  //Adafruit library only
    
     Serial.print(F("*"));
     spacing2(F("*"),12); 

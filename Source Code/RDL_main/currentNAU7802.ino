@@ -24,27 +24,29 @@ void currentNAU7802() {
   
   if(strainDevice == 1){        // if sensor found by strain_init()
     nau_current.begin();                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
-    if (nau_current.begin(Wire) == false)   //Pass the Wire port to the library
+    if (nau_current.begin())
+    //if (nau_current.begin(Wire) == false)   //Pass the Wire port to the library
       {
         Serial.print("NA");
         //Serial.println("Scale not detected. Please check wiring. Freezing...");
         //while (1);
       }
-    
-    nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate
-    nau_current.setBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);              //Set the NAU7802 register bit that controls the PGA bypass and enable it (just a first test)
-    //INFO: This is the format : bool setBit(uint8_t bitNumber, uint8_t registerAddress) - Mask & set a given bit within a register
-    nau_current.setChannel(NAU7802_CHANNEL_1);   //With NAU7802-revB1, the channel dedicated to current measurements is 1 (A).
-    //nau_current.setChannel(NAU7802_CHANNEL_2);   //With NAU7802-revB1, the channel dedicated to strain measurements is 2 (B).
-
-    nau_current.setBit(3,NAU7802_ADC);     //ACTIVATE THE INPUT COMMON MODE (RANGE CLOSE TO REFN)(Requires PGA bypass mode set)
-    nau_current.clearBit(7,NAU7802_PU_CTRL);   //Clear bit 7 from register NAU7802_PU_CTRL
-    nau_current.calibrateAFE();                //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
+//    nau_current.setRate(NAU7802_RATE_320SPS); //Test for sample rate with Adafruit library
+//    //nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate
+//    nau_current.setBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);              //Set the NAU7802 register bit that controls the PGA bypass and enable it (just a first test)
+//    //INFO: This is the format : bool setBit(uint8_t bitNumber, uint8_t registerAddress) - Mask & set a given bit within a register
+//    nau_current.setChannel(NAU7802_CHANNEL_1);   //With NAU7802-revB1, the channel dedicated to current measurements is 1 (A).
+//    //nau_current.setChannel(NAU7802_CHANNEL_2);   //With NAU7802-revB1, the channel dedicated to strain measurements is 2 (B).
+//
+//    nau_current.setBit(3,NAU7802_ADC);     //ACTIVATE THE INPUT COMMON MODE (RANGE CLOSE TO REFN)(Requires PGA bypass mode set)
+//    nau_current.clearBit(7,NAU7802_PU_CTRL);   //Clear bit 7 from register NAU7802_PU_CTRL
+//    nau_current.calibrateAFE();                //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
     delay(1000);
     
     if (nau_current.available()){
         for (i=0; i< n; i++){
-          val = nau_current.getReading();
+          val=nau_current.read(); //adafruit code
+          //val = nau_current.getReading();  //sparkfun code
           val_sum= val_sum + val;
         } 
       }     
