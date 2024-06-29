@@ -205,43 +205,69 @@ void setup(void) {
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
 
-//////////////////// TEST BLOCK1
-//    // Initialize the NAU7802 instance dedicated to strain
-//    if (nau.begin()) {
-//      Serial.println("NAU7802 initialized for strain measurements");
-//    } else {
-//      Serial.println("Failed to initialize NAU7802 for strain measurements");
-//    }
-//////////////////// END OF TEST BLOCK1
-
 //////////////////// TEST BLOCK2
 //initialize the multiplexed strain sensor  (we use the first active channel to initialize all strain sensors)
 
 //if (strainDisplay == 1) {
-//
-//        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
-//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
-//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-//        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        i2c_select(addr);                  
-//        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        Wire.beginTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        Wire.setClock(clockSpeed); 
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        if (nau.begin()) {
-//          Serial.println("NAU7802 initialized for strain measurements");
-//        } else {
-//          Serial.println("Failed to initialize NAU7802 for strain measurements");
+
+        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        i2c_select(addr);                  
+        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        Wire.beginTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        //Wire.setClock(clockSpeed); 
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+
+        nau_ada.begin();              // Test for the Adafruit library
+//        nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
+//        nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
+//        nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
+//        // Take 10 readings to flush out readings
+//        for (uint8_t i=0; i<10; i++) {
+//          while (! nau_ada.available()) delay(1);
+//          nau_ada.read();
 //        }
-//        Wire.endTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
-//        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-//        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
-//      
+//        while (! nau_ada.calibrate(NAU7802_CALMOD_INTERNAL)) {
+//          Serial.println("Failed to calibrate internal offset, retrying!");
+//          delay(1000);
+//        }
+//        while (! nau_ada.calibrate(NAU7802_CALMOD_OFFSET)) {
+//          Serial.println("Failed to calibrate system offset, retrying!");
+//          delay(1000);
+//        }
+        Wire.endTransmission(addr);
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
 //    }
 //////////////////// TEST BLOCK2
+
+//////////////////// TEST BLOCK3
+//if (strainDisplay == 1) {
+//    nau_ada.begin();              // Test for the Adafruit library
+//    nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
+//    nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
+//    nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
+//    // Take 10 readings to flush out readings
+//    for (uint8_t i=0; i<10; i++) {
+//      while (! nau_ada.available()) delay(1);
+//      nau_ada.read();
+//    }
+//    while (! nau_ada.calibrate(NAU7802_CALMOD_INTERNAL)) {
+//      Serial.println("Failed to calibrate internal offset, retrying!");
+//      delay(1000);
+//    }
+//    while (! nau_ada.calibrate(NAU7802_CALMOD_OFFSET)) {
+//      Serial.println("Failed to calibrate system offset, retrying!");
+//      delay(1000);
+//    }
+//}
+
+//////////////////// END OF TEST BLOCK3
 
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }
@@ -327,7 +353,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = channels_current[i];       // we choose the analog channel X
         uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
         //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
-        currentNAU7802();               //run the NAU7802 version of the current measurement function
+        //currentNAU7802();               //run the NAU7802 version of the current measurement function
       }
     }
 
