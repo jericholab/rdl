@@ -5,7 +5,7 @@
 // INPUT: none
 // OUTPUT: none
 
-void currentNAU7802() {
+void currentNAU7802(uint8_t channel) {
 
   float val = -1.00;            // define a default value.
   float val2 = -1.00;           // define a default value.
