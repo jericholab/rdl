@@ -47,6 +47,8 @@ int channels_teros[] = {0};             // define array to store the list of ana
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
+#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
+
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -69,6 +71,7 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
+bool strain_present = 0;                 // initialize the variable that will indicate if a sensor is present
 long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
@@ -208,7 +211,7 @@ void setup(void) {
 //////////////////// TEST BLOCK2
 //initialize the multiplexed strain sensor  (we use the first active channel to initialize all strain sensors)
 
-//if (strainDisplay == 1) {
+if (strainDisplay == 1) {
 
         addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
@@ -221,7 +224,9 @@ void setup(void) {
         //Wire.setClock(clockSpeed); 
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
 
-        nau_ada.begin();              // Test for the Adafruit library
+        //nau_ada.begin();              // Test for the Adafruit library    ////////////// is it necessary to initialize here, if we initialize in strainFunc too ? **************
+
+        
 //        nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
 //        nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
 //        nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
@@ -243,7 +248,7 @@ void setup(void) {
         tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
         pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
-//    }
+    }
 //////////////////// TEST BLOCK2
 
 //////////////////// TEST BLOCK3
@@ -270,6 +275,9 @@ void setup(void) {
 //////////////////// END OF TEST BLOCK3
 
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
+   
+   Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+   Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
 }
 
 ///// MAIN LOOP //////////
@@ -331,7 +339,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        //delay(200); 
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
         Wire.endTransmission(addr);
@@ -373,8 +380,9 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);
         i2c_select(addr);
-        delay(300);//1000
+        delay(1000);//1000
         Wire.beginTransmission(addr);
+        delay(1000);//1000
         Wire.setClock(clockSpeed); 
         delay(1000);//1000    
         strainFunc();                      // run Strain sensor function  
@@ -428,6 +436,10 @@ watchSerial(); //  Watching for incoming commands from the serial port
 // this block must be positionned right before the decision to read or not the group of thermistors (timePassed>= ReadInterval)
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
 timePassedHeader=millis()-time2;                  // time elapsed since last header printing
+
+   Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+   Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+
 }  //end of main loop()
 
 

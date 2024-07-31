@@ -143,9 +143,12 @@ void printHeader(){
           for (int i=0; i<qty_strain; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Strain_raw");
+              String terosText1 = F("Strain_ADC");
               Serial.print(terosText1);
-              spacing2(terosText1,12);            
+              spacing2(terosText1,12);  
+              String terosText2 = F("Newton");
+              Serial.print(terosText2);
+              spacing2(terosText2,12);          
           }
 
             }    
