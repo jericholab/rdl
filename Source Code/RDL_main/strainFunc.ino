@@ -25,9 +25,9 @@ void strainFunc() {
 
  
         //nau_ada.reset();                /////////////// TEST TO AVOID UNRESPONSIVE STRAIN SENSOR AFTER POWER IS LOST.
-        //nau_ada.enable(true);             // Prescribe the sensor to power up. Does not seem sufficient to enable readings. This is not an instanciation.
+        nau_ada.enable(true);             // Prescribe the sensor to power up. Does not seem sufficient to enable readings. This is not an instanciation.
         //nau_ada.reset();  //////// TEST TO AVOID EMPTY READINGS
-        nau_ada.begin();
+        //nau_ada.begin();
 
 
         
@@ -74,5 +74,6 @@ void strainFunc() {
       spacing2(F("0.00"),12); 
       Serial.print(F("0.00"));                               //print the relative humidity
       spacing2(F("0.00"),12);
-    } 
+    }
+    nau_ada.enable(false);   //////////// temporary test: maybe if we power off the sensor before cutting power, we will be able to power up after?
   }
