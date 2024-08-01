@@ -28,7 +28,7 @@ int i2cChannels_sht40[] = {1,2,3};          // define array to store the list of
 int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
-int channels_teros[] = {0};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
+int channels_teros[] = {0,1};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
