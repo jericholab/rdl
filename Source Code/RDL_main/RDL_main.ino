@@ -15,16 +15,16 @@ bool timeDisplay=1;                     // optional display of timestamp (1 = ye
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
+bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
 bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {1,2,3};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {4};      // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
@@ -47,7 +47,7 @@ int channels_teros[] = {0,1};             // define array to store the list of a
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
-#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
+//#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
 
 
 //OTHER INITIALIZATIONS
@@ -72,6 +72,7 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
 bool strain_present = 0;                 // initialize the variable that will indicate if a sensor is present
+uint8_t strain_initiated =0;              //initialize the variable that counts the number of strain sensors having been initiated with begin()
 long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
@@ -121,7 +122,7 @@ int qty_teros;                           // define the variable that holds the n
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
 
-//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
+//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST (WHAT WAS THE CONCLUSION???)
 
 ////// SETUP ////////
 
@@ -173,7 +174,6 @@ void setup(void) {
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
     qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
    
-
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
    }
@@ -207,75 +207,7 @@ void setup(void) {
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
-
-//////////////////// TEST BLOCK2
-//initialize the multiplexed strain sensor  (we use the first active channel to initialize all strain sensors)
-
-//if (strainDisplay == 1) {
-//
-//        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
-//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
-//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-//        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        i2c_select(addr);                  
-//        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        Wire.beginTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        //Wire.setClock(clockSpeed); 
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//
-//        //nau_ada.begin();              // Test for the Adafruit library    ////////////// is it necessary to initialize here, if we initialize in strainFunc too ? **************
-//
-//        
-////        nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
-////        nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
-////        nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
-////        // Take 10 readings to flush out readings
-////        for (uint8_t i=0; i<10; i++) {
-////          while (! nau_ada.available()) delay(1);
-////          nau_ada.read();
-////        }
-////        while (! nau_ada.calibrate(NAU7802_CALMOD_INTERNAL)) {
-////          Serial.println("Failed to calibrate internal offset, retrying!");
-////          delay(1000);
-////        }
-////        while (! nau_ada.calibrate(NAU7802_CALMOD_OFFSET)) {
-////          Serial.println("Failed to calibrate system offset, retrying!");
-////          delay(1000);
-////        }
-//        Wire.endTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
-//        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-//        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
-//    }
-//////////////////// TEST BLOCK2
-
-//////////////////// TEST BLOCK3
-//if (strainDisplay == 1) {
-//    nau_ada.begin();              // Test for the Adafruit library
-//    nau_ada.setLDO(NAU7802_3V0);      // Test for the Adafruit library
-//    nau_ada.setGain(NAU7802_GAIN_128);    // Test for the Adafruit library
-//    nau_ada.setRate(NAU7802_RATE_10SPS);   // Test for the Adafruit library
-//    // Take 10 readings to flush out readings
-//    for (uint8_t i=0; i<10; i++) {
-//      while (! nau_ada.available()) delay(1);
-//      nau_ada.read();
-//    }
-//    while (! nau_ada.calibrate(NAU7802_CALMOD_INTERNAL)) {
-//      Serial.println("Failed to calibrate internal offset, retrying!");
-//      delay(1000);
-//    }
-//    while (! nau_ada.calibrate(NAU7802_CALMOD_OFFSET)) {
-//      Serial.println("Failed to calibrate system offset, retrying!");
-//      delay(1000);
-//    }
-//}
-
-//////////////////// END OF TEST BLOCK3
-
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
- 
 }
 
 ///// MAIN LOOP //////////
