@@ -1,4 +1,3 @@
-
 //-------------------------------------------------------------------
 // FONCTION NAME: currentNAU7802
 // PURPOSE: Obtain a measurement from the TAMURA current sensor by using the 24-bit ADC of the strain gauge load cell. Only works with DC current for now.

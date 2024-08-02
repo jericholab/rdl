@@ -10,21 +10,61 @@ void strainFunc() {
   float val = -1.00;            // define a default value.
   float b = 20000;              // DUMMY VALUE. Calibration value. ADC value when load cell has no load.
   float a = 1000;               // DUMMY VALUE. Calibration value. Load cell ratio (Newton/ADC) measured experimentally.
-  
-  strainDevice = 1;             // TEMPORARY STATEMENT TO FORCE READING.
-  
-  if(strainDevice == 1){        // If sensor found by strain_init()
-    //nau.begin();              // Includes a full reset. // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
-    nau.begin(Wire, false);     // TEST to avoid full reset
-    val = nau.getReading();     // Read sensor
-   
-    Serial.print(F("*"));
-    spacing2(F("*"),12); 
-    Serial.print(val);
-    spacing1(val,12); 
-    
-    float force = (val-b)/a;    //[N] Force applied on load cell. Linear equation convert ADC to force based on calibration values.
-    Serial.print(force);
-    spacing1(force,12); 
+
+
+//OLD SECTION COMMENTED IN CASE WE NEED TO ROLL BACK  
+//  if ((strainDisplay == 1)&(strain_present ==0)){
+//    if (!nau_ada.begin()) {       //The begin() statement most probably contains instance creation.
+//      //Serial.print("Failed to find NAU7802");
+//      delay(1000);
+//    }
+//    else{ 
+//      strain_present=1;   // the sensor is considered present
+//    } 
+//  }
+
+  if ((strainDisplay == 1)&(strain_initiated<qty_strain)){
+    if (!nau_ada.begin()) {       //The begin() statement contains instance creation.
+      //Serial.print("Failed to find NAU7802");
+      //delay(1000);
+    }
+    else{ 
+      strain_present=1;   // the sensor is considered present
+      strain_initiated++;   //increment by one the number of strain sensors having been initiated
+
+    } 
+
   }
+
+  if(strain_present == 1){                // If sensor found by strain_init()
+      //if(strainDisplay == 1){            // If sensor found by strain_init()
+        nau_ada.enable(true);             // Prescribe the sensor to power up.
+            // Take 10 readings to flush out readings
+            for (uint8_t i=0; i<10; i++) {
+              while (! nau_ada.available()) delay(1);
+              nau_ada.read();
+            }
+        val= nau_ada.read();            // Read sensor  //Adafruit library only
+        Serial.print(F("*"));
+        spacing2(F("*"),12); 
+        Serial.print(val,0);
+        spacing1(val,15); //extra two spaces because we removed two decimals.
+        float force = (val-b)/a;    //[N] Force applied on load cell. Linear equation convert ADC to force based on calibration values.
+        Serial.print(force);
+        spacing1(force,12); 
+        nau_ada.enable(false);   // power off the sensor before cutting power, so we are able to power up at the next measurement
+  }
+  else{
+//      Serial.println("Code got here(ELSE)");
+//      delay(1000);
+
+      
+      Serial.print(F("*"));
+      spacing2(F("*"),12); 
+      Serial.print(F("0.00"));                               //print the temperature
+      spacing2(F("0.00"),12); 
+      Serial.print(F("0.00"));                               //print the relative humidity
+      spacing2(F("0.00"),12);
+    }
+
   }

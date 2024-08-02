@@ -126,6 +126,7 @@ void printHeader(){
 //        }
 
         if (terosDisplay == 1){
+          for (int i=0; i<qty_teros; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
               String terosText1 = F("Teros_mV");
@@ -136,16 +137,21 @@ void printHeader(){
               spacing2(terosText2,12);
               String terosText3 = F("Pascal");
               Serial.print(terosText3);
-              spacing2(terosText3,12);
+              spacing2(terosText3,12);  
+          }
+          
             }
 
          if (strainDisplay == 1){
           for (int i=0; i<qty_strain; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Strain_raw");
+              String terosText1 = F("Strain_ADC");
               Serial.print(terosText1);
-              spacing2(terosText1,12);            
+              spacing2(terosText1,12);  
+              String terosText2 = F("Newton");
+              Serial.print(terosText2);
+              spacing2(terosText2,12);          
           }
 
             }    

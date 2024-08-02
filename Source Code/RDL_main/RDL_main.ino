@@ -24,11 +24,11 @@ bool phDisplay = 0;                     // optional measurement and display of p
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {1,2};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {1};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_sht40[] = {4};      // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int channels_current[] = {3};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
-int channels_teros[] = {0};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
+int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int channels_teros[] = {0,1};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -40,11 +40,15 @@ int channels_teros[] = {0};             // define array to store the list of ana
 //////////  LIBRARIES INCLUDED //////////
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+//#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+#include "Adafruit_NAU7802.h"          // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
+
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
+//#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
+
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -57,8 +61,9 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-NAU7802 nau;                           //Create instance of the NAU7802 class
-NAU7802 nau_current;                   //Create instance of the NAU7802 class dedicated to the current measurements
+Adafruit_NAU7802 nau_ada;                  // CCreate instance of the Adafruit_NAU7802 class (Adafruit library)
+//NAU7802 nau;                           //Create instance of the NAU7802 class (Sparkfun library)
+Adafruit_NAU7802 nau_current;                   //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
@@ -66,6 +71,8 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
+bool strain_present = 0;                 // initialize the variable that will indicate if a sensor is present
+uint8_t strain_initiated =0;              //initialize the variable that counts the number of strain sensors having been initiated with begin()
 long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
@@ -115,7 +122,7 @@ int qty_teros;                           // define the variable that holds the n
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
 
-//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
+//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST (WHAT WAS THE CONCLUSION???)
 
 ////// SETUP ////////
 
@@ -167,7 +174,6 @@ void setup(void) {
     qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
     qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
    
-
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
    }
@@ -201,45 +207,6 @@ void setup(void) {
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
-
-//////////////////// TEST BLOCK1
-//    // Initialize the NAU7802 instance dedicated to strain
-//    if (nau.begin()) {
-//      Serial.println("NAU7802 initialized for strain measurements");
-//    } else {
-//      Serial.println("Failed to initialize NAU7802 for strain measurements");
-//    }
-//////////////////// END OF TEST BLOCK1
-
-//////////////////// TEST BLOCK2
-//initialize the multiplexed strain sensor  (we use the first active channel to initialize all strain sensors)
-
-//if (strainDisplay == 1) {
-//
-//        addr = i2cChannels_strain[0];    // we choose the first active channel on the 0-index array
-//        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
-//        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-//        delay(1000);                     //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        i2c_select(addr);                  
-//        delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        Wire.beginTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        Wire.setClock(clockSpeed); 
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        if (nau.begin()) {
-//          Serial.println("NAU7802 initialized for strain measurements");
-//        } else {
-//          Serial.println("Failed to initialize NAU7802 for strain measurements");
-//        }
-//        Wire.endTransmission(addr);
-//        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-//        tca_init();                           // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
-//        pcf3.digitalWrite(addr, HIGH); // turn LED off by turning off sinking transistor
-//        pcf4.digitalWrite(addr, LOW); // turn LED off by turning off sinking transistor
-//      
-//    }
-//////////////////// TEST BLOCK2
-
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }
 
@@ -302,7 +269,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        //delay(200); 
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
         Wire.endTransmission(addr);
@@ -344,8 +310,9 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);
         i2c_select(addr);
-        delay(300);//1000
+        delay(1000);//1000
         Wire.beginTransmission(addr);
+        delay(1000);//1000
         Wire.setClock(clockSpeed); 
         delay(1000);//1000    
         strainFunc();                      // run Strain sensor function  
@@ -399,6 +366,10 @@ watchSerial(); //  Watching for incoming commands from the serial port
 // this block must be positionned right before the decision to read or not the group of thermistors (timePassed>= ReadInterval)
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
 timePassedHeader=millis()-time2;                  // time elapsed since last header printing
+
+//   Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+//   Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+
 }  //end of main loop()
 
 
