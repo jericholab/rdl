@@ -27,9 +27,9 @@ print("RDL-python-syncing to Dropbox script...")
 
 source_path = "./logging-folder/tosync/"  #relative path"
 transit_path = "./logging-folder/transit/"  #relative path"
-#destination_path = "./logging-folder/synced/"
+destination_path = "./logging-folder/synced/"
 #destination_path = "/media/orangepi/SD_CARD1/"
-destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
+#destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
     
 def syncToDropbox():
     print("move from /tosync to /transit folder")
@@ -42,9 +42,11 @@ def syncToDropbox():
     cloudSide1 = f"Professional/WIRED/{config['SITE']}"
     localSide2 = "./logging-folder/transit/cameras"
     cloudSide2 = f"Professional/WIRED/{config['SITE']}"
-    Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
+    Upload = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
+    #Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
-    Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
+    #Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
+    Upload2 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
     print("move from /transit to backup folder (e.g. SD Card)")
     sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced" 
