@@ -13,9 +13,9 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
@@ -40,15 +40,13 @@ int channels_teros[] = {0,1};             // define array to store the list of a
 //////////  LIBRARIES INCLUDED //////////
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+//#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Adafruit_NAU7802.h"          // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
-
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 //#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
-
 #include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
 
 //OTHER INITIALIZATIONS
@@ -97,7 +95,6 @@ String str;                            // define str in the general scope of the
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10                // Define the Nano digital pin that enables/disables the Voltages multiplexer
-
 #define S0 2                             // Digital Pin 2 // CD74 Multiplexers are controlled by 3 I/O pins
 #define S1 3                             // Digital Pin 3 // CD74 Multiplexers are controlled by 3 I/O pins
 #define S2 4                             // Digital Pin 4 // CD74 Multiplexers are controlled by 3 I/O pins
@@ -291,8 +288,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         addr = channels_current[i];       // we choose the analog channel X
         uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
         //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
-        currentNAU7802(addr);               //run the NAU7802 version of the current measurement function
-        currentNAU7802(1);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        currentNAU7802(addr);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
       }
     }
 
@@ -328,7 +324,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (phDisplay==1){
-
 
       for (int i=0; i<qty_ph; i++) {
         addr = i2cChannels_ph[i]-1;     // we choose the channel X on the 0-index array

@@ -11,18 +11,6 @@ void strainFunc() {
   float b = 20000;              // DUMMY VALUE. Calibration value. ADC value when load cell has no load.
   float a = 1000;               // DUMMY VALUE. Calibration value. Load cell ratio (Newton/ADC) measured experimentally.
 
-
-//OLD SECTION COMMENTED IN CASE WE NEED TO ROLL BACK  
-//  if ((strainDisplay == 1)&(strain_present ==0)){
-//    if (!nau_ada.begin()) {       //The begin() statement most probably contains instance creation.
-//      //Serial.print("Failed to find NAU7802");
-//      delay(1000);
-//    }
-//    else{ 
-//      strain_present=1;   // the sensor is considered present
-//    } 
-//  }
-
   if ((strainDisplay == 1)&(strain_initiated<qty_strain)){
     if (!nau_ada.begin()) {       //The begin() statement contains instance creation.
       //Serial.print("Failed to find NAU7802");

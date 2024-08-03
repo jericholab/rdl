@@ -5,7 +5,7 @@
 // OUTPUT: none
 //
 //********************** CAREFUL ******************************** STILL SOME DUMMY VALUES IN THIS FUNCTION ****************************
-//********************** CAREFUL ******************************** TEMPERATURE COMPENSATION UNACTIVE FOR NOW ****************************
+//********************** CAREFUL ******************************** TEMPERATURE COMPENSATION INACTIVE FOR NOW ****************************
 
 void currentNAU7802(uint8_t t_channel) {
 
@@ -33,22 +33,25 @@ void currentNAU7802(uint8_t t_channel) {
         //Serial.println("Scale not detected. Please check wiring. Freezing...");
         //while (1);
       }
-    
-    nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate
-    nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate    *********** MAX SAMPLE RATE NOT REQUIRED FOR DC CURRENTS (INCREASED NOISE, REDUCED ACCURACY)
-    nau_current.setBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);              //Set the NAU7802 register bit that controls the PGA bypass and enable it (just a first test)
-    //INFO: This is the format : bool setBit(uint8_t bitNumber, uint8_t registerAddress) - Mask & set a given bit within a register
-    nau_current.setChannel(NAU7802_CHANNEL_1);   //With NAU7802-revB1, the channel dedicated to current measurements is 1 (A).
-    //nau_current.setChannel(NAU7802_CHANNEL_2);   //With NAU7802-revB1, the channel dedicated to strain measurements is 2 (B).
 
-    nau_current.setBit(3,NAU7802_ADC);     //ACTIVATE THE INPUT COMMON MODE (RANGE CLOSE TO REFN)(Requires PGA bypass mode set)
-    nau_current.clearBit(7,NAU7802_PU_CTRL);   //Clear bit 7 from register NAU7802_PU_CTRL
-    nau_current.calibrateAFE();                //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
-    delay(1000);
+
+    // TEMPORARY COMMENT ALL THE CONFIGURATION THAT IS NOT REQUIRED TO TEST THE MULTIPLEXING
+    
+//    nau_current.setSampleRate(NAU7802_SPS_320); //Increase to max sample rate    *********** MAX SAMPLE RATE NOT REQUIRED FOR DC CURRENTS (INCREASED NOISE, REDUCED ACCURACY)
+//    nau_current.setBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);              //Set the NAU7802 register bit that controls the PGA bypass and enable it (just a first test)
+//    //INFO: This is the format : bool setBit(uint8_t bitNumber, uint8_t registerAddress) - Mask & set a given bit within a register
+//    nau_current.setChannel(NAU7802_CHANNEL_1);   //With NAU7802-revB1, the channel dedicated to current measurements is 1 (A).
+//    //nau_current.setChannel(NAU7802_CHANNEL_2);   //With NAU7802-revB1, the channel dedicated to strain measurements is 2 (B).
+//
+//    nau_current.setBit(3,NAU7802_ADC);     //ACTIVATE THE INPUT COMMON MODE (RANGE CLOSE TO REFN)(Requires PGA bypass mode set)
+//    nau_current.clearBit(7,NAU7802_PU_CTRL);   //Clear bit 7 from register NAU7802_PU_CTRL
+//    nau_current.calibrateAFE();                //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
+//    delay(1000);
     
     if (nau_current.available()){
         for (i=0; i< n; i++){
-          val = nau_current.getReading();
+          //val = nau_current.getReading();   //SPARKFUN PARLANCE
+          val = nau_current.read(); 
           val_sum= val_sum + val;
         } 
       }     
@@ -57,7 +60,6 @@ void currentNAU7802(uint8_t t_channel) {
 
     Serial.print(F("*"));
     spacing2(F("*"),12); 
-    spacing2(F("*"),12);
      
     // TEMPERATURE COMPENSATION
     T_comp = arrayV[t_channel-1];                  // current sensor temperature 
@@ -71,14 +73,11 @@ void currentNAU7802(uint8_t t_channel) {
     Serial.print(offsetTdrift,5);   
     spacing1(offsetTdrift,9);                           //12 spaces - 3 extra decimals (total 5) = 9 spaces
 
-
     Serial.print(val,0);  // raw value
     spacing1(val,15); 
     Serial.print(val2,4);  // raw value
-    spacing1(val2,12); 
     spacing1(val2,11);                                 //12 spaces - 1 extra decimals (total 5) =  11 spaces
 
-    // CONVERT TO AMPS
     // CONVERT VOLTAGE TO AMPS
     float V_offset = zeroValue + offsetTdrift;       //[mV] offset value (no load) to calibrate the sensor
     float val3 = (val2 - V_offset) * hallRatio;      // Finalize conversion to instantaneous amps  (Removing V_offset after RMS allow negative currents)
