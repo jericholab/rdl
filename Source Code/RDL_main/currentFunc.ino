@@ -30,7 +30,8 @@ float currentFunc(uint8_t algo, bool readMode, uint8_t channel, uint8_t t_channe
     }
     
     Serial.print(offsetTdrift,5);   
-    spacing1(offsetTdrift,12);                     
+    spacing1(offsetTdrift,12);   
+                      
     float V_offset = zeroValue + offsetTdrift;       //[mV] offset value (no load) to calibrate the sensor
     float hallRatio = 33.33333;                      // Hall effect sensor ratio (Amps/Volt) for the TAMURA L01Z050S05 (50/1.5 = 33.33333)
     

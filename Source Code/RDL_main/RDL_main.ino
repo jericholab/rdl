@@ -49,6 +49,7 @@ int channels_teros[] = {0,1};             // define array to store the list of a
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 //#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
 
+#include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -291,6 +292,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
         //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
         currentNAU7802(addr);               //run the NAU7802 version of the current measurement function
+        currentNAU7802(1);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
       }
     }
 
