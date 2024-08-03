@@ -24,7 +24,7 @@ bool phDisplay = 0;                     // optional measurement and display of p
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {4};      // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {4};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
@@ -40,7 +40,7 @@ int channels_teros[] = {0,1};             // define array to store the list of a
 //////////  LIBRARIES INCLUDED //////////
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-//#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
 #include "Adafruit_NAU7802.h"          // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
 
 #include "Wire.h"                      // library required to control the I2C multiplexer
@@ -62,9 +62,9 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-Adafruit_NAU7802 nau_ada;                  // CCreate instance of the Adafruit_NAU7802 class (Adafruit library)
-//NAU7802 nau;                           //Create instance of the NAU7802 class (Sparkfun library)
-Adafruit_NAU7802 nau_current;                   //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
+Adafruit_NAU7802 nau_ada;                 // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
+//NAU7802 nau_current;                      //Create instance of the NAU7802 class (Sparkfun library)
+Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h

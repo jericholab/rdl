@@ -7,12 +7,6 @@
 //********************** CAREFUL ******************************** STILL SOME DUMMY VALUES IN THIS FUNCTION ****************************
 //********************** CAREFUL ******************************** TEMPERATURE COMPENSATION UNACTIVE FOR NOW ****************************
 
-void currentNAU7802(uint8_t channel) {
-
-  float val = -1.00;            // define a default value.
-  float val2 = -1.00;           // define a default value.
-  float offset = 26700;         // offset for conversion of ADC to vols (temporary approximation based on early experimental measurements)
-  float slope= 1662407;         // offset for conversion of ADC to vols (temporary approximation based on early experimental measurements)
 void currentNAU7802(uint8_t t_channel) {
 
   Watchdog.enable(4000);        // Start the 4000ms counter of the watchdog. If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino. 
@@ -24,7 +18,6 @@ void currentNAU7802(uint8_t t_channel) {
   float raw_value = 0;                           // initialize raw value
   float val_sum = 0;                           // initialize average value
   float volts;                                   // initialize variable 
-  float zeroValue = 2.480;                      // sensor output value when null current //TEMPORARY DUMMY VALUE
   float val = -1.00;            // define a default value.
   float val2 = -1.00;           // define a default value.
   float offsetTdrift = 0;                        // initialize variable to zero
@@ -33,10 +26,9 @@ void currentNAU7802(uint8_t t_channel) {
   strainDevice = 1;                 // TEMPORARY STATEMENT TO FORCE READING.
   
   if(strainDevice == 1){        // if sensor found by strain_init()
-    nau_current.begin();                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
-    if (nau_current.begin(Wire) == false)   //Pass the Wire port to the library
+    if (!nau_current.begin())                // The begin() statement is necessary at each power cycle. Calibration is NOT necessary at each power cycle.
+    //if (nau_current.begin(Wire) == false)   //Pass the Wire port to the library (Sparkfun lib ?)
       {
-        Serial.print("NA");
         //Serial.print("NA");
         //Serial.println("Scale not detected. Please check wiring. Freezing...");
         //while (1);
