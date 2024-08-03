@@ -3,6 +3,7 @@
 // PURPOSE: Obtain a measurement from the TAMURA current sensor by using the 24-bit ADC of the strain gauge load cell. Only works with DC current for now.
 // INPUT: none
 // OUTPUT: none
+//
 //********************** CAREFUL ******************************** STILL SOME DUMMY VALUES IN THIS FUNCTION ****************************
 //********************** CAREFUL ******************************** TEMPERATURE COMPENSATION UNACTIVE FOR NOW ****************************
 
@@ -76,6 +77,7 @@ void currentNAU7802(uint8_t t_channel) {
         offsetTdrift = (arrayV[t_channel-1]-21)*slope;  //offset temperature drift compensation [mV] (array indexed to 0, not 1)  
     } 
     Serial.print(offsetTdrift,5);   
+    spacing1(offsetTdrift,9);                           //12 spaces - 3 extra decimals (total 5) = 9 spaces
 
 
     Serial.print(val,0);  // raw value
