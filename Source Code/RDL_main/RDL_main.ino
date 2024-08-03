@@ -27,8 +27,8 @@ bool currentTComp = 1;                  // optional activation of a temperature 
 int i2cChannels_sht40[] = {4};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int channels_current[] = {4};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
-int channels_teros[] = {0,1};             // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
+int i2cChannels_current[] = {1,2};      // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int channels_teros[] = {0,1};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -41,12 +41,13 @@ int channels_teros[] = {0,1};             // define array to store the list of a
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
 //#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
-#include "Adafruit_NAU7802.h"          // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
+//#include "Adafruit_NAU7802.h"         // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
+#include "Jericho_Adafruit_NAU7802.h"   // Jericho version of Adafruit of the NAU7802 library
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
-//#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
+#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
 #include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
 
 //OTHER INITIALIZATIONS
@@ -60,8 +61,8 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-Adafruit_NAU7802 nau_ada;                 // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
-//NAU7802 nau_current;                      //Create instance of the NAU7802 class (Sparkfun library)
+Adafruit_NAU7802 nau_ada;                // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
+//NAU7802 nau_current;                   //Create instance of the NAU7802 class (Sparkfun library)
 Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
@@ -70,8 +71,10 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
-bool strain_present = 0;                 // initialize the variable that will indicate if a sensor is present
+bool strain_present = 0;                 // initialize the variable that will indicate if a strain sensor is present
+bool current_present = 0;                  // initialize the variable that will indicate if a current sensor is present
 uint8_t strain_initiated =0;              //initialize the variable that counts the number of strain sensors having been initiated with begin()
+uint8_t current_initiated =0;              //initialize the variable that counts the number of current sensors having been initiated with begin()
 long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
@@ -134,7 +137,7 @@ void setup(void) {
     
     if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
-        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE3 Code"));
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE5 Code"));
         Serial.print(F("Compiled: "));
         Serial.print(F(__DATE__));
         Serial.print(F("  "));
@@ -169,7 +172,7 @@ void setup(void) {
     qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
-    qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
+    qty_current = sizeof(i2cChannels_current)/ sizeof(i2cChannels_current[0]);
     qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
    
    if (!pcf1.begin(0x20, &Wire)) {
@@ -284,12 +287,34 @@ if (timePassed >= readInterval)                     // if enough time has passed
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
     
     if (currentDisplay==1){
+
+// OLD VERSION OF THE CURRENT CALL      
+//      for (int i=0; i<qty_current; i++) {
+//        addr = channels_current[i];       // we choose the analog channel X
+//        uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
+//        //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
+//        currentNAU7802(addr);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+//      }
+
       for (int i=0; i<qty_current; i++) {
-        addr = channels_current[i];       // we choose the analog channel X
-        uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
-        //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
-        currentNAU7802(addr);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        addr = i2cChannels_current[i]-1;     // we choose the channel X on the 0-index array
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);
+        i2c_select(addr);
+        delay(1000);//1000
+        Wire.beginTransmission(addr);
+        delay(1000);//1000
+        Wire.setClock(clockSpeed); 
+        delay(1000);//1000    
+        currentNAU7802(addr);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        Wire.endTransmission(addr);       
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
       }
+
     }
 
     if (terosDisplay==1){

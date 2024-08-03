@@ -19,13 +19,10 @@ void strainFunc() {
     else{ 
       strain_present=1;   // the sensor is considered present
       strain_initiated++;   //increment by one the number of strain sensors having been initiated
-
     } 
-
   }
-
-  if(strain_present == 1){                // If sensor found by strain_init()
-      //if(strainDisplay == 1){            // If sensor found by strain_init()
+  Wire.setClock(clockSpeed);               // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+  if(strain_present == 1){                // If sensor found 
         nau_ada.enable(true);             // Prescribe the sensor to power up.
             // Take 10 readings to flush out readings
             for (uint8_t i=0; i<10; i++) {

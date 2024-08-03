@@ -99,7 +99,7 @@ void printHeader(){
               
               String currentText5 = F("Amps_C");
               Serial.print(currentText5);
-              Serial.print(channels_current[i]);
+              Serial.print(i2cChannels_current[i]);
               spacing2(currentText5,12);
             }
         }
