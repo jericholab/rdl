@@ -12,7 +12,7 @@ void currentNAU7802(uint8_t t_channel) {
   //Watchdog.enable(4000);        // Start the 4000ms counter of the watchdog. If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino.
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float slope = 1662407;        // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
-  float zeroValue = 2.4585;                      // TAMURA sensor output value when null current
+  float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
   int n = 20;                                    // size of the sample to be collected
   int i;                                         // integer for loop iteration
   float raw_value = 0;                           // initialize raw value
