@@ -102,7 +102,7 @@ bool Adafruit_NAU7802::begin(TwoWire *theWire) {
 /**************************************************************************/
 /*!
     @brief  Sets up the I2C connection and tests that the sensor was found.
-    (Jericho comment: This is the modiied version for current sensor)
+    (Jericho comment: This is the modified version for current sensor)
     @param theWire Pointer to an I2C device we'll use to communicate
     default is Wire
     @return true if sensor was found, otherwise false.
@@ -135,11 +135,11 @@ bool Adafruit_NAU7802::beginCurrent(TwoWire *theWire) {
     return false;
   }
 
-  //if (!setLDO(NAU7802_3V0))
+  // if (!setLDO(NAU7802_3V0))
   //  return false;
-  //if (!setGain(NAU7802_GAIN_128))
+  // if (!setGain(NAU7802_GAIN_128))
   //  return false;
-  //if (!setRate(NAU7802_RATE_10SPS))
+  // if (!setRate(NAU7802_RATE_10SPS))
   //  return false;
 
   // disable ADC chopper clock
@@ -290,6 +290,89 @@ bool Adafruit_NAU7802::enableCurrent(bool flag) {
   return true;
 
 }
+
+/**************************************************************************/
+/*!
+    @brief  Sets up the I2C connection and tests that the sensor was found.
+    (Jericho comment: This is the modified version for current sensor)
+    @param theWire Pointer to an I2C device we'll use to communicate
+    default is Wire
+    @return true if sensor was found, otherwise false.
+*/
+/**************************************************************************/
+bool Adafruit_NAU7802::enableCurrent2(TwoWire *theWire) {
+  // if (i2c_dev) {
+  //   delete i2c_dev;
+  // }
+  // i2c_dev = new Adafruit_I2CDevice(NAU7802_I2CADDR_DEFAULT, theWire);
+
+  // /* Try to instantiate the I2C device. */
+  // if (!i2c_dev->begin()) {
+  //   return false;
+  // }
+
+  // // define the main power control register
+  // _pu_ctrl_reg = new Adafruit_I2CRegister(i2c_dev, NAU7802_PU_CTRL);
+
+  if (!reset())
+    return false;
+  if (!enable(true))
+    return false;
+
+  /* Check for NAU7802 revision register (0x1F), low nibble should be 0xF. */
+  Adafruit_I2CRegister rev_reg =
+      Adafruit_I2CRegister(i2c_dev, NAU7802_REVISION_ID);
+
+  if ((rev_reg.read() & 0xF) != 0xF) {
+    return false;
+  }
+
+  // if (!setLDO(NAU7802_3V0))
+  //  return false;
+  // if (!setGain(NAU7802_GAIN_128))
+  //  return false;
+  // if (!setRate(NAU7802_RATE_10SPS))
+  //  return false;
+
+  // disable ADC chopper clock
+  Adafruit_I2CRegister adc_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_ADC);
+  Adafruit_I2CRegisterBits chop =
+      Adafruit_I2CRegisterBits(&adc_reg, 2, 4); // # bits, bit_shift
+  if (!chop.write(0x3))
+    return false;
+
+  // // use low ESR caps  (Jericho: this is not required because LDO is not used)
+  // Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
+  // Adafruit_I2CRegisterBits ldomode =
+  //     //Adafruit_I2CRegisterBits(&pga_reg, 1, 6); // # bits, bit_shift
+  // if (!ldomode.write(0))
+  //   return false;
+
+  
+  // PGA stabilizer cap on output
+  Adafruit_I2CRegister pwr_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_POWER);
+  Adafruit_I2CRegisterBits capen =
+      Adafruit_I2CRegisterBits(&pwr_reg, 1, 7); // # bits, bit_shift
+  if (!capen.write(1))
+    return false;
+  
+  // activate common mode (jericho addition)
+  // adc_reg already defined.
+  Adafruit_I2CRegisterBits commonMode = Adafruit_I2CRegisterBits(&adc_reg, 1, 3); // # bits, bit_shift
+  if (!commonMode.write(1))
+    return false;
+  
+  // enable PGA bypass (jericho addition)
+  Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
+  Adafruit_I2CRegisterBits pgabypass =
+      Adafruit_I2CRegisterBits(&pga_reg, 1, 4); // # bits, bit_shift
+  if (!pgabypass.write(1))
+    return false;
+
+  return true;
+}
+
+
 
 /**************************************************************************/
 /*!

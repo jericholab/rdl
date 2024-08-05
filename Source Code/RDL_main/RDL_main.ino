@@ -19,15 +19,15 @@ bool SHT40Display = 0;                  // optional measurement and display of i
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
 bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
-bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
+bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 int i2cChannels_sht40[] = {4};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {2};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_strain[] = {3};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int i2cChannels_current[] = {1};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int i2cChannels_current[] = {1,2};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0,1};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -297,7 +297,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         delay(1000);//1000
         Wire.setClock(clockSpeed); 
-        delay(5000);//1000             //////// TEST 5sec instead of 1sec //////////////////
+        delay(3000);//1000                 //I suspect that the board requires time to charge up. An increased delay seems to reduce miscommunication and/or bad readings.
         currentNAU7802(addr);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         Wire.endTransmission(addr);       
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
@@ -305,8 +305,8 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
 
-        Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
-        Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+        //Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+        //Serial.print(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
       }
     }
 

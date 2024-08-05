@@ -84,6 +84,7 @@ public:
   bool reset(void);
   bool enable(bool flag);
   bool enableCurrent(bool flag);
+  bool enableCurrent2(TwoWire *theWire = &Wire);
   bool available(void);
   int32_t read(void);
 
