@@ -11,17 +11,18 @@ void strainFunc() {
   float b = 20000;              // DUMMY VALUE. Calibration value. ADC value when load cell has no load.
   float a = 1000;               // DUMMY VALUE. Calibration value. Load cell ratio (Newton/ADC) measured experimentally.
 
-  if ((strainDisplay == 1)&(strain_initiated<qty_strain)){
+  if (strain_initiated<qty_strain){
     if (!nau_ada.begin()) {       //The begin() statement contains instance creation.
       //Serial.print("Failed to find NAU7802");
       //delay(1000);
     }
     else{ 
+
       strain_present=1;   // the sensor is considered present
       strain_initiated++;   //increment by one the number of strain sensors having been initiated
     } 
   }
-  Wire.setClock(clockSpeed);               // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+  Wire.setClock(clockSpeed);              // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   if(strain_present == 1){                // If sensor found 
         nau_ada.enable(true);             // Prescribe the sensor to power up.
             // Take 10 readings to flush out readings

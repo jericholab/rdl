@@ -80,8 +80,10 @@ class Adafruit_NAU7802 {
 public:
   Adafruit_NAU7802();
   bool begin(TwoWire *theWire = &Wire);
+  bool beginCurrent(TwoWire *theWire = &Wire);
   bool reset(void);
   bool enable(bool flag);
+  bool enableCurrent(bool flag);
   bool available(void);
   int32_t read(void);
 

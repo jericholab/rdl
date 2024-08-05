@@ -34,12 +34,81 @@ Adafruit_NAU7802::Adafruit_NAU7802() {}
 /**************************************************************************/
 /*!
     @brief  Sets up the I2C connection and tests that the sensor was found.
+    (Jericho comment: This is the original function written by Adafruit)
     @param theWire Pointer to an I2C device we'll use to communicate
     default is Wire
     @return true if sensor was found, otherwise false.
 */
 /**************************************************************************/
 bool Adafruit_NAU7802::begin(TwoWire *theWire) {
+  if (i2c_dev) {
+    delete i2c_dev;
+  }
+  i2c_dev = new Adafruit_I2CDevice(NAU7802_I2CADDR_DEFAULT, theWire);
+
+  /* Try to instantiate the I2C device. */
+  if (!i2c_dev->begin()) {
+    return false;
+  }
+
+  // define the main power control register
+  _pu_ctrl_reg = new Adafruit_I2CRegister(i2c_dev, NAU7802_PU_CTRL);
+
+  if (!reset())
+    return false;
+  if (!enable(true))
+    return false;
+
+  /* Check for NAU7802 revision register (0x1F), low nibble should be 0xF. */
+  Adafruit_I2CRegister rev_reg =
+      Adafruit_I2CRegister(i2c_dev, NAU7802_REVISION_ID);
+
+  if ((rev_reg.read() & 0xF) != 0xF) {
+    return false;
+  }
+
+  if (!setLDO(NAU7802_3V0))
+   return false;
+  if (!setGain(NAU7802_GAIN_128))
+   return false;
+  if (!setRate(NAU7802_RATE_10SPS))
+   return false;
+
+  // disable ADC chopper clock
+  Adafruit_I2CRegister adc_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_ADC);
+  Adafruit_I2CRegisterBits chop =
+      Adafruit_I2CRegisterBits(&adc_reg, 2, 4); // # bits, bit_shift
+  if (!chop.write(0x3))
+    return false;
+
+  // use low ESR caps
+  Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
+  Adafruit_I2CRegisterBits ldomode =
+      Adafruit_I2CRegisterBits(&pga_reg, 1, 6); // # bits, bit_shift
+  if (!ldomode.write(0))
+    return false;
+
+  
+  // PGA stabilizer cap on output
+  Adafruit_I2CRegister pwr_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_POWER);
+  Adafruit_I2CRegisterBits capen =
+      Adafruit_I2CRegisterBits(&pwr_reg, 1, 7); // # bits, bit_shift
+  if (!capen.write(1))
+    return false;
+
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Sets up the I2C connection and tests that the sensor was found.
+    (Jericho comment: This is the modiied version for current sensor)
+    @param theWire Pointer to an I2C device we'll use to communicate
+    default is Wire
+    @return true if sensor was found, otherwise false.
+*/
+/**************************************************************************/
+bool Adafruit_NAU7802::beginCurrent(TwoWire *theWire) {
   if (i2c_dev) {
     delete i2c_dev;
   }
@@ -87,20 +156,21 @@ bool Adafruit_NAU7802::begin(TwoWire *theWire) {
   // if (!ldomode.write(0))
   //   return false;
 
+  
   // PGA stabilizer cap on output
   Adafruit_I2CRegister pwr_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_POWER);
   Adafruit_I2CRegisterBits capen =
       Adafruit_I2CRegisterBits(&pwr_reg, 1, 7); // # bits, bit_shift
   if (!capen.write(1))
     return false;
-
+  
   // activate common mode (jericho addition)
   // adc_reg already defined.
   Adafruit_I2CRegisterBits commonMode = Adafruit_I2CRegisterBits(&adc_reg, 1, 3); // # bits, bit_shift
   if (!commonMode.write(1))
     return false;
-
-  // enable PGA bypass
+  
+  // enable PGA bypass (jericho addition)
   Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
   Adafruit_I2CRegisterBits pgabypass =
       Adafruit_I2CRegisterBits(&pga_reg, 1, 4); // # bits, bit_shift
@@ -129,16 +199,16 @@ bool Adafruit_NAU7802::enable(bool flag) {
 
   if (!flag) {
     // shut down;
-    if (!pu_analog.write(0))
+    if (!pu_analog.write(0))   //0 means "power down digital circuit"
       return false;
-    if (!pu_digital.write(0))
+    if (!pu_digital.write(0))   //0 means "power down analog circuit"
       return false;
     return true;
   }
   // turn on!
-  if (!pu_digital.write(1))
+  if (!pu_digital.write(1))   //1 means "power up digital circuit"
     return false;
-  if (!pu_analog.write(1))
+  if (!pu_analog.write(1))    //1 means "power up analog circuit"
     return false;
   // RDY: Analog part wakeup stable plus Data Ready after exiting power-down
   // mode 600ms
@@ -146,6 +216,79 @@ bool Adafruit_NAU7802::enable(bool flag) {
   if (!pu_start.write(1))
     return false;
   return pu_ready.read();
+
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Whether to have the sensor enabled and working or in power down mode
+    @param  flag True to be in powered mode, False for power down mode
+    @return False if something went wrong with I2C comms
+*/
+/**************************************************************************/
+bool Adafruit_NAU7802::enableCurrent(bool flag) {
+
+  // // define the main power control register
+  // _pu_ctrl_reg = new Adafruit_I2CRegister(i2c_dev, NAU7802_PU_CTRL);
+
+  // if (!reset())
+  //   return false;
+  // if (!enable(true))
+  //   return false;
+
+  // /* Check for NAU7802 revision register (0x1F), low nibble should be 0xF. */
+  // Adafruit_I2CRegister rev_reg =
+  //     Adafruit_I2CRegister(i2c_dev, NAU7802_REVISION_ID);
+
+  // if ((rev_reg.read() & 0xF) != 0xF) {
+  //   return false;
+  // }
+
+  //if (!setLDO(NAU7802_3V0))
+  //  return false;
+  //if (!setGain(NAU7802_GAIN_128))
+  //  return false;
+  //if (!setRate(NAU7802_RATE_10SPS))
+  //  return false;
+
+  // disable ADC chopper clock
+  Adafruit_I2CRegister adc_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_ADC);
+  Adafruit_I2CRegisterBits chop =
+      Adafruit_I2CRegisterBits(&adc_reg, 2, 4); // # bits, bit_shift
+  if (!chop.write(0x3))
+    return false;
+
+  // // use low ESR caps  (Jericho: this is not required because LDO is not used)
+  // Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
+  // Adafruit_I2CRegisterBits ldomode =
+  //     //Adafruit_I2CRegisterBits(&pga_reg, 1, 6); // # bits, bit_shift
+  // if (!ldomode.write(0))
+  //   return false;
+
+  
+  // PGA stabilizer cap on output
+  Adafruit_I2CRegister pwr_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_POWER);
+  Adafruit_I2CRegisterBits capen =
+      Adafruit_I2CRegisterBits(&pwr_reg, 1, 7); // # bits, bit_shift
+  if (!capen.write(1))
+    return false;
+  
+  // activate common mode (jericho addition)
+  // adc_reg already defined.
+  Adafruit_I2CRegisterBits commonMode = Adafruit_I2CRegisterBits(&adc_reg, 1, 3); // # bits, bit_shift
+  if (!commonMode.write(1))
+    return false;
+  
+  // enable PGA bypass (jericho addition)
+  Adafruit_I2CRegister pga_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_PGA);
+  Adafruit_I2CRegisterBits pgabypass =
+      Adafruit_I2CRegisterBits(&pga_reg, 1, 4); // # bits, bit_shift
+  if (!pgabypass.write(1))
+    return false;
+
+  return true;
+
 }
 
 /**************************************************************************/

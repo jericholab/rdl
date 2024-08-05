@@ -25,9 +25,9 @@ bool ControlSignal = 0;                 // optional activation of the signal con
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 int i2cChannels_sht40[] = {4};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {1,2};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_strain[] = {2};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int i2cChannels_current[] = {1,2};      // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int i2cChannels_current[] = {1};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0,1};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -287,15 +287,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
     watchSerial(); //  Watching for incoming commands from the serial port half-way through the loop
     
     if (currentDisplay==1){
-
-// OLD VERSION OF THE CURRENT CALL      
-//      for (int i=0; i<qty_current; i++) {
-//        addr = channels_current[i];       // we choose the analog channel X
-//        uint8_t tCompChannel= 1;          // we choose the thermistor channel used for temperature compensation of all current sensors
-//        //currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), analog channel (0-7) and temperature compensation cannel (1-8).        
-//        currentNAU7802(addr);               //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
-//      }
-
       for (int i=0; i<qty_current; i++) {
         addr = i2cChannels_current[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
@@ -306,15 +297,17 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         delay(1000);//1000
         Wire.setClock(clockSpeed); 
-        delay(1000);//1000    
+        delay(5000);//1000             //////// TEST 5sec instead of 1sec //////////////////
         currentNAU7802(addr);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         Wire.endTransmission(addr);       
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
         tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
         pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
-      }
 
+        Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+        Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+      }
     }
 
     if (terosDisplay==1){
@@ -389,8 +382,7 @@ watchSerial(); //  Watching for incoming commands from the serial port
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
 timePassedHeader=millis()-time2;                  // time elapsed since last header printing
 
-//   Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
-//   Serial.println(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+
 
 }  //end of main loop()
 
