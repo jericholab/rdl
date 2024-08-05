@@ -16,7 +16,7 @@
 # Emptying the trash to make enough space
 printf "Empty the trash...\n"
 sudo rm -rf ~/.local/share/Trash/files/*
-sudo rm -rf /media/orangepi/SD_CARD1/.Trash-1000/files/*
+#sudo rm -rf /media/orangepi/SD_CARD1/.Trash-1000/files/*
 
 # Print the IP address
 _IP=$(hostname -I) || true
@@ -27,10 +27,21 @@ fi
 sleep 5  # 5sec delay  
 
 
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py" &
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py" &
-sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-JPG.py" &
+sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-RDL-USB0.py; echo Press enter to exit; read'" &
+sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-Reolink1.py; echo Press enter to exit; read'" &
+sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-Infrared-CSV.py; echo Press enter to exit; read'" &
+lxterminal --command="bash -c 'python3 WIRED-syncing.py; echo Press enter to exit; read'" &
+
+
+#sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py; echo Press enter to exit; read'" &
+#sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py; echo Press enter to exit; read'" &
+#sudo -u orangepi lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-CSV.py; echo Press enter to exit; read'" &
+#lxterminal --command="bash -c 'python3 /home/orangepi/SHELF3/WIRED-syncing.py; echo Press enter to exit; read'" &
+
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-RDL-USB0.py" &
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Reolink1.py" &
+#sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-JPG.py" &
 #sudo -u orangepi lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-logging-Infrared-CSV.py" &
-lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-syncing.py" &
+#lxterminal --command="python3 /home/orangepi/SHELF3/WIRED-syncing.py" &
 
 exit 0

@@ -75,6 +75,7 @@ void printHeader(){
             }
         }
 
+
         if (currentDisplay == 1){
           for (int i=0; i<qty_current; i++) {
               Serial.print(F("*"));
@@ -84,23 +85,56 @@ void printHeader(){
               Serial.print(currentText1);
               spacing2(currentText1,12);
 
-              String currentText4 = F("T_comp");
-              Serial.print(currentText4);
-              spacing2(currentText4,12);
-                            
-              String currentText2 = F("Raw");
+              String currentText2 = F("T_comp");
               Serial.print(currentText2);
               spacing2(currentText2,12);
 
-              
-              String currentText3 = F("Amps_C");
+              String currentText3 = F("ADC");
               Serial.print(currentText3);
-              Serial.print(channels_current[i]);
               spacing2(currentText3,12);
+
+              String currentText4 = F("Volts");
+              Serial.print(currentText4);
+              spacing2(currentText4,12);
+              
+              String currentText5 = F("Amps_C");
+              Serial.print(currentText5);
+              Serial.print(i2cChannels_current[i]);
+              spacing2(currentText5,12);
             }
         }
 
+//BELOW IS THE OLD HEADER FOR CURRENT FUNCTION (ANALOG)
+//        if (currentDisplay == 1){
+//          for (int i=0; i<qty_current; i++) {
+//              Serial.print(F("*"));
+//              spacing2("*",12);
+//
+//              String currentText1 = F("T_sensor");
+//              Serial.print(currentText1);
+//              spacing2(currentText1,12);
+//
+//              String currentText2 = F("T_comp");
+//              Serial.print(currentText2);
+//              spacing2(currentText2,12);
+//                            
+//              String currentText3 = F("Raw1");
+//              Serial.print(currentText3);
+//              spacing2(currentText3,12);
+//
+//              String currentText4 = F("Raw2");
+//              Serial.print(currentText4);
+//              spacing2(currentText4,12);
+//              
+//              String currentText5 = F("Amps_C");
+//              Serial.print(currentText5);
+//              Serial.print(channels_current[i]);
+//              spacing2(currentText5,12);
+//            }
+//        }
+
         if (terosDisplay == 1){
+          for (int i=0; i<qty_teros; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
               String terosText1 = F("Teros_mV");
@@ -111,16 +145,21 @@ void printHeader(){
               spacing2(terosText2,12);
               String terosText3 = F("Pascal");
               Serial.print(terosText3);
-              spacing2(terosText3,12);
+              spacing2(terosText3,12);  
+          }
+          
             }
 
          if (strainDisplay == 1){
           for (int i=0; i<qty_strain; i++) {
               Serial.print(F("*"));
               spacing2("*",12);
-              String terosText1 = F("Strain_raw");
+              String terosText1 = F("Strain_ADC");
               Serial.print(terosText1);
-              spacing2(terosText1,12);            
+              spacing2(terosText1,12);  
+              String terosText2 = F("Newton");
+              Serial.print(terosText2);
+              spacing2(terosText2,12);          
           }
 
             }    

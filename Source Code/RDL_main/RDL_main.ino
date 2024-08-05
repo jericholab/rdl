@@ -13,22 +13,22 @@
 bool headerDisplay=1;                   // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay=1;                     // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay=1;                       // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay=1;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay=0;                        // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)  
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (1 = yes, 0 = no) 
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)  
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no) 
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no) 
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
-int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {1,4};       // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
-int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int channels_current[] = {0};           // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
-
+int i2cChannels_sht40[] = {4};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_strain[] = {3};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
+int i2cChannels_current[] = {1,2};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int channels_teros[] = {0,1};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -40,11 +40,15 @@ int channels_current[] = {0};           // define array to store the list of ana
 //////////  LIBRARIES INCLUDED //////////
 #include "EEPROM.h"                    // library required to read and write on the EEPROM memory (library size = 8.3 kB)
 #include "RTClib.h"                    // library required for the Real-Time Clock (RTC). Can be installed via the Library Manager.
-#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+//#include "SparkFun_Qwiic_Scale_NAU7802_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_NAU8702
+//#include "Adafruit_NAU7802.h"         // Adafruit version of the NAU7802 library (which does not use BeginTransmission())
+#include "Jericho_Adafruit_NAU7802.h"   // Jericho version of Adafruit of the NAU7802 library
 #include "Wire.h"                      // library required to control the I2C multiplexer
 #include "Adafruit_SHT4x.h"            // library required for the SHT40 humidity sensor. Can be installed via the Library Manager.  
 #include "Adafruit_ADS1X15.h"          // library required for the ADS1115 I2C ADC.
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
+#include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
+#include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
 
 //OTHER INITIALIZATIONS
 unsigned long time1 = 0;               // initialize variable to control read cycles
@@ -57,7 +61,9 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
 long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
-NAU7802 nau;                           //Create instance of the NAU7802 class
+Adafruit_NAU7802 nau_ada;                // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
+//NAU7802 nau_current;                   //Create instance of the NAU7802 class (Sparkfun library)
+Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
@@ -65,6 +71,10 @@ RTC_DS3231 rtc;                        // define the RTC model number used by th
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
+bool strain_present = 0;                 // initialize the variable that will indicate if a strain sensor is present
+bool current_present = 0;                  // initialize the variable that will indicate if a current sensor is present
+uint8_t strain_initiated =0;              //initialize the variable that counts the number of strain sensors having been initiated with begin()
+uint8_t current_initiated =0;              //initialize the variable that counts the number of current sensors having been initiated with begin()
 long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
@@ -88,7 +98,6 @@ String str;                            // define str in the general scope of the
 long readCycle2 = 0;                   // initialization of tag for live data (read function) (long type allows a high count values)
 #define enable_T_MUX 11                // Define the Nano digital pin that enables/disables the Thermistors multiplexer
 #define enable_V_MUX 10                // Define the Nano digital pin that enables/disables the Voltages multiplexer
-
 #define S0 2                             // Digital Pin 2 // CD74 Multiplexers are controlled by 3 I/O pins
 #define S1 3                             // Digital Pin 3 // CD74 Multiplexers are controlled by 3 I/O pins
 #define S2 4                             // Digital Pin 4 // CD74 Multiplexers are controlled by 3 I/O pins
@@ -103,6 +112,7 @@ int qty_sht40;                           // define the variable that holds the n
 int qty_strain;                          // define the variable that holds the number of strain devices connected to the i2c shield
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
+int qty_teros;                           // define the variable that holds the number of teros devices connected to the RDL
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED (THIS SECTION WILL EVOLVE WHEN THE I2CSCAN() FUNCTION IS CREATED)
@@ -113,10 +123,7 @@ int qty_current;                         // define the variable that holds the n
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
 //----------------------
 
-
-//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST
-
-
+//sensors_event_t humidity, temp;                                  //define two events (objects)         //////////// TEMP COMMENT FOR TEST (WHAT WAS THE CONCLUSION???)
 
 ////// SETUP ////////
 
@@ -130,14 +137,14 @@ void setup(void) {
     
     if (headerDisplay == 1){          
         Serial.println(); Serial.println(); 
-        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE3 Code"));
+        Serial.println(F("Jericho Laboratory inc. // Resistance Data Logger (RDL) RevE5 Code"));
         Serial.print(F("Compiled: "));
         Serial.print(F(__DATE__));
         Serial.print(F("  "));
         Serial.println(F(__TIME__));
         startMessage();    // print informations after startup 
     }
-    
+
     analogReference(EXTERNAL);                         // tells the Nano to use the external voltage as a reference (value used at the top of the Nano ADC range)
 
     pinMode(enable_T_MUX, OUTPUT);                               // define pin 11 as an output pin.
@@ -165,10 +172,9 @@ void setup(void) {
     qty_sht40 = sizeof(i2cChannels_sht40)/ sizeof(i2cChannels_sht40[0]);
     qty_strain = sizeof(i2cChannels_strain)/ sizeof(i2cChannels_strain[0]);
     qty_ph = sizeof(i2cChannels_ph)/ sizeof(i2cChannels_ph[0]);
-    qty_current = sizeof(channels_current)/ sizeof(channels_current[0]);
-    
-    
-
+    qty_current = sizeof(i2cChannels_current)/ sizeof(i2cChannels_current[0]);
+    qty_teros = sizeof(channels_teros)/ sizeof(channels_teros[0]);
+   
    if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
    }
@@ -199,12 +205,9 @@ void setup(void) {
     pcf3.digitalWrite(p, HIGH); // initialize each channel off 
     pcf4.digitalWrite(p, LOW); // initialize each channel off  
   }
-
     if (headerDisplay == 1){          // it is necessary to deactivate the startMessage() function in order for the Serial Plotter to function properly
         printHeader();                // this function prints the header (T1, T2, R1, T2, etc)
     }
-
-
    tca_init();       // initialize the TCA9548 I2C MUX chip to ensure that no channel is connected, as it will cause an I2C bus jam.
 }
 
@@ -232,7 +235,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
       for (int i=0; i< (numberC); i++) {                      
           setMultiplexer(i);                            // select the multiplexer channel
           int channel = i+1;                            //channel being measured
-          bool readMode =1;                             // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
+          bool readMode =0;                             // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
           struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C,channel,readMode );   //call 'thermistor' function and store results in a structure
           arrayV[i] = valeurs.t;                        // storing temperature to array
           arrayR[i] = valeurs.o;                        // storing resistances (ohm) to array       
@@ -257,7 +260,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
        }
  
     if (SHT40Display == 1){
-
       for (int i=0; i<qty_sht40; i++) {
         addr = i2cChannels_sht40[i]-1;     // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
@@ -268,8 +270,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         Wire.beginTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.setClock(clockSpeed); 
-        //delay(200); 
-        delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
         Wire.endTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
@@ -287,14 +288,34 @@ if (timePassed >= readInterval)                     // if enough time has passed
     
     if (currentDisplay==1){
       for (int i=0; i<qty_current; i++) {
-        addr = channels_current[i];     // we choose the analog channel X
-        uint8_t tCompChannel= 1;                // we choose the thermistor channel used for temperature compensation of all current sensors
-        currentFunc(0,1,addr,1);          // run current measurement function with algo (e.g. 1 = sinewave RMS), readMode (e.g. 1= ADS1115 ADC), and channel (0-7).        
+        addr = i2cChannels_current[i]-1;     // we choose the channel X on the 0-index array
+        pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
+        pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
+        delay(1000);
+        i2c_select(addr);
+        delay(1000);//1000
+        Wire.beginTransmission(addr);
+        delay(1000);//1000
+        Wire.setClock(clockSpeed); 
+        delay(3000);//1000                 //I suspect that the board requires time to charge up. An increased delay seems to reduce miscommunication and/or bad readings.
+        currentNAU7802(addr);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        Wire.endTransmission(addr);       
+        delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
+        pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
+        pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
+
+        //Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+        //Serial.print(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
       }
     }
 
     if (terosDisplay==1){
-      terosFunc(1);             // run soil humidity function for with channel selection (0-7)
+      for (int i=0; i<qty_teros; i++) {
+        addr = channels_teros[i];       // we choose the analog channel X
+        terosFunc(addr);
+      }
+      
     }
 
     if (strainDisplay==1){  
@@ -305,11 +326,11 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
         delay(1000);
         i2c_select(addr);
-        delay(300);//1000
+        delay(1000);//1000
         Wire.beginTransmission(addr);
+        delay(1000);//1000
         Wire.setClock(clockSpeed); 
-        delay(300);//1000    
-        //currentNAU7802();               //// TEMPORARY TEST FOR "NAU7802+CURRENT"
+        delay(1000);//1000    
         strainFunc();                      // run Strain sensor function  
         Wire.endTransmission(addr);       
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.        
@@ -321,7 +342,6 @@ if (timePassed >= readInterval)                     // if enough time has passed
     }
 
     if (phDisplay==1){
-
 
       for (int i=0; i<qty_ph; i++) {
         addr = i2cChannels_ph[i]-1;     // we choose the channel X on the 0-index array
@@ -361,6 +381,9 @@ watchSerial(); //  Watching for incoming commands from the serial port
 // this block must be positionned right before the decision to read or not the group of thermistors (timePassed>= ReadInterval)
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
 timePassedHeader=millis()-time2;                  // time elapsed since last header printing
+
+
+
 }  //end of main loop()
 
 

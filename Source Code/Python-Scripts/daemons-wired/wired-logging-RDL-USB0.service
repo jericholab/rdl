@@ -2,7 +2,7 @@
 Description=WIRED RDL USB0
 After = network.target
 [Service]
-ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-logging-RDL-USB0.py
+ExecStart= sudo -u pi python3 /home/pi/SHELF3/WIRED-logging-RDL-USB0.py
 Restart = always
 RestartSec=60
 [Install]

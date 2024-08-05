@@ -6,8 +6,8 @@
 
 void sht40Func(){
 
-    if ((SHT40Display == 1)&(SHT4_present ==0)){      
-      if(sht4.begin()){                                // if the SHT40 humidity sensor can be initialized...
+    if ((SHT40Display == 1)&(SHT4_present ==0)){       // if the SHT40 sensr is desired and has not been found yet
+      if(sht4.begin()){                                // ... we try to initialize and if it works.... 
         SHT4_present = 1;                              // the sensor is considered present (this variable affects SHT40Func()).
       }
     }

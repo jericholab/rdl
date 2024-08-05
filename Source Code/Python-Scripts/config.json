@@ -1,4 +1,7 @@
 {
-  "SITE": "Site1_Greenhouse",
-  "SD_CARD_NAME": "DATABACKUP"  
+  "SITE": "Site2_Floatovoltaics",
+  "SD_CARD_NAME": "",
+  "OTHER_SITE_NAME_0": "Site0_Montreal",
+  "OTHER_SITE_NAME_1": "Site1_Greenhouse",
+  "OTHER_SITE_NAME_2": "Site2_Floatovoltaics"
 }

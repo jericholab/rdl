@@ -8,12 +8,14 @@ import shutil
 import os   
 import logging
 import json
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Load the configuration file
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
     print(json.dumps(config, indent=4))  # Print the config file
-
+    
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
 #configure the logging module
@@ -25,11 +27,10 @@ print("RDL-python-syncing to Dropbox script...")
 
 source_path = "./logging-folder/tosync/"  #relative path"
 transit_path = "./logging-folder/transit/"  #relative path"
-#destination_path = "./logging-folder/synced/"
+destination_path = "./logging-folder/synced/"
 #destination_path = "/media/orangepi/SD_CARD1/"
-destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
-
-
+#destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
+    
 def syncToDropbox():
     print("move from /tosync to /transit folder")
     sync(source_path, transit_path)    #copy the files from local folders "/tosync" to "/transit"
@@ -41,9 +42,11 @@ def syncToDropbox():
     cloudSide1 = f"Professional/WIRED/{config['SITE']}"
     localSide2 = "./logging-folder/transit/cameras"
     cloudSide2 = f"Professional/WIRED/{config['SITE']}"
-    Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
+    Upload = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
+    #Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
-    Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
+    #Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
+    Upload2 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
     print("move from /transit to backup folder (e.g. SD Card)")
     sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced" 
@@ -62,8 +65,9 @@ def sync(src, dest):
         if os.path.isdir(s):
             sync(s, d)
         else:
-            # Else (if the item is a file), copy it then remove it 
+            # Else (if the item is a file), copy it then remove it ca
             if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
+                print(s)
                 shutil.copy2(s, d) #copy
                 os.remove(s)  #delete
                 time.sleep(1) #to avoid error due to fast looping
@@ -81,3 +85,4 @@ while True:
 
     
     
+
