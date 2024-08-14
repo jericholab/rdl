@@ -26,14 +26,13 @@ void currentNAU7802(uint8_t t_channel) {
 
   if (current_initiated < 1) {
     if (!nau_current.beginCurrent()) {                     // //The beginCurrent() statement contains instance creation. It is a modified copy of begin().
-       //Serial.print("Failed to find NAU7802   ");
-       //delay(1000);
+       Serial.print("Failed to find sensor   ");
+       delay(1000);
     }
     else {    //if begin() doesn't fail then the sensor is considered present
       //Serial.print("BeginCurrent() ran    ");
       current_present = 1; // the sensor is considered present
       current_initiated++;   //increment by one the number of current sensors having been initiated ////// This will eventually reach the limit and reset to zero, causing a begin() call.
-
     }
   }
 
@@ -53,16 +52,16 @@ void currentNAU7802(uint8_t t_channel) {
   Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   delay(100);
 
+
+
   if (current_present == 1) {
     nau_current.enable(true);
     nau_current.enableCurrent2();   //////new test where enableCurrent2 is a copy of currentBegin() without the instantiation.
 
-      /////////////////// TEMPORARY COMMENTING OUT AS TEST /////////////
               nau_current.setRate(NAU7802_RATE_10SPS);   //I must eventually test if these function calls return true (1) ......................................
               nau_current.setLDO(NAU7802_EXTERNAL);
               nau_current.calibrate(NAU7802_CALMOD_INTERNAL);    //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
               delay(1000);
-      /////////////////// TEMPORARY COMMENTING OUT AS TEST /////////////
     
     //nau_current.enable(false); 
     //nau_current.enable(true); 
@@ -77,13 +76,18 @@ void currentNAU7802(uint8_t t_channel) {
     }
     val_sum = val_sum / float(n); //arithmetic average
     val2 = (val_sum - offset) / slope; //convert the ADC to volts
+    nau_current.enable(false);   ////// TESTING NEW POSITION FOR THIS LINE
   }
-  nau_current.enable(false); 
+  Serial.print ("The code reached here1"); ////////////////// TEST
+  delay(1000); /////////////// TEST
+  
+  //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the absent is absent, this line should not run.
   Serial.print(F("*"));
   spacing2(F("*"), 12);
 
 
-
+    Serial.print ("The code reached here2"); ////////////////// TEST
+    delay(1000); /////////////// TEST
 
   // TEMPERATURE COMPENSATION
   T_comp = arrayV[t_channel - 1];                // current sensor temperature
@@ -110,4 +114,7 @@ void currentNAU7802(uint8_t t_channel) {
 
   //    Watchdog.reset();                               //  If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino.
   //    Watchdog.disable();                             // If the code executed completely, we can disable the watchdog until the next call to the function.
+
+
+    
 }
