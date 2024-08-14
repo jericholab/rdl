@@ -26,7 +26,8 @@ void currentNAU7802(uint8_t t_channel) {
 
   if (current_initiated < 1) {
     if (!nau_current.beginCurrent()) {                     // //The beginCurrent() statement contains instance creation. It is a modified copy of begin().
-       Serial.print("Failed to find sensor   ");
+       //Serial.print("Failed to find sensor   ");
+       Serial.print("N/A");
        delay(1000);
     }
     else {    //if begin() doesn't fail then the sensor is considered present
@@ -49,8 +50,8 @@ void currentNAU7802(uint8_t t_channel) {
 //      //nau_current.enableCurrent(true);   //contains beginCurrent() except the instantiation  
 //    }
 
-  Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
-  delay(100);
+  //Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+  //delay(100);
 
 
 
@@ -78,16 +79,10 @@ void currentNAU7802(uint8_t t_channel) {
     val2 = (val_sum - offset) / slope; //convert the ADC to volts
     nau_current.enable(false);   ////// TESTING NEW POSITION FOR THIS LINE
   }
-  Serial.print ("The code reached here1"); ////////////////// TEST
-  delay(1000); /////////////// TEST
   
   //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the absent is absent, this line should not run.
   Serial.print(F("*"));
   spacing2(F("*"), 12);
-
-
-    Serial.print ("The code reached here2"); ////////////////// TEST
-    delay(1000); /////////////// TEST
 
   // TEMPERATURE COMPENSATION
   T_comp = arrayV[t_channel - 1];                // current sensor temperature

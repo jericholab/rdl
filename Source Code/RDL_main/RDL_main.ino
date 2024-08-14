@@ -156,13 +156,13 @@ void setup(void) {
     pinMode(VOLT_PIN, INPUT);                          //set pin as an input for voltage readings. INPUT mode explicitly disables the internal pullups.
     pinMode(CTRL_PIN, OUTPUT);                         //set pin as an input for voltage readings to allow sending a control signal    //
 
-    Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+    ////Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
     delay(100);                                        // let some time pass before trying to communicate with the RTC
     initRTC();                                         //initialize the Real Time Clock
-    Wire.setClock(clockSpeed);
+    ////Wire.setClock(clockSpeed);
     
     ads1115.begin();                                 // initialize the ADS1015 chip
-    Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
+    ////Wire.setClock(clockSpeed);                       // clockSpeed must be prescribed after ads1115 library begins because it overrides the parameter by reinitializing the Wire library.
 
     pinMode(13,OUTPUT);                               // board Led 'L' is controlled by pin 13. Pin 13 is set to Output mode
     pinMode(S0, OUTPUT);                              // Configure pins dedicated to the thermistor multiplexor to 'output'mode (default mode is 'input')
@@ -194,11 +194,11 @@ void setup(void) {
   if (!pcf3.begin(0x22, &Wire)) {
     Serial.println("Couldn't find PCF8574 #3 (I2C Shield)");
   }
-  Wire.setClock(clockSpeed);
+  ////Wire.setClock(clockSpeed);
   if (!pcf4.begin(0x23, &Wire)) {
     Serial.println("Couldn't find PCF8574 #4 (I2C Shield)");
   }
-  Wire.setClock(clockSpeed);
+  ////Wire.setClock(clockSpeed);
   for (uint8_t p=0; p<8; p++) {
     pcf3.pinMode(p, OUTPUT);
     pcf4.pinMode(p, OUTPUT);
@@ -269,7 +269,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        Wire.setClock(clockSpeed); 
+        ////Wire.setClock(clockSpeed); 
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
         sht40Func(); 
         Wire.endTransmission(addr);
@@ -296,7 +296,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(1000);//1000
         Wire.beginTransmission(addr);
         delay(1000);//1000
-        Wire.setClock(clockSpeed); 
+        ////Wire.setClock(clockSpeed); 
         delay(3000);//1000                 //I suspect that the board requires time to charge up. An increased delay seems to reduce miscommunication and/or bad readings.
         currentNAU7802(addr);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         Wire.endTransmission(addr);       
@@ -305,8 +305,8 @@ if (timePassed >= readInterval)                     // if enough time has passed
         pcf3.digitalWrite(addr, HIGH);     // turn LED off by turning off sinking transistor
         pcf4.digitalWrite(addr, LOW);      // turn LED off by turning off sinking transistor
 
-        Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
-        Serial.print(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
+        //Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+        //Serial.print(freeMemory());  // print how much RAM is available in bytes.   ///////////// TEMPORARY TEST ////////////////////
       }
     }
 
@@ -329,7 +329,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(1000);//1000
         Wire.beginTransmission(addr);
         delay(1000);//1000
-        Wire.setClock(clockSpeed); 
+        //Wire.setClock(clockSpeed); 
         delay(1000);//1000    
         strainFunc();                      // run Strain sensor function  
         Wire.endTransmission(addr);       
@@ -352,7 +352,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
         delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
         delay(1000);                          //A delay is required to avoid miscommunication. Delay value not optimized yet.
-        Wire.setClock(clockSpeed); 
+        //Wire.setClock(clockSpeed); 
         //delay(200); 
         delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.
         phFunc();                         // run pH function

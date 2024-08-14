@@ -24,7 +24,7 @@ void phFunc(){
 
   
   Wire.beginTransmission(address);                                              //call the circuit by its ID number.
-  Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
+  //Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   Wire.write(computerdata);                                                     //transmit the command that was sent through the serial port.
   Wire.endTransmission();                                                       //end the I2C data transmission.
 

@@ -14,7 +14,7 @@ void i2c_select(uint8_t i) {    //define a small function to select the i2c mult
 
   tcaselect(i);
 //  Wire.beginTransmission(addr);
-//  Wire.setClock(clockSpeed); 
+//  //Wire.setClock(clockSpeed); 
 
 //  pcf3.digitalWrite(i, HIGH); // turn LED off by turning off sinking transistor
 //  pcf4.digitalWrite(i, LOW); // turn LED off by turning off sinking transistor
