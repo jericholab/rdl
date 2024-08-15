@@ -93,8 +93,17 @@ while True:
             data = ser.readline().decode('ascii')
         except UnicodeDecodeError:  #handle potential errors
             data = 'x'   #if data corrupted, substitute with 'x' character
-        file.write(data)
-        print(data)
+        #file.write(data)
+        #print(data)
+        
+        # Get the current timestamp from the PC
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Format the data with the timestamp
+        log_entry = f"{timestamp} {data}"
     
+        file.write(log_entry)
+        print(log_entry)
+        
     #time.sleep(1) #to avoid super fast looping
     then = now
