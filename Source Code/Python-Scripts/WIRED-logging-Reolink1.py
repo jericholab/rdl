@@ -1,4 +1,4 @@
-#jericholab WIRED - test script to output reolink camera image hourly
+#jericholab WIRED - test script to output reolink camera image at fixed interval
 
 #import serial
 from datetime import datetime
@@ -81,7 +81,8 @@ while True:
     if (now != then):
         takePicture()     
     
-    time.sleep(5) #to avoid super fast looping (in seconds)
+    #time.sleep(5) #to avoid super fast looping (in seconds)
+    time.sleep(900) #force a 15-min interval
     then = now
    
     
