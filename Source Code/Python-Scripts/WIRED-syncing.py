@@ -30,8 +30,11 @@ transit_path = "./logging-folder/transit/"  #relative path"
 destination_path = "./logging-folder/synced/"
 #destination_path = "/media/orangepi/SD_CARD1/"
 #destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
-    
+     
 def syncToDropbox():
+    
+    remove_empty_dirs(source_path)  #remove any empty folders created before sync
+    
     print("move from /tosync to /transit folder")
     sync(source_path, transit_path)    #copy the files from local folders "/tosync" to "/transit"
     
@@ -49,7 +52,8 @@ def syncToDropbox():
     Upload2 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
     print("move from /transit to backup folder (e.g. SD Card)")
-    sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced" 
+    sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced"
+    remove_empty_dirs(transit_path)  #remove any transit folder that became empty
     
 def sync(src, dest):
     # If the destination directory doesn't exist, create it.
@@ -71,7 +75,16 @@ def sync(src, dest):
                 shutil.copy2(s, d) #copy
                 os.remove(s)  #delete
                 time.sleep(1) #to avoid error due to fast looping
-   
+
+def remove_empty_dirs(path):
+    # Walk through the directory, bottom-up (to delete nested empty folders first)
+    for root, dirs, files in os.walk(path, topdown=False):
+        for dir_ in dirs:
+            dir_path = os.path.join(root, dir_)
+            # If the directory is empty, remove it
+            if not os.listdir(dir_path):
+                print(f"Removing empty folder: {dir_path}")
+                os.rmdir(dir_path)
     
 schedule.every(10).seconds.do(syncToDropbox)
 #schedule.every(1).minutes.do(syncToDropbox)
