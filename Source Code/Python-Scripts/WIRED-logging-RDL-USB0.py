@@ -6,7 +6,13 @@ from datetime import datetime
 import schedule
 import time
 import shutil
+import json
 import os  # library to interact with the operating system
+
+# Load the configuration file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+    print(json.dumps(config, indent=4))  # Print the config file
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
@@ -31,12 +37,27 @@ time.sleep(2)
 #initializing
 now = datetime.now()
 dailyFolderNow = datetime.now()
-formatExpected = "%Y-%m-%d_%H"  #create a new file every hour
+
+
+#if (RDL_FILEFORMAT_ACTIVE = hourly, formatExpected ="%Y-%m-%d")
+#if (RDL_FILEFORMAT_ACTIVE = daily, formatExpected ="%Y-%m-%d_%H)
+
+# if (now != then):
+if (config['RDL_FILEFORMAT_ACTIVE'] == 'hourly'):
+    formatExpected = "%Y-%m-%d_%H"  #create a new file every hour
+    formatDailyFolder = "%Y-%m-%d"  #create a new folder every day
+    
+else:
+    formatExpected = "%Y-%m-%d"  #create a new file every day
+    formatDailyFolder = "%Y-%m"  #create a new folder every month
+    
+#print({config['RDL_FILEFORMAT_ACTIVE']})
+#formatExpected = "%Y-%m-%d"  #create a new file every day
+#formatExpected = "%Y-%m-%d_%H"  #create a new file every hour
 #formatExpected = "%Y-%m-%d_%H_%M"  #create a new file every minute
 now = now.strftime(formatExpected)
 then = now
-#formatDailyFolder = "%Y-%m-%d_%H_%M"  #daily folder 
-formatDailyFolder = "%Y-%m-%d"  #create a new folder every hour
+
 dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
 
 def createFolder(folder_name):

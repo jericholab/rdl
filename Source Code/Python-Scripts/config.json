@@ -1,5 +1,8 @@
 {
-  "SITE": "Site2_Floatovoltaics",
+  "SITE": "SiteX_Dummy",
+  "RDL_FILEFORMAT_ACTIVE": "daily",
+  "RDL_FILEFORMAT1": "hourly",
+  "RDL_FILEFORMAT2": "daily",
   "SD_CARD_NAME": "",
   "OTHER_SITE_NAME_0": "Site0_Montreal",
   "OTHER_SITE_NAME_1": "Site1_Greenhouse",
