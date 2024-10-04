@@ -3,6 +3,7 @@ Description=WIRED Infrared CSV
 After = network.target
 [Service]
 ExecStart= sudo -u pi python3 /home/pi/SHELF3/WIRED-logging-Infrared-CSV.py
+WorkingDirectory=/home/pi/SHELF3
 Restart = always
 RestartSec=60
 [Install]
