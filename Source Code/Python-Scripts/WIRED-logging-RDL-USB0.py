@@ -69,7 +69,7 @@ def createFolder(folder_name):
 
 def setUpFolders1():
     level1 = "./logging-folder"
-    level2 = level1 + "/inprogress"
+    level2 = level1 + "/1_inprogress"
     level3 = level2 + "/RDL/"
     folder_name = level3 + DEVICE_NAME
     createFolder(level1)
@@ -80,7 +80,7 @@ def setUpFolders1():
 
 def setUpFolders2():
     level1 = "./logging-folder"
-    level2 = level1 + "/tosync"
+    level2 = level1 + "/2_tosync"
     level3 = level2 + "/RDL/"
     level4 = level3 + DEVICE_NAME
     folder_name = level4 + "/" + dailyFolderNow

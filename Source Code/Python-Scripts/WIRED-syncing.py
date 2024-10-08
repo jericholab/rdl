@@ -19,15 +19,15 @@ with open('config.json', 'r') as config_file:
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
 #configure the logging module
-logging.basicConfig(filename="log_internal.txt", filemode="w", level=logging.DEBUG)
-logging.info("This message will be logged to the file")
+#logging.basicConfig(filename="log_internal.txt", filemode="w", level=logging.DEBUG)
+#logging.info("This message will be logged to the file")
 
 
 print("RDL-python-syncing to Dropbox script...")
 
-source_path = "./logging-folder/tosync/"  #relative path"
-transit_path = "./logging-folder/transit/"  #relative path"
-destination_path = "./logging-folder/synced/"
+source_path = "./logging-folder/2_tosync/"  #relative path"
+transit_path = "./logging-folder/3_transit/"  #relative path"
+destination_path = "./logging-folder/4_synced/"
 #destination_path = "/media/orangepi/SD_CARD1/"
 #destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
      
@@ -41,17 +41,25 @@ def syncToDropbox():
     print("syncToDropbox")
     print("   ")
     from subprocess import call
-    localSide1 = "./logging-folder/transit/RDL"
+    #localSide1 = "./logging-folder/transit/RDL"
+    localSide1 = transit_path + "/RDL"
     cloudSide1 = f"Professional/WIRED/{config['SITE']}"
-    localSide2 = "./logging-folder/transit/cameras"
+    #localSide2 = "./logging-folder/transit/cameras"
+    localSide2 = transit_path + "/cameras"
     cloudSide2 = f"Professional/WIRED/{config['SITE']}"
+    #localSide3 = "./logging-folder/transit/internet"
+    localSide3 = transit_path + "/internet"
+    cloudSide3 = f"Professional/WIRED/{config['SITE']}"
     Upload = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     #Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
     call ([Upload], shell=True)
     #Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     Upload2 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
     call ([Upload2], shell=True)
-    print("move from /transit to backup folder (e.g. SD Card)")
+    Upload3 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide3 +" " + cloudSide3
+    call ([Upload3], shell=True)    
+    
+    print("move from /transit to /synced")
     sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced"
     remove_empty_dirs(transit_path)  #remove any transit folder that became empty
     

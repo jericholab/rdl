@@ -43,7 +43,7 @@ def createFolder(folder_name):
         
 def setUpFolders():
     level1 = "./logging-folder"
-    level2 = level1 + "/tosync"
+    level2 = level1 + "/2_tosync"
     level3 = level2 + "/cameras/"
     level4 = level3 + CAMERA_NAME
     folder_name = level4 + "/" + dailyFolderNow

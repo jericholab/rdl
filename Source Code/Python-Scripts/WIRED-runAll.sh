@@ -28,6 +28,7 @@ sleep 5  # 5sec delay
 
 
 sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-RDL-USB0.py; echo Press enter to exit; read'" &
+sudo -u pi lxterminal --command="bash -c 'python3 WIRED-internetAccess.py; echo Press enter to exit; read'" &
 sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-Reolink1.py; echo Press enter to exit; read'" &
 sudo -u pi lxterminal --command="bash -c 'python3 WIRED-logging-Infrared-CSV.py; echo Press enter to exit; read'" &
 lxterminal --command="bash -c 'python3 WIRED-syncing.py; echo Press enter to exit; read'" &

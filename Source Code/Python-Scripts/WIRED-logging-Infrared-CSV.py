@@ -181,7 +181,7 @@ def setUpFolders():
     dailyFolderNow = datetime.now()
     dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
     level1 = "./logging-folder"
-    level2 = level1 + "/tosync"
+    level2 = level1 + "/2_tosync"
     level3 = level2 + "/cameras/"
     level4 = level3 + CAMERA_NAME
     folder_name = level4 + "/" + dailyFolderNow
@@ -217,7 +217,7 @@ def thermography_plot(csv_filename):
         plt.ylabel('Row Index')
 
         # Define the output directory
-        output_directory = './logging-folder/tosync/cameras/infrared1/'
+        output_directory = './logging-folder/2_tosync/cameras/infrared1/'
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)  # Create the directory if it doesn't exist
 
