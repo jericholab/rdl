@@ -9,7 +9,7 @@ float getVoltFunc(bool readMode){
       if (readMode == 1){       //if the ADS115 is selected, 
 
           ads1115.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV (default)
-          //ads1115.setGain(GAIN_ONE);      // 1x gain   +/- 4.096V  1 bit = 2mV   // GAIN_ONE improves the resolution, but we don't get the full 50A range (0-5V)
+          //ads1115.setGain(GAIN_ONE);      // 1x gain   +/- 4.096V  1 bit = 2mV   // GAIN_ONE improves the resolution, but we don't get the full range (0-5V)
           //ads1115.setGain(GAIN_TWO);      // 2x gain   +/- 2.048V  1 bit = 1mV
           //ads1115.setGain(GAIN_FOUR);     // 4x gain   +/- 1.024V  1 bit = 0.5mV
           //ads1115.setGain(GAIN_EIGHT);    // 8x gain   +/- 0.512V  1 bit = 0.25mV
@@ -25,10 +25,11 @@ float getVoltFunc(bool readMode){
 
       for (i=0; i< NUMSAMPLES; i++){                               // take N samples in a row, with a slight delay
         if (readMode ==0){
-           average += analogRead(VOLT_PIN);                        //read Nano ADC channel
+           average += analogRead(VOLT_PIN);                        //read Nano ADC channel (Remember that Nano ADC saturates at 3.3V (due to permanent AREF=3.3V).
           }
         if (readMode == 1){
         //else{
+
              average += ads1115.readADC_SingleEnded(ADS_V_PIN);              //read channel 1 of ads1115 and add to temporary sum
           }
       }
