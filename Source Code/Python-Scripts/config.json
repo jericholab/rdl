@@ -1,6 +1,7 @@
 {
   "SITE": "SiteX_Dummy",
   "RDL_FILEFORMAT_ACTIVE": "daily",
+  "AUTO_REBOOT_NO_WIFI": "true", 
   "RDL_FILEFORMAT1": "hourly",
   "RDL_FILEFORMAT2": "daily",
   "THERMAL_CAM_INTERVAL_SEC": 1800,

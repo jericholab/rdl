@@ -91,14 +91,41 @@ def get_cpu_temperature():  # Function to read CPU temperature
         temp = float(temp_file.read()) / 1000.0
         return temp
 
+# Initialize the counter for internet disconnections
+disconnection_counter = 0
+reboot_threshold = 48  #Set to 48*15min (12hr) periods without internet access
+
 def log_internet_status():  #main function to verify all status and write to log file
+    global disconnection_counter
+    global reboot_threshold
     #with open('internet_status_log.txt', 'a') as file:
     with open(filename, 'a') as file:
         # Check internet connectivity
         if internet_on():
             status = "Internet_Access, Yes, 1"
+            disconnection_counter = 0  # Reset counter if the internet is on
         else:
             status = "Internet_Access, No, 0"
+            disconnection_counter += 1  # Increment counter if the internet is off
+  #      # Check if the threshold for disconnections has been reached
+  #      if disconnection_counter >= reboot_threshold:
+  #          print("Rebooting due to prolonged internet disconnection.")
+  #          subprocess.run(["sudo", "reboot"])
+        # Check if the threshold for disconnections has been reached
+        if disconnection_counter >= reboot_threshold:
+            # Check the auto_reboot setting before rebooting
+            if config.get("AUTO_REBOOT_NO_WIFI", "false") == "true":
+                print("Rebooting due to prolonged internet disconnection.")
+                file.write(f"Rebooting due to prolonged internet disconnection \n")
+                file.flush()
+                time.sleep(10)  #10sec delay will allow writing to logfile
+                subprocess.run(["sudo", "reboot"])
+            else:
+                print("Auto-reboot is disabled. Internet is down, but the system will not reboot.")
+                file.write(f"Auto-reboot is disabled. Internet is down, but the system will not reboot \n")
+                file.flush()
+
+
         # Get the current time and format it
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # Get the current signal strength
@@ -113,7 +140,7 @@ def log_internet_status():  #main function to verify all status and write to log
         print(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C \n")
 
 # Set the interval for checks (900 seconds = 15 minutes)
-interval = 60 #900
+interval = 900 #900
 
 #main loop
 while True:
@@ -135,4 +162,5 @@ while True:
     
     # Wait for some interval before the next check
     time.sleep(interval)
+
 
