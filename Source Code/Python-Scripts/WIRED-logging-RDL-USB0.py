@@ -2,12 +2,15 @@
 
 #!/usr/bin/env python3
 import serial
-from datetime import datetime
+from datetime import datetime, timedelta
 import schedule
 import time
 import shutil
 import json
 import os  # library to interact with the operating system
+
+#Jam length threshold for reset
+jam_threshold = 15 #minutes
 
 # Load the configuration file
 with open('config.json', 'r') as config_file:
@@ -27,10 +30,6 @@ time.sleep(2)  #test #During initialization of the arduino, the arduino may send
 
 # Clear input buffer  (this is an attempt to avoid the initial gibberish)
 ser.reset_input_buffer()   #method 1
-#ser.flushInput()      #method 2 
-#ser.flushOutput()      #method 2
-#time.sleep(2)
-#ser.write(b'quantity\r')
 ser.write(b'reset\r')
 time.sleep(2)
 
@@ -38,9 +37,8 @@ time.sleep(2)
 now = datetime.now()
 dailyFolderNow = datetime.now()
 
-
-#if (RDL_FILEFORMAT_ACTIVE = hourly, formatExpected ="%Y-%m-%d")
-#if (RDL_FILEFORMAT_ACTIVE = daily, formatExpected ="%Y-%m-%d_%H)
+last_data_time = datetime.now()  # Timer to track the last time data was received    //NEW
+timeout_duration = timedelta(minutes=jam_threshold)  # 1-minute timeout for no data received     //NEW
 
 # if (now != then):
 if (config['RDL_FILEFORMAT_ACTIVE'] == 'hourly'):
@@ -109,22 +107,29 @@ while True:
     file_name= folder_name1 + "/RDL_" + now + "_" + DEVICE_NAME + ".txt"  #where we save the data as it accumulates (include name and extension) (relative path)
     
     with open(file_name, 'a') as file:
-        try:
-            #data = ser.readline().decode()
-            data = ser.readline().decode('ascii')
-        except UnicodeDecodeError:  #handle potential errors
-            data = 'x'   #if data corrupted, substitute with 'x' character
-        #file.write(data)
-        #print(data)
+        if ser.in_waiting > 0:   #this is a new test to avoid blocking call (ser.readline())
+            try:
+                #data = ser.readline().decode()
+                data = ser.readline().decode('ascii')
+                last_data_time = datetime.now()  # Reset timer when data is received   //NEW
+                #print(last_data_time)
+            except UnicodeDecodeError:  #handle potential errors
+                data = 'x'   #if data corrupted, substitute with 'x' character
+            # Get the current timestamp from the PC
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')     
+            # Format the data with the timestamp
+            log_entry = f"{timestamp} {data}"    
+            file.write(log_entry)
+            print(log_entry)
         
-        # Get the current timestamp from the PC
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
-        # Format the data with the timestamp
-        log_entry = f"{timestamp} {data}"
-    
-        file.write(log_entry)
-        print(log_entry)
-        
-    #time.sleep(1) #to avoid super fast looping
+        # Check if the Arduino has not spoken for 1 minutes   //NEW
+        if datetime.now() - last_data_time > timeout_duration:
+            log_entry = f"No data received for {jam_threshold} minutes. Exiting to trigger service restart."    
+            file.write(log_entry)
+            file.flush()
+            print(log_entry)
+            time.sleep(1)
+            break  # Exit the loop to stop the script and let systemd restart it
+
+    time.sleep(0.1) #to avoid super fast looping
     then = now
