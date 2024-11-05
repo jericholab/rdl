@@ -10,7 +10,8 @@ import json
 import os  # library to interact with the operating system
 
 #Jam length threshold for reset
-jam_threshold = 15 #minutes
+jam_threshold = 2 #minutes
+#jam_threshold = 15 #minutes
 
 # Load the configuration file
 with open('config.json', 'r') as config_file:
@@ -22,11 +23,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory 
 
 print("RDL-python-logging...")
 DEVICE_NAME = "USB0"
-ser=serial.Serial('/dev/ttyUSB0', 57600) #change the port and baud rate as needed
-
+#ser=serial.Serial('/dev/ttyUSB0', 57600) #change the port and baud rate as needed
+ser = serial.Serial('/dev/ttyUSB0', 57600, timeout=30)  # X-second timeout /// TEMP TEST
 time.sleep(2)  #test #During initialization of the arduino, the arduino may send random noise.
-
-
 
 # Clear input buffer  (this is an attempt to avoid the initial gibberish)
 ser.reset_input_buffer()   #method 1
@@ -103,18 +102,23 @@ while True:
       destination_path= folder_name2 #update the destination daily folder (after file moved)
       shutil.move(file_name, destination_path) #move file_name to the /sync_folder
 
-
     file_name= folder_name1 + "/RDL_" + now + "_" + DEVICE_NAME + ".txt"  #where we save the data as it accumulates (include name and extension) (relative path)
     
     with open(file_name, 'a') as file:
         if ser.in_waiting > 0:   #this is a new test to avoid blocking call (ser.readline())
+#             log_entry = f"Im in the ser.inwaiting() loop"    
+#             file.write(log_entry)
+#             print(log_entry)
             try:
-                #data = ser.readline().decode()
+#                 log_entry = f"Im in the try loop"    
+#                 file.write(log_entry)
+#                 print(log_entry)
                 data = ser.readline().decode('ascii')
                 last_data_time = datetime.now()  # Reset timer when data is received   //NEW
-                #print(last_data_time)
             except UnicodeDecodeError:  #handle potential errors
                 data = 'x'   #if data corrupted, substitute with 'x' character
+            except serial.SerialTimeoutException:
+                print("Timeout occurred while reading from the serial port.")
             # Get the current timestamp from the PC
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')     
             # Format the data with the timestamp
@@ -124,12 +128,15 @@ while True:
         
         # Check if the Arduino has not spoken for 1 minutes   //NEW
         if datetime.now() - last_data_time > timeout_duration:
-            log_entry = f"{timestamp} No data received for {jam_threshold} minutes. Exiting to trigger service restart."    
+            log_entry = f"No data received for {jam_threshold} minutes. Exiting to trigger service restart."    
             file.write(log_entry)
             file.flush()
             print(log_entry)
             time.sleep(1)
             break  # Exit the loop to stop the script and let systemd restart it
+        
 
-    time.sleep(0.1) #to avoid super fast looping
+            
+    #time.sleep(0.1) #to avoid super fast looping
+    #time.sleep(0.1) #to avoid super fast looping
     then = now
