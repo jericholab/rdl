@@ -12,7 +12,7 @@ void printHeader(){
           String dateText = F("Date");
           Serial.print(dateText);
           spacing2(dateText,12);
-          String timeText = F("Time");
+          String timeText = F("Std_Time");
           Serial.print(timeText);
           spacing2(timeText,12);
         }

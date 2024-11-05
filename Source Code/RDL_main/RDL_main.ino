@@ -24,6 +24,7 @@ bool phDisplay = 0;                     // optional measurement and display of p
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
+bool dstRegion = 1;      // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
 int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {5,6};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
