@@ -20,7 +20,7 @@ bool isDST(DateTime dt) {
   }
   if (month == 11) {
     // DST ends on the first Sunday in November
-    return (day - weekday < 7); // Returns false if it's the first Sunday or earlier
-  }
+    return (day < (8 - weekday)); // Returns false if it's the first Sunday or earlier in November
+    }
   return false; // Fallback just in case
 }

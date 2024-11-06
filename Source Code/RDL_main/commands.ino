@@ -10,6 +10,15 @@ void commands(){
   char text2[]="What new definition do you want ?  (You have 30 seconds)";  
   char text3[]="New definition:   ";
 
+if (str == F("SETTIME\r")){          
+    blink(200,2);
+    delay(1000);                               // after printing out the EEPROM content, wait two seconds before starting measurements again
+    setTime(); //set time on the RTC, based on last compile time
+    Serial.println(F("RTC Time has been readjusted"));
+    delay(1000);
+    resetFunc(); //reset the arduino
+}
+
 if (str == F("RESET\r")){          
     blink(200,2);
     delay(1000);                               // after printing out the EEPROM content, wait two seconds before starting measurements again
@@ -51,7 +60,7 @@ if (str == F("KELVIN\r")){
     if (str == F("HELP\r")){
     Serial.println();
     Serial.println(F("Possible commands:")); 
-    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, I2CSCAN"));
+    Serial.println(F("CELCIUS, FAHRENHEIT, KELVIN, RESET, EEPROM-ERASE, INTERVAL, QTY-T, QTY-V, I2CSCAN, SETTIME"));
     Serial.println();
     delay(2000);
     }        
