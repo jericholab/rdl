@@ -30,6 +30,17 @@ The modifications done by Jericho in the TWI library are small:
 3. Add line for prescaler bit 0 : "TWSR |= bit (TWPS0);"
 4. Add line for prescaler bit 1 : "TWSR |= bit (TWPS1);"
 
+
+EXPLANATIONS
+prescaler = the value set by the TWSR bits (TWPS1TWPS1 and TWPS0TWPS0):
+    00 = prescaler of 1
+    01 = prescaler of 4
+    10 = prescaler of 16
+    11 = prescaler of 64
+Therefore the slow library uses 64 as prescaler.
+f_SCL = f_CPU/ (16 + 2 *TWBR * prescaler)
+f_SCL = 16,000,000/(16 + 2*255*64) = 490Hz (approx 500Hz)
+
 STEP-BY-STEP PROCEDURE (WINDOWS)
 1. Delete the Wire folder located at  C:\Users\newBlue\AppData\Local\Temp\arduino_build_229642\libraries\Wire\
 2. Copy the new version of twi.c and overwrite the file located at C:\Users\newBlue\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\libraries\Wire\src\utility\twi
