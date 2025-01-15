@@ -13,12 +13,14 @@ void currentNAU7802(uint8_t t_channel) {
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float slope = 1662407;        // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
-  int n = 20;                                    // size of the sample to be collected
+  int n = 5;   //20                               // size of the sample to be collected
+  int discarded = 0;                             // number of samples discarded
   int i;                                         // integer for loop iteration
   float raw_value = 0;                           // initialize raw value
   float val_sum = 0;                             // initialize average value
   float volts;                                   // initialize variable
-  float val = -1.00;                             // define a default value.
+  float val_a = -1.00;                           // define a default value.
+  float val_b = -1.00;                           // define a default value.
   float val2 = -1.00;                            // define a default value.
   float offsetTdrift = 0;                        // initialize variable to zero
   float T_comp = 0;                              // initialize variable to zero
@@ -70,12 +72,24 @@ void currentNAU7802(uint8_t t_channel) {
        
     delay(100);
     if (nau_current.available()) {    // Then verify if the sensor has data available
+      //for (i = 0; i < n; i++) {
+      //  val = nau_current.read();
+      //  val_sum = val_sum + val;
+      //}
       for (i = 0; i < n; i++) {
-        val = nau_current.read();
-        val_sum = val_sum + val;
+        val_a = nau_current.read();
+        delay(100);                    // We must space the two readings enough to avoid double bad readings.
+        val_b = nau_current.read();
+       
+        if (abs(val_a-val_b)<10000){
+          val_sum = val_sum + val_a;
+        }
+        else{
+          discarded=+1;         //if we discard a measurement, the sample size is reduced
+        }
       }
     }
-    val_sum = val_sum / float(n); //arithmetic average
+    val_sum = val_sum / float(n - discarded); //arithmetic average
     val2 = (val_sum - offset) / slope; //convert the ADC to volts
     nau_current.enable(false);   ////// TESTING NEW POSITION FOR THIS LINE
   }
@@ -96,8 +110,8 @@ void currentNAU7802(uint8_t t_channel) {
   Serial.print(offsetTdrift, 5);
   spacing1(offsetTdrift, 9);                          //12 spaces - 3 extra decimals (total 5) = 9 spaces
 
-  Serial.print(val, 0); // raw value
-  spacing1(val, 15);
+  Serial.print(val_a, 0); // raw value
+  spacing1(val_a, 15);
   Serial.print(val2, 4); // raw value
   spacing1(val2, 11);                                //12 spaces - 1 extra decimals (total 5) =  11 spaces
 
