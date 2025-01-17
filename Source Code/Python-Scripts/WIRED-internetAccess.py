@@ -66,10 +66,28 @@ def internet_on():  #verify internet access
         # If a connection error occurs, the internet is considered to be off.
         return False
 
+
+def get_rustdesk_id():
+    # Run "sudo rustdesk --get-id" as a subprocess
+    process = subprocess.run(
+        ["sudo", "rustdesk", "--get-id"],
+        capture_output=True,  # Capture stdout/stderr
+        text=True             # Decode to string automatically
+    )
+
+    # Check for errors
+    if process.returncode != 0:
+        print("Error running command:", process.stderr)
+        return None
+    
+    # Return the captured output (removing extra whitespace)
+    return process.stdout.strip()
+
+
 def get_signal_strength():  #verify wifi signal strength
     # Run iwconfig wlan0 and capture the output
     result = subprocess.run(['iwconfig', 'wlan0'], capture_output=True, text=True)
-
+    
     # Extract the signal strength using regex
     match = re.search(r'Signal level=(-\d+ dBm)', result.stdout)
     
@@ -120,6 +138,7 @@ def log_internet_status():  #main function to verify all status and write to log
                 file.flush()
                 time.sleep(10)  #10sec delay will allow writing to logfile
                 subprocess.run(["sudo", "reboot"])
+                
             else:
                 print("Auto-reboot is disabled. Internet is down, but the system will not reboot.")
                 file.write(f"Auto-reboot is disabled. Internet is down, but the system will not reboot \n")
@@ -134,10 +153,12 @@ def log_internet_status():  #main function to verify all status and write to log
         cpu_use = print_cpu_usage()
         # Get the CPU temperature
         cpu_temp=get_cpu_temperature()
+        # Get Rustdesk ID
+        rustdesk_id=get_rustdesk_id()
         # Write the status and time to the log file
-        file.write(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C \n")
+        file.write(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id} \n")
         # Print to terminal window
-        print(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C \n")
+        print(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id} \n")
 
 # Set the interval for checks (900 seconds = 15 minutes)
 interval = 900 #900
@@ -159,7 +180,7 @@ while True:
       then = now
 
     log_internet_status()
-    
+
     # Wait for some interval before the next check
     time.sleep(interval)
 
