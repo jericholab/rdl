@@ -11,6 +11,8 @@ import shutil
 import schedule
 import os  # library to interact with the operating system
 
+disk_threshold = 95  #maximum disk usage (%) before shutting down the logging activities
+
 # Load the configuration file
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
@@ -84,6 +86,41 @@ def get_rustdesk_id():
     return process.stdout.strip()
 
 
+def get_disk_usage(file):
+    # Run df command on the specified partition
+    process = subprocess.run(["df", "-h", "/"],
+                             capture_output=True, text=True)
+    # Capture stdout
+    output = process.stdout.strip()
+    # Split into lines
+    lines = output.split("\n")
+    
+    # lines[0] should be the header, lines[1] the actual data
+    if len(lines) < 2:
+        raise ValueError("Unexpected df output: missing partition info.")
+    
+    # Split the second line (data line) by whitespace
+    columns = lines[1].split()
+    
+    # The "Use%" value is typically the 5th column in df -h output
+    # e.g., /dev/mmcblk0p2   27G   12G   14G  48%   /
+    usage_str = columns[4]  # "48%"
+
+    usage_value = int(usage_str.rstrip("%"))
+
+    # Check if the threshold for excesssive disk usage has been reached
+    if usage_value >= disk_threshold:
+        process = subprocess.run(
+        ["./daemons-wired/wired-disable-stop-all-daemons.sh"],
+        )
+        print("Disk usage threshold exceeded. Disabling all daemons.\n")
+        file.write(f"Disk usage threshold exceeded. Disabling all daemons. \n")
+        file.flush()
+        time.sleep(10)  #10sec delay will allow writing to logfile
+    
+
+    return usage_value
+
 def get_signal_strength():  #verify wifi signal strength
     # Run iwconfig wlan0 and capture the output
     result = subprocess.run(['iwconfig', 'wlan0'], capture_output=True, text=True)
@@ -155,10 +192,12 @@ def log_internet_status():  #main function to verify all status and write to log
         cpu_temp=get_cpu_temperature()
         # Get Rustdesk ID
         rustdesk_id=get_rustdesk_id()
+        # Get percentage of disk usage
+        disk_use=get_disk_usage(file)
         # Write the status and time to the log file
-        file.write(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id} \n")
+        file.write(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id}, Disk_usage_%, {disk_use} \n")
         # Print to terminal window
-        print(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id} \n")
+        print(f"{current_time} , {config['SITE']} , {status} , Signal_strength, {signal_strength}, CPU_Usage, {cpu_use}% , CPU_Temp, {cpu_temp}, C, RustDesk ID, {rustdesk_id}, Disk_usage_%, {disk_use} \n")
 
 # Set the interval for checks (900 seconds = 15 minutes)
 interval = 900 #900
