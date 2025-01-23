@@ -13,7 +13,7 @@ void currentNAU7802(uint8_t t_channel) {
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float slope = 1662407;        // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
-  int n = 3;   //20                               // size of the sample to be collected
+  int n = 2;   //20                               // size of the sample to be collected
   int discarded = 0;                             // number of samples discarded
   int i;                                         // integer for loop iteration
   float raw_value = 0;                           // initialize raw value
@@ -28,7 +28,6 @@ void currentNAU7802(uint8_t t_channel) {
 
   if (current_initiated < 1) {
     if (!nau_current.beginCurrent()) {                     // //The beginCurrent() statement contains instance creation. It is a modified copy of begin().
-       //Serial.print("Failed to find sensor   ");
        Serial.print("N/A");
        delay(1000);
     }
@@ -64,7 +63,7 @@ void currentNAU7802(uint8_t t_channel) {
               nau_current.setLDO(NAU7802_EXTERNAL);
               //delay(100);
               nau_current.calibrate(NAU7802_CALMOD_INTERNAL);    //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
-              delay(1000);
+              delay(500);  //1000
     
     //nau_current.enable(false); 
     //nau_current.enable(true); 
