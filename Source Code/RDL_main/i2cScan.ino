@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-// FONCTION NAME: i2cScan
+// FONCTION NAME: i2cScan // tca_select // tca_init
 // PURPOSE: Scan all I2C ports to detect all the I2C devices (permanently connected to the i2c bus or multiplexed).
 // INPUT: none
 // OUTPUT: none

@@ -13,7 +13,7 @@ void currentNAU7802(uint8_t t_channel) {
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float slope = 1662407;        // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
-  int n = 5;   //20                               // size of the sample to be collected
+  int n = 3;   //20                               // size of the sample to be collected
   int discarded = 0;                             // number of samples discarded
   int i;                                         // integer for loop iteration
   float raw_value = 0;                           // initialize raw value
@@ -55,14 +55,14 @@ void currentNAU7802(uint8_t t_channel) {
   //Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   //delay(100);
 
-
-
   if (current_present == 1) {
     nau_current.enable(true);
     nau_current.enableCurrent2();   //////new test where enableCurrent2 is a copy of currentBegin() without the instantiation.
 
               nau_current.setRate(NAU7802_RATE_10SPS);   //I must eventually test if these function calls return true (1) ......................................
+              //delay(100);
               nau_current.setLDO(NAU7802_EXTERNAL);
+              //delay(100);
               nau_current.calibrate(NAU7802_CALMOD_INTERNAL);    //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
               delay(1000);
     
@@ -81,7 +81,7 @@ void currentNAU7802(uint8_t t_channel) {
         delay(100);                    // We must space the two readings enough to avoid double bad readings.
         val_b = nau_current.read();
        
-        if (abs(val_a-val_b)<10000){
+        if (abs(val_a-val_b)<5000){    //threshold for value rejection is 5000 ADC.
           val_sum = val_sum + val_a;
         }
         else{
