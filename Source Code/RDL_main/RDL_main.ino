@@ -175,6 +175,9 @@ void setup(void) {
         Serial.print(F(__DATE__));
         Serial.print(F("  "));
         Serial.println(F(__TIME__));
+        Serial.print(F("I2C Bus: "));
+        Serial.print(getI2Cfreq());
+        Serial.println(F(" Hz"));
         startMessage();    // print informations after startup 
     }
 
