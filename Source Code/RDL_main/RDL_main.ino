@@ -402,7 +402,7 @@ if (timePassed >= readInterval)                     // if enough time has passed
       controlFunc();
     }
     
-    Serial.println();          //new line for the next measurements
+
 }
 
 if ((periodicHeader ==1)&&(timePassedHeader >= headerInterval)){                 // if enough time has passed, printHeader
@@ -418,6 +418,7 @@ timePassedHeader=millis()-time2;                  // time elapsed since last hea
   // Check if a timeout has occurred during any read/write operation
   if (Wire.getWireTimeoutFlag()) {
     Serial.print("   Wire timeout occurred.");
+    //Serial.println();
     // Clear the timeout flag so future transmissions aren’t marked as timed out
     Wire.clearWireTimeoutFlag();
     //Serial.print("Timeout flag cleared. Attempting next operation...");
@@ -425,6 +426,8 @@ timePassedHeader=millis()-time2;                  // time elapsed since last hea
     //Serial.print("No Wire timeout flag detected.");
   }
 
+    Serial.println();          //new line for the next measurements
+    
 }  //end of main loop()
 
 
