@@ -25,7 +25,7 @@ bool ControlSignal = 0;                 // optional activation of the signal con
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 bool dstRegion = 1;                     // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
-int i2cChannels_sht40[] = {2};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {5};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {5};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int i2cChannels_current[] = {5};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
@@ -134,7 +134,8 @@ void setup(void) {
     Serial.println();                           //create space after reset of the Arduino                     
 
 // Close I2C MUX channels and reset the Wire library (I2C bus)
-    //Wire.end();    //test to see if this function exists in my verison of the library
+    Wire.begin();    //test to see if this function exists in my verison of the library
+    Wire.setWireTimeout(2000000 /* us */, true /* reset_on_timeout */);  //Activate the timeout (microseconds) on the I2C bus, with hardware reset when timeout flagged.
     //delay(1000);  // test
 
 //    
@@ -164,8 +165,8 @@ void setup(void) {
 //    }
 //    delay(2000);                  // Provide time to let sensor discharge to make sure comms are stopped
 //    Wire.begin();                 // Initialization of the wire library and thus, the i2c bus
-//    tca_init();               
-    
+
+    tca_init();               
     readEEPROM();                               //call function to read the EEPROM memory to see if there are some parameters stored
     
     if (headerDisplay == 1){          
@@ -414,7 +415,15 @@ watchSerial(); //  Watching for incoming commands from the serial port
 timePassed=millis()-time1;                  // time elapsed since last read cycle (serial monitor)
 timePassedHeader=millis()-time2;                  // time elapsed since last header printing
 
-
+  // Check if a timeout has occurred during any read/write operation
+  if (Wire.getWireTimeoutFlag()) {
+    Serial.print("   Wire timeout occurred.");
+    // Clear the timeout flag so future transmissions aren’t marked as timed out
+    Wire.clearWireTimeoutFlag();
+    //Serial.print("Timeout flag cleared. Attempting next operation...");
+  } else {
+    //Serial.print("No Wire timeout flag detected.");
+  }
 
 }  //end of main loop()
 
