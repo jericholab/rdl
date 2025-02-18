@@ -1,12 +1,24 @@
 {
   "SITE": "SiteX_Dummy",
   "RDL_FILEFORMAT_ACTIVE": "daily",
+  "DESTINATION_EMAILS":["frederic@jericholab.com"],
   "AUTO_REBOOT_NO_WIFI": "true", 
   "RDL_FILEFORMAT1": "hourly",
   "RDL_FILEFORMAT2": "daily",
   "THERMAL_CAM_INTERVAL_SEC": 1800,
   "SD_CARD_NAME": "",
+  "OTHER_SITE_NAME_X": "SiteX_Dummy",
   "OTHER_SITE_NAME_0": "Site0_Montreal",
   "OTHER_SITE_NAME_1": "Site1_Greenhouse",
   "OTHER_SITE_NAME_2": "Site2_Floatovoltaics"
+  "OTHER_SITE_NAME_3": "Site3_Bifacial"
+  "OTHER_SITE_NAME_4": "Site4_Wood"
+  "OTHER_SITE_NAME_5": "Site5_WireRacking"
+  "OTHER_SITE_NAME_6": "Site6_WedgeRacking"
+  "OTHER_SITE_NAME_7": "Site7_Concentration"
+  "OTHER_SITE_NAME_8": "Site8_SmallPondsFPV"
+  "OTHER_SITE_NAME_9": "Site9_Greenhouse_Groot"
+  "OTHER_SITE_NAME_10": "Site10_Supp"
+  "OTHER_SITE_NAME_11": "Site11_Building"
+  "OTHER_SITE_NAME_12": "Site12_Fence"
 }
