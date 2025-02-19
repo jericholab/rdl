@@ -1,0 +1,17 @@
+[Unit]
+Description=WIRED SendGrid Orchestrator Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/SHELF3
+# Use the python interpreter from your virtual environment.
+ExecStart=/home/pi/SHELF3/sendgrid/myenv/bin/python /home/pi/SHELF3/sendgrid_orchestrator.py
+# Optionally, if you want systemd to load environment variables from your sendgrid-key.env:
+EnvironmentFile=/home/pi/SHELF3/sendgrid-key.env
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

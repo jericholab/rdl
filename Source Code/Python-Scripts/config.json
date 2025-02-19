@@ -1,8 +1,8 @@
 {
   "SITE": "SiteX_Dummy",
-  "RDL_FILEFORMAT_ACTIVE": "daily",
-  "DESTINATION_EMAILS":["frederic@jericholab.com"],
+  "DESTINATION_EMAILS":["info@jericholab.com"],
   "AUTO_REBOOT_NO_WIFI": "true", 
+  "RDL_FILEFORMAT_ACTIVE": "daily",
   "RDL_FILEFORMAT1": "hourly",
   "RDL_FILEFORMAT2": "daily",
   "THERMAL_CAM_INTERVAL_SEC": 1800,
