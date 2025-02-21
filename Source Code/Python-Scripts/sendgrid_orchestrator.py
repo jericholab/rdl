@@ -61,5 +61,5 @@ if __name__ == '__main__':
     # Run the task every hour on the XXth minute.
     #run_hourly_at(00)
     # Run the task once a week at specified day (Monday is day 0) and time
-    run_weekly_at(target_weekday=1, target_hour=18, target_minute=5)
+    run_weekly_at(target_weekday=0, target_hour=9, target_minute=0)
     
