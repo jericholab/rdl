@@ -75,12 +75,33 @@ def sendemail(latest_files):
     txt1_path = latest_files['.txt']
 
     # Create inline attachments with unique CIDs
-    attachment1 = create_inline_attachment(image1_path, 'image1')
-    attachment2 = create_inline_attachment(image2_path, 'image2')
+    
+    if image1_path:
+        attachment1 = create_inline_attachment(image1_path, 'image1')
+    else:
+        print("No image found; skipping image attachment.")
+        attachment1 = None
+    
+    #attachment1 = create_inline_attachment(image1_path, 'image1')
+       
+    if image2_path:
+        attachment2 = create_inline_attachment(image2_path, 'image2')
+    else:
+        print("No image found; skipping image attachment.")
+        attachment2 = None
+        
+    #attachment2 = create_inline_attachment(image2_path, 'image2')
 
     # Create an attachment for the text file.
-    txt_attachment = create_attachment(txt1_path, 'text/plain')
+    if txt1_path:
+        txt_attachment = create_attachment(txt1_path, 'text/plain')
+    else:
+        print("No text found; skipping text attachment.")
+        txt_attachment = None
     
+    #txt_attachment = create_attachment(txt1_path, 'text/plain')
+    
+
     #Create text sample
     if txt1_path:
         text_content = get_file_excerpt_html(txt1_path, n=10)
@@ -126,12 +147,20 @@ def sendemail(latest_files):
             </html>
         """
     )
+# 
+#     # Add image attachments to the message.
+#     message.add_attachment(attachment1)
+#     message.add_attachment(attachment2)
+#     # Add the text file attachment to the message.
+#     message.add_attachment(txt_attachment)
 
-    # Add image attachments to the message.
-    message.add_attachment(attachment1)
-    message.add_attachment(attachment2)
-    # Add the text file attachment to the message.
-    message.add_attachment(txt_attachment)
+    if attachment1 is not None:
+        message.add_attachment(attachment1)
+    if attachment2 is not None:
+        message.add_attachment(attachment2)
+    if txt_attachment is not None:
+        message.add_attachment(txt_attachment)
+
 
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
