@@ -17,7 +17,6 @@ bool strain_init() {
       //nau.getReading();                                 //take 10 readings to flush out readings  // Applies to Sparkfun library only
       nau_ada.read();
     }
-  
     void calculateZeroOffset(uint8_t averageAmount = 8);    //tare function
     Serial.print(F("NAU7802 calibration done. "));
   

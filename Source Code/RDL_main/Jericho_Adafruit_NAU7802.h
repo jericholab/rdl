@@ -1,6 +1,6 @@
 /**************************************************************************/
 /**
-  @file     Adafruit_NAU7802.h
+  @file     Jericho_Adafruit_NAU7802.h
 
   Author: Limor Fried (Adafruit Industries)
   License: BSD (see license.txt)
@@ -11,6 +11,8 @@
   Adafruit invests time and resources providing this open source code,
   please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
+
+  Modified by Jericho
 
 */
 /**************************************************************************/
@@ -77,26 +79,26 @@ typedef enum _calib_mode {
 */
 /**************************************************************************/
 class Adafruit_NAU7802 {
-public:
-  Adafruit_NAU7802();
-  bool begin(TwoWire *theWire = &Wire);
-  bool beginCurrent(TwoWire *theWire = &Wire);
-  bool reset(void);
-  bool enable(bool flag);
-  bool enableCurrent(bool flag);
-  bool enableCurrent2(TwoWire *theWire = &Wire);
-  bool available(void);
-  int32_t read(void);
+  public:
+    Adafruit_NAU7802();
+    bool begin(TwoWire *theWire = &Wire);
+    bool beginCurrent(TwoWire *theWire = &Wire);
+    bool reset(void);
+    bool enable(bool flag);
+    bool enableCurrent(bool flag);
+    bool enableCurrent2(TwoWire *theWire = &Wire);
+    bool available(void);
+    int32_t read(void);
 
-  bool setLDO(NAU7802_LDOVoltage voltage);
-  NAU7802_LDOVoltage getLDO(void);
-  bool setGain(NAU7802_Gain gain);
-  NAU7802_Gain getGain(void);
-  bool setRate(NAU7802_SampleRate gain);
-  NAU7802_SampleRate getRate(void);
-  bool calibrate(NAU7802_Calibration mode);
+    bool setLDO(NAU7802_LDOVoltage voltage);
+    NAU7802_LDOVoltage getLDO(void);
+    bool setGain(NAU7802_Gain gain);
+    NAU7802_Gain getGain(void);
+    bool setRate(NAU7802_SampleRate gain);
+    NAU7802_SampleRate getRate(void);
+    bool calibrate(NAU7802_Calibration mode);
 
-private:
-  Adafruit_I2CRegister *_pu_ctrl_reg = NULL;
-  Adafruit_I2CDevice *i2c_dev = NULL;
+  private:
+    Adafruit_I2CRegister *_pu_ctrl_reg = NULL;
+    Adafruit_I2CDevice *i2c_dev = NULL;
 };

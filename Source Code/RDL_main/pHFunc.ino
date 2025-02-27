@@ -4,9 +4,9 @@
 // INPUT: none
 // OUTPUT: none
 
-void phFunc(){
+void phFunc() {
 
-  #define address 99               //default I2C ID number for EZO pH Circuit.
+#define address 99               //default I2C ID number for EZO pH Circuit.
   char computerdata[20];           //we make a 20 byte character array to hold incoming data from a pc/mac/other.
   byte received_from_computer = 0; //we need to know how many characters have been received.
   byte serial_event = 0;           //a flag to signal when data has been received from the pc/mac/other.
@@ -17,14 +17,11 @@ void phFunc(){
   int time_ = 815;                 //used to change the delay needed depending on the command sent to the EZO Class pH Circuit. 815 ms are required for reading or calib commands.
   float ph_float;                  //float var used to hold the float value of the pH.
 
-
   strcpy(computerdata, "r");                   // 'r' is the command expected by the Atlas MCU for reading pH
-  serial_event = true;  
+  serial_event = true;
   delay(500);
 
-  
   Wire.beginTransmission(address);                                              //call the circuit by its ID number.
-  //Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   Wire.write(computerdata);                                                     //transmit the command that was sent through the serial port.
   Wire.endTransmission();                                                       //end the I2C data transmission.
 
@@ -43,11 +40,10 @@ void phFunc(){
     }
   }
 
-  ph_float=atof(ph_data);                 // take the pH value and convert it into floating point number.
+  ph_float = atof(ph_data);               // take the pH value and convert it into floating point number.
 
   Serial.print(F("*"));
-  spacing2(F("*"),12); 
-  Serial.print(ph_float,3);             //print the data.
-  spacing1(ph_float,11);
-
+  spacing2(F("*"), 12);
+  Serial.print(ph_float, 3);            //print the data.
+  spacing1(ph_float, 11);
 }

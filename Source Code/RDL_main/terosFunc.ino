@@ -11,9 +11,7 @@ void terosFunc(uint8_t channel){
   setMultiplexer(channel);                       // select the multiplexer channel
   pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
   pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
-  delay(500);  //TEMPORARY COMMENT TO MAKE LONG MEASUREMENT VIA MULTIMETER
-  //delay (5000);  //TEMPORARY COMMENT TO MAKE LONG MEASUREMENT VIA MULTIMETER
-  
+  delay(500); 
   bool readMode = 1;
   float sensorValue = getVoltFunc(readMode);           // read the voltage while assuming a 5000mV voltage reference
   float voltage1 = sensorValue * 1000;                 // conversion to millivolts to make it usable by the VWC eq.
@@ -30,7 +28,6 @@ void terosFunc(uint8_t channel){
   pcf2.digitalWrite(channel, LOW);  //turn LED off by turning off sinking transistor
 
   //WATER TENSION CALCULATION
-  
   float teta = VWC;           // Transfer TEROS value to phi
   float phi_result = calculatePhi(teta);  // calculate the water tension (phi) in Pascals.
   Serial.print (phi_result,1);  //mVolts
@@ -38,7 +35,6 @@ void terosFunc(uint8_t channel){
   }
 
   ///// WATER TENSION FUNCTION TETA (VAN GENUCHTEN EQUATION)
-
   float calculatePhi(float teta) {
       if (teta <0){
         teta = 0.001;            // Negative and zero values must be avoided
@@ -48,7 +44,6 @@ void terosFunc(uint8_t channel){
       const float teta_s = 0.396;      // Saturated water content (soil dependent value, dummy value for example)
       const float alpha = 0.00423;     // Empirical parameter  (soil dependent value, dummy value for example)
       const float n = 2.06;            // Empirical parameter  (soil dependent value, dummy value for example)
-
       float m = (1 - (1 / n));          //unsure of the reference. there are multiple versions of m for the von gnuchten equation.
       float term1 = pow(teta_s / teta, (1 / m));
       float term2 = pow(term1 - 1, (1 / n));

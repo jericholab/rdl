@@ -26,23 +26,4 @@ void runRTC(){
    char buf2[] = "hh:mm:ss"; 
    Serial.print(now.toString(buf2));
    spacing2(buf2,12);
-
-//Alternative ways of printing RTC data:
-//    DateTime now = rtc.now();
-//
-//    Serial.print(now.timestamp(DateTime::TIMESTAMP_FULL));
-//    
-//    Serial.print(now.year(), DEC);
-//    Serial.print(F("/"));
-//    Serial.print(now.month(), DEC);
-//    Serial.print(F("/"));
-//    Serial.print(now.day(), DEC);
-//    //Serial.print(";");          //add one semi-colon for csv purposes
-//    Serial.print(F("  "));
-//    Serial.print(now.hour(), DEC);
-//    Serial.print(F(":"));
-//    Serial.print(now.minute(), DEC);
-//    Serial.print(F(":"));
-//    Serial.print(now.second(), DEC);
-
   }

@@ -4,7 +4,6 @@
 // INPUT: none
 // OUTPUT: none
 
-
 uint32_t getI2Cfreq() {
   // Read the prescaler bits from TWSR
   uint8_t prescalerBits = (TWSR & 0x03);  // TWPS1:0

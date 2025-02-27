@@ -28,8 +28,8 @@ void currentNAU7802(uint8_t t_channel) {
 
   if (current_initiated < 1) {
     if (!nau_current.beginCurrent()) {                     // //The beginCurrent() statement contains instance creation. It is a modified copy of begin().
-       Serial.print("N/A");
-       delay(1000);
+      Serial.print("N/A");
+      delay(1000);
     }
     else {    //if begin() doesn't fail then the sensor is considered present
       //Serial.print("BeginCurrent() ran    ");
@@ -38,18 +38,18 @@ void currentNAU7802(uint8_t t_channel) {
     }
   }
 
-  //******* THE CONDITION BELOW IS WEAK. What if we have two active sensors and one unplugged? 
-  // We would then launch begin() twice on the same sensor and later try to enable() a second sensor - who's just been hotplugged - without any instantiation. 
+  //******* THE CONDITION BELOW IS WEAK. What if we have two active sensors and one unplugged?
+  // We would then launch begin() twice on the same sensor and later try to enable() a second sensor - who's just been hotplugged - without any instantiation.
   // This kind of behavior can only be temporary.
-//  if (current_initiated >= 1){   // TEST. Maybe if at least one sensor has been initiated, we don't need to initiate them at the next loop    
-//    //if (current_initiated >= qty_current){   //if all sensors have been initiated once, we don't need to initiate them at the next loop    
-//      Serial.print(current_initiated);
-//      Serial.print("  ");
-//      Serial.print(qty_current);
-//      Serial.print("  ");
-//
-//      //nau_current.enableCurrent(true);   //contains beginCurrent() except the instantiation  
-//    }
+  //  if (current_initiated >= 1){   // TEST. Maybe if at least one sensor has been initiated, we don't need to initiate them at the next loop
+  //    //if (current_initiated >= qty_current){   //if all sensors have been initiated once, we don't need to initiate them at the next loop
+  //      Serial.print(current_initiated);
+  //      Serial.print("  ");
+  //      Serial.print(qty_current);
+  //      Serial.print("  ");
+  //
+  //      //nau_current.enableCurrent(true);   //contains beginCurrent() except the instantiation
+  //    }
 
   //Wire.setClock(clockSpeed);                         // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   //delay(100);
@@ -58,17 +58,17 @@ void currentNAU7802(uint8_t t_channel) {
     nau_current.enable(true);
     nau_current.enableCurrent2();   //////new test where enableCurrent2 is a copy of currentBegin() without the instantiation.
 
-              nau_current.setRate(NAU7802_RATE_10SPS);   //I must eventually test if these function calls return true (1) ......................................
-              //delay(100);
-              nau_current.setLDO(NAU7802_EXTERNAL);
-              //delay(100);
-              nau_current.calibrate(NAU7802_CALMOD_INTERNAL);    //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
-              delay(500);  //1000
-    
-    //nau_current.enable(false); 
-    //nau_current.enable(true); 
+    nau_current.setRate(NAU7802_RATE_10SPS);   //I must eventually test if these function calls return true (1) ......................................
+    //delay(100);
+    nau_current.setLDO(NAU7802_EXTERNAL);
+    //delay(100);
+    nau_current.calibrate(NAU7802_CALMOD_INTERNAL);    //Re-cal analog front end when we change gain, sample rate, or NAU7802 channel (Recalibration must be done after changes to register)
+    delay(500);  //1000
+
+    //nau_current.enable(false);
+    //nau_current.enable(true);
     //nau_current.enableCurrent(true);         // Prescribe the sensor to power up.
-       
+
     delay(100);
     if (nau_current.available()) {    // Then verify if the sensor has data available
       //for (i = 0; i < n; i++) {
@@ -79,12 +79,12 @@ void currentNAU7802(uint8_t t_channel) {
         val_a = nau_current.read();
         delay(100);                    // We must space the two readings enough to avoid double bad readings.
         val_b = nau_current.read();
-       
-        if (abs(val_a-val_b)<5000){    //threshold for value rejection is 5000 ADC.
+
+        if (abs(val_a - val_b) < 5000) { //threshold for value rejection is 5000 ADC.
           val_sum = val_sum + val_a;
         }
-        else{
-          discarded=+1;         //if we discard a measurement, the sample size is reduced
+        else {
+          discarded = +1;       //if we discard a measurement, the sample size is reduced
         }
       }
     }
@@ -92,7 +92,7 @@ void currentNAU7802(uint8_t t_channel) {
     val2 = (val_sum - offset) / slope; //convert the ADC to volts
     nau_current.enable(false);   ////// TESTING NEW POSITION FOR THIS LINE
   }
-  
+
   //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the absent is absent, this line should not run.
   Serial.print(F("*"));
   spacing2(F("*"), 12);
@@ -124,5 +124,5 @@ void currentNAU7802(uint8_t t_channel) {
   //    Watchdog.disable();                             // If the code executed completely, we can disable the watchdog until the next call to the function.
 
 
-    
+
 }

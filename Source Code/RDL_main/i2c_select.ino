@@ -6,21 +6,10 @@
 
 void i2c_select(uint8_t i) {    //define a small function to select the i2c multiplexer channel
   if (i > 7) return;           //ensure that the selected channel value is between 0 and 7 (8 channel i2c mux)
-
-
-//  Wire.beginTransmission(TCAADDR);
-//  Wire.write(1 << i);    // Bitwise left shift operation    
-//  Wire.endTransmission();                                   
-
   tcaselect(i);
-//  Wire.beginTransmission(addr);
-//  //Wire.setClock(clockSpeed); 
+}
 
-//  pcf3.digitalWrite(i, HIGH); // turn LED off by turning off sinking transistor
-//  pcf4.digitalWrite(i, LOW); // turn LED off by turning off sinking transistor
-}  
-
-//Arduino.cc Reference: There are both 7 and 8-bit versions of I2C addresses. 7 bits identify the device, and the eighth bit determines
-//if it’s being written to or read from. The Wire library uses 7 bit addresses throughout.
-//If you have a datasheet or sample code that uses 8-bit address, you’ll want to drop the low bit 
+// Arduino.cc Reference: There are both 7 and 8-bit versions of I2C addresses. 7 bits identify the device, and the eighth bit determines
+// if it’s being written to or read from. The Wire library uses 7 bit addresses throughout.
+// If you have a datasheet or sample code that uses 8-bit address, you’ll want to drop the low bit
 //(i.e. shift the value one bit to the right), yielding an address between 0 and 127."

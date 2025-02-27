@@ -14,15 +14,12 @@ void strainFunc() {
   if (strain_initiated<qty_strain){
     if (!nau_ada.begin()) {       //The begin() statement contains instance creation.
       //Serial.print("Failed to find NAU7802");
-      //delay(1000);
     }
     else{ 
-
       strain_present=1;   // the sensor is considered present
       strain_initiated++;   //increment by one the number of strain sensors having been initiated
     } 
   }
-  //Wire.setClock(clockSpeed);              // clockSpeed must be prescribed after library begins because it overrides the parameter by reinitializing the Wire library.
   if(strain_present == 1){                // If sensor found 
         nau_ada.enable(true);             // Prescribe the sensor to power up.
             // Take 10 readings to flush out readings
@@ -40,11 +37,7 @@ void strainFunc() {
         spacing1(force,12); 
         nau_ada.enable(false);   // power off the sensor before cutting power, so we are able to power up at the next measurement
   }
-  else{
-//      Serial.println("Code got here(ELSE)");
-//      delay(1000);
-
-      
+  else{    
       Serial.print(F("*"));
       spacing2(F("*"),12); 
       Serial.print(F("0.00"));                               //print the temperature
