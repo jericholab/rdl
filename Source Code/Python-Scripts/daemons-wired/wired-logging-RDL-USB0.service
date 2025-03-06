@@ -1,6 +1,6 @@
 [Unit]
 Description=WIRED RDL USB0
-#After = network.target
+After = network.target
 [Service]
 ExecStart= sudo -u pi python3 /home/pi/SHELF3/WIRED-logging-RDL-USB0.py
 WorkingDirectory=/home/pi/SHELF3
