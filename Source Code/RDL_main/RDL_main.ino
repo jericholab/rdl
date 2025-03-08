@@ -52,6 +52,9 @@ int channels_teros[] = {0};           // define array to store the list of analo
 #include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
 
 //OTHER INITIALIZATIONS
+
+long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
+long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
 unsigned long time1 = 0;               // initialize variable to control read cycles
 unsigned long time2 = 0;               // initialize variable to control header print cycles
 uint8_t numberC = 8;                    // default number of active thermistor channels. Must be an integer between 1 and 8.
@@ -60,8 +63,7 @@ bool sensors_present = 0;               // we initialize this variable with 0. I
 uint8_t numberC10 = numberC;            // (ms) Temporary storage variable for quantity of thermistor channels used
 uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for quantity of voltage channels used
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
-long readInterval = 1000;              // (ms) Default interval at which temperature is measured, then stored in volatile memory SRAM and sent to PC [1000 ms = 1s, 86400000 ms = 1 day]
-long readInterval0 = 2000;             // (ms) Temporary storage variable for read interval
+
 Adafruit_NAU7802 nau_ada;                // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
 //NAU7802 nau_current;                   //Create instance of the NAU7802 class (Sparkfun library)
 Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
@@ -76,7 +78,7 @@ bool strain_present = 0;                 // initialize the variable that will in
 bool current_present = 0;                  // initialize the variable that will indicate if a current sensor is present
 uint8_t strain_initiated = 0;             //initialize the variable that counts the number of strain sensors having been initiated with begin()
 uint8_t current_initiated = 0;             //initialize the variable that counts the number of current sensors having been initiated with begin()
-long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
+//long clockSpeed = 31000;               // value for slow speed i2c bus clock (Hz). RDL default is 100Hz. Industry standard Default is 100,000Hz.
 bool SHT40_heatPulse = 0;              // initialize the variable that holds the desired state for SHT heater. (Turns to '1' when heat is required)
 #define Bsize round(WriteInterval/ReadInterval) // size of buffer array required to average temperatures
 #define TCAADDR 0x70                   // TCA ADDRESS, used by i2c_select()   ??? If there is more than one TCA9548 on the bus, wouldn't it create a conflict????
@@ -106,7 +108,11 @@ struct STRUCT1 {
   float o;
   float t;
 };     // define a new structure class called 'STRUCT1 that will enable the thermistor function
-unsigned long timePassed = readInterval; // initialize variable to keep track of time passed between each measurement. initializing at readInterval to force a first reading in loop()
+
+
+
+unsigned long timePassed = 0;            // initialize variable to keep track of time passed between each measurement.
+bool flag1 = 1;                          // define a boolean that forces a measurement independently of time elapse
 unsigned long timePassedHeader;          // initialize variable to keep track of time passed between each measurement
 void(* resetFunc) (void) = 0;            // define a reset function for the arduino micro-controller
 bool strainDevice;                       // define a boolean that indicates the presence of a strain device
@@ -221,9 +227,11 @@ void setup(void) {
 ///// MAIN LOOP //////////
 
 void loop(void) {
-
-  if (timePassed >= readInterval)                     // if enough time has passed, read the sensors
+    
+  if (flag1 || timePassed >= readInterval)          // if flag is true or enough time has passed, read the sensors
+ 
   {
+    flag1 = 0;                                      // reset flag
     Serial.println();                               // new line of measurement
     time1 = millis();                               // each time a reading is taken, time1 is reset
     readCycle2 = readCycle2 + 1;                    // increment the read cycle number at each turn
@@ -388,7 +396,6 @@ void loop(void) {
   // Check if a timeout has occurred during any read/write operation
   if (Wire.getWireTimeoutFlag()) {
     Serial.print("   Wire timeout occurred.");
-    //Serial.println();
     // Clear the timeout flag so future transmissions aren’t marked as timed out
     Wire.clearWireTimeoutFlag();
     //Serial.print("Timeout flag cleared. Attempting next operation...");

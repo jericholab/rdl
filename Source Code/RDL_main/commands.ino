@@ -12,7 +12,7 @@ void commands() {
 
   if (str == F("SETTIME\r")) {
     blink(200, 2);
-    delay(1000);                               // after printing out the EEPROM content, wait two seconds before starting measurements again
+    delay(1000);         // after printing out the EEPROM content, wait two seconds before starting measurements again
     setTime(); //set time on the RTC, based on last compile time
     Serial.println(F("RTC Time has been readjusted"));
     delay(1000);
@@ -95,6 +95,7 @@ void commands() {
     Serial.println(F(" ms"));
     Serial.println();
     printHeader();
+    flag1 = 1;     // set the flag boolean to 1 in order to force a reading right after setting interval
   }
 
   if (str == F("QTY-T\r")) { //if word "quantity" is received, enter a while loop until user sends desired quantity of probes.
