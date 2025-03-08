@@ -11,15 +11,15 @@
 ////////// USER PARAMETERS ////////////
 
 bool headerDisplay = 1;                 // optional display of headerprint (1 = yes, 0 = no)
-bool timeDisplay = 0;                   // optional display of timestamp (1 = yes, 0 = no)
+bool timeDisplay = 1;                   // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay = 1;                     // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay = 1;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
-bool voltDisplay = 1;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
-bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
-bool strainDisplay = 1;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
+bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
+bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
+bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
@@ -224,6 +224,7 @@ void loop(void) {
 
   if (timePassed >= readInterval)                     // if enough time has passed, read the sensors
   {
+    Serial.println();                               // new line of measurement
     time1 = millis();                               // each time a reading is taken, time1 is reset
     readCycle2 = readCycle2 + 1;                    // increment the read cycle number at each turn
 
@@ -394,8 +395,6 @@ void loop(void) {
   } else {
     //Serial.print("No Wire timeout flag detected.");
   }
-
-  Serial.println();          //new line for the next measurements
 
 }  //end of main loop()
 
