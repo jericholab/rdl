@@ -12,6 +12,7 @@ void phFunc() {
   byte serial_event = 0;           //a flag to signal when data has been received from the pc/mac/other.
   byte code = 0;                   //used to hold the I2C response code.
   char ph_data[32];                //we make a 32 byte character array to hold incoming data from the pH circuit.
+  memset(ph_data, 0, sizeof(ph_data));  // Reset all 32 bytes to 0 from potential residual data from previous calls
   byte in_char = 0;                //used as a 1 byte buffer to store inbound bytes from the pH Circuit.
   byte i = 0;                      //counter used for ph_data array.
   int time_ = 815;                 //used to change the delay needed depending on the command sent to the EZO Class pH Circuit. 815 ms are required for reading or calib commands.

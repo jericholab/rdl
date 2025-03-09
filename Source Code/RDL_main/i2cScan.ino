@@ -10,6 +10,7 @@
 // 0x24, 0x25 : PCF8574 on a second SHIELD (double stack)
 // 0x44 : SHT40 (Air humidity and temperature)
 // 0x48 : ADS1115
+// 0x63 : EZO-PH
 // 0x68 : DS3231 (Real Time Clock)
 // 0x2A : NAU7802 (Strain/ 24-bit ADC device)
 // 0x70 : TCA9548 (I2C Multiplexer)
