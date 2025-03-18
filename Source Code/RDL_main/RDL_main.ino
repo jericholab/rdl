@@ -13,14 +13,19 @@
 bool headerDisplay = 1;                 // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay = 1;                   // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay = 1;                     // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay = 1;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay = 0;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+/*******/
+bool irradiationDisplay = 1;            // optional measurement and display of irradiation values (1 = yes, 0 = no)
+bool tiltAngleDisplay = 0;              // optional measurement and display of tilt angle from pyranometer values (1 = yes, 0 = no)
+bool windDisplay = 1; //1;                   // optional measurement and display of wind speed values (1 = yes, 0 = no)
+/*******/
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
@@ -30,6 +35,10 @@ int i2cChannels_strain[] = {2};         // define array to store the list of shi
 int i2cChannels_ph[] = {2,4,6};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int i2cChannels_current[] = {5};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
+/*****/
+int channels_pyrano[] = {0,1};          // define array to store the list of analog channels dedicated to the pyranometers (channel 0 to 7)
+int channels_wind[] = {2};              // define array to store the list of analog channels dedicated to the wind speed sensors (channel 0 to 7)
+/*****/
 
 ////////// PROGRAMMER PARAMETERS ////////////
 
@@ -50,6 +59,9 @@ int channels_teros[] = {0};           // define array to store the list of analo
 #include "Adafruit_PCF8574.h"          // library required for the PCF8574 (I2C GPIO Expander).
 #include "MemoryFree.h"               // library required for a test to determine if I have memory leak related to begin() statements with Strain NAU7802
 #include "Adafruit_SleepyDog.h"        // library required for the watchdog function (avoid i2c jams).
+/*******/
+#include <SDI12.h>                     // library required to communicate with the pyranometer
+/*******/
 
 //OTHER INITIALIZATIONS
 
@@ -63,6 +75,9 @@ bool sensors_present = 0;               // we initialize this variable with 0. I
 uint8_t numberC10 = numberC;            // (ms) Temporary storage variable for quantity of thermistor channels used
 uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for quantity of voltage channels used
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
+/*****/
+long pyranoResponseTime = 2000;        // (ms) pyranometer response time
+/*****/
 
 Adafruit_NAU7802 nau_ada;                // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
 //NAU7802 nau_current;                   //Create instance of the NAU7802 class (Sparkfun library)
@@ -123,6 +138,11 @@ int qty_strain;                          // define the variable that holds the n
 int qty_ph;                              // define the variable that holds the number of pH devices connected to the i2c shield
 int qty_current;                         // define the variable that holds the number of current devices connected to the RDL
 int qty_teros;                           // define the variable that holds the number of teros devices connected to the RDL
+/*****/
+int qty_pyranos;                         // define the variable that holds the number of pyranometer devices connected to the RDL
+int qty_wind;                            // define the variable that holds the number of wind speed devices connected to the RDL
+/*****/
+
 
 //----------------------
 // DEFINE THE PINS TO WHICH THE SENSORS ARE CONNECTED
@@ -131,6 +151,9 @@ int qty_teros;                           // define the variable that holds the n
 #define CTRL_PIN 9                     // Define the digital pin dedicated to the control signal example
 #define ADS_T_PIN 0                    // ADS1115 channel for thermistor
 #define ADS_V_PIN 1                    // ADS1115 channel for voltage measurements
+/*****/
+SDI12 mySDI12(VOLT_PIN);
+/*****/
 //----------------------
 
 //sensors_event_t humidity, temp;                                  //define two events (objects) --- Commented for unknown reason, unknown test
@@ -148,6 +171,11 @@ void setup(void) {
 
   tca_init();
   readEEPROM();                               //call function to read the EEPROM memory to see if there are some parameters stored
+
+    /*****/
+    mySDI12.begin();
+    delay(100);
+    /*****/
 
   if (headerDisplay == 1) {
     Serial.println(); Serial.println();
@@ -187,6 +215,10 @@ void setup(void) {
   qty_ph = sizeof(i2cChannels_ph) / sizeof(i2cChannels_ph[0]);
   qty_current = sizeof(i2cChannels_current) / sizeof(i2cChannels_current[0]);
   qty_teros = sizeof(channels_teros) / sizeof(channels_teros[0]);
+  /*****/
+  qty_pyranos = sizeof(channels_pyrano)/ sizeof(channels_pyrano[0]);
+  qty_wind = sizeof(channels_wind)/ sizeof(channels_wind[0]);
+  /*****/
 
   if (!pcf1.begin(0x20, &Wire)) {
     Serial.println("Couldn't find PCF8574 #1");
@@ -377,6 +409,23 @@ void loop(void) {
 
       }
     }
+
+    if (windDisplay==1){
+      for (int i=0; i<qty_wind; i++) {
+        addr = channels_wind[i];       // we choose the analog channel X
+        windFunc(addr);
+      }
+    }
+      
+    if (irradiationDisplay==1){
+      for (int i=0; i<qty_pyranos; i++) {
+        addr = channels_pyrano[i];       // we choose the analog channel X
+        SDI12Func(addr);
+      }   
+    }
+
+    Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+    Serial.print(freeMemory());  // print how much RAM is available in bytes. Temporary test.
 
     if (ControlSignal == 1) {
       controlFunc();
