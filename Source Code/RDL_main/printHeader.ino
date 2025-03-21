@@ -142,6 +142,43 @@ void printHeader() {
     }
   }
 
+
+  /****/
+
+  if (windDisplay == 1) {
+
+    for (int i = 0; i < qty_wind; i++) {
+
+      Serial.print(F("*"));
+      spacing2("*", 12);
+      String windText1 = F("Wind_m/s");
+      Serial.print(windText1);
+      spacing2(windText1, 12);
+
+    }
+  }
+
+  if (irradiationDisplay == 1) {
+
+    for (int i = 0; i < qty_pyranos; i++) {
+
+      Serial.print(F("*"));
+      spacing2("*", 12);
+      String pyranoText1 = F("Irr_W/m²");
+      Serial.print(pyranoText1);
+      spacing2(pyranoText1, 12);
+      if (tiltAngleDisplay == 1) {
+        String pyranoText2 = F("Beta_°");
+        Serial.print(pyranoText2);
+        spacing2(pyranoText2, 12);
+      }
+
+    }
+  }
+
+
+  /*****/
+
   if (ControlSignal == 1) {
     Serial.print(F("*"));
     spacing2("*", 12);
@@ -149,6 +186,7 @@ void printHeader() {
     Serial.print(controlText);
     spacing2(controlText, 12);
   }
+
 
   Serial.println();
   Serial.println();

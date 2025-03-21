@@ -7,12 +7,10 @@
 
 void SDI12Func(uint8_t channel){
 
-
   /// Serial.println("We reached SDI12Func() content");    //TEST ////////////////////
   
   pinMode(VOLT_PIN, OUTPUT);   // Set VOLT_PIN as digital output for SDI-12 communication
 
-  
   String irradiationCmd = "0M!";    // command to measure irradiation 
   String tiltAngleCmd = "0M3!";      // command to measure tilt angle
   String retrieveDataCmd = "0D0!";   // command to retrieve reading from the sensor
@@ -45,7 +43,7 @@ void SDI12Func(uint8_t channel){
     Serial.print(tiltAngleData, 2);       // print measurement value only
     spacing1(tiltAngleData,13);
   }
-
+  
   pinMode(VOLT_PIN, INPUT);    // Set VOLT_PIN back to input mode for analog reading (if needed)
 
   pcf1.digitalWrite(channel, HIGH); //turn LED off by turning off sinking transistor
