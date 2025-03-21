@@ -424,8 +424,8 @@ void loop(void) {
       }   
     }
 
-    Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
-    Serial.print(freeMemory());  // print how much RAM is available in bytes. Temporary test.
+    //Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+    //Serial.print(freeMemory());  // print how much RAM is available in bytes. Temporary test.
 
     if (ControlSignal == 1) {
       controlFunc();
