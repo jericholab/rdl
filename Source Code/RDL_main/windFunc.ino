@@ -12,6 +12,7 @@ void windFunc(uint8_t channel){
   delay(1000);  // part of test
 
   digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
+  delay(200);
   //Serial.println("We  achieved enable_V_MUX in windFunc");    //TEST ////////////////////
   setMultiplexer(channel);                       // select the multiplexer channel
   pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
@@ -35,9 +36,14 @@ void windFunc(uint8_t channel){
   Serial.print(windSpeed,2);                            // m/s
   spacing1(windSpeed,12);
 
+  digitalWrite(enable_V_MUX, HIGH);               // toggle pin to HIGH value in order turn OFF the V_MUX
+  delay(200);
+  pinMode(VOLT_PIN, INPUT);    // Set VOLT_PIN back to input mode for analog reading (if needed)
+  
   pcf1.digitalWrite(channel, HIGH); //turn LED off by turning off sinking transistor
   pcf2.digitalWrite(channel, LOW);  //turn LED off by turning off sinking transistor
-  delay(500);  //TEMPORARY COMMENT TO MAKE LONG MEASUREMENT VIA MULTIMETER
+  delay(500);  //troubleshoot test
+  
   }
 
   ///// WATER TENSION FUNCTION TETA (VAN GENUCHTEN EQUATION)

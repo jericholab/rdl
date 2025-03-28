@@ -16,6 +16,7 @@ void SDI12Func(uint8_t channel){
   String retrieveDataCmd = "0D0!";   // command to retrieve reading from the sensor
 
   digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
+  delay(200);
   setMultiplexer(channel);                       // select the multiplexer channel
   pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
   pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
@@ -44,10 +45,13 @@ void SDI12Func(uint8_t channel){
     spacing1(tiltAngleData,13);
   }
   
+  digitalWrite(enable_V_MUX, HIGH);               // toggle pin to HIGH value in order turn OFF the V_MUX
+  delay(100);
   pinMode(VOLT_PIN, INPUT);    // Set VOLT_PIN back to input mode for analog reading (if needed)
-
+  
   pcf1.digitalWrite(channel, HIGH); //turn LED off by turning off sinking transistor
   pcf2.digitalWrite(channel, LOW);  //turn LED off by turning off sinking transistor
+  delay(500);  //troubleshoot test
 
 }
 

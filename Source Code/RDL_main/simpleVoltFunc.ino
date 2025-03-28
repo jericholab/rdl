@@ -5,7 +5,9 @@
 // OUTPUT: none
 
 void simpleVoltFunc(){
+
       bool readModeVolt = 1;         // Value 0 = Nano ADC (for 0-3.3V readings only). Value 1 = ADS1115 (for 0-5V readings only).
+      //bool readModeVolt = 0;    //TEMP     // Value 0 = Nano ADC (for 0-3.3V readings only). Value 1 = ADS1115 (for 0-5V readings only).
       float value;                                              //local variable declaration
       digitalWrite(enable_V_MUX, LOW);                          // toggle pin to LOW value in order turn on the V_MUX
       delay(100);                                               //delay is recommended by Arduino Reference doc to allow ADC to adjust its tension.
@@ -17,6 +19,7 @@ void simpleVoltFunc(){
         pcf1.digitalWrite(i, LOW);  // turn LED on by sinking current to ground
         pcf2.digitalWrite(i, HIGH);  // turn LED on by sinking current to ground
         delay(100);
+        delay(1000);   //temporary extra delay
         value=getVoltFunc(readModeVolt);                             // storing voltages 
         Serial.print(value,4);
         spacing1(value,10);

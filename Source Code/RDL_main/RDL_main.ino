@@ -24,19 +24,19 @@ bool phDisplay = 0;                     // optional measurement and display of p
 /*******/
 bool irradiationDisplay = 1;            // optional measurement and display of irradiation values (1 = yes, 0 = no)
 bool tiltAngleDisplay = 0;              // optional measurement and display of tilt angle from pyranometer values (1 = yes, 0 = no)
-bool windDisplay = 1; //1;              // optional measurement and display of wind speed values (1 = yes, 0 = no)
+bool windDisplay = 0; //1;              // optional measurement and display of wind speed values (1 = yes, 0 = no)
 /*******/
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
 bool dstRegion = 1;                     // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
-int i2cChannels_sht40[] = {5};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {2};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
-int i2cChannels_ph[] = {2,4,6};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int i2cChannels_current[] = {5};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
+int i2cChannels_current[] = {2};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 /*****/
-int channels_pyrano[] = {0,1};          // define array to store the list of analog channels dedicated to the pyranometers (channel 0 to 7)
+int channels_pyrano[] = {0,1}; //0,1,3          // define array to store the list of analog channels dedicated to the pyranometers (channel 0 to 7)
 int channels_wind[] = {2};              // define array to store the list of analog channels dedicated to the wind speed sensors (channel 0 to 7)
 /*****/
 
@@ -416,7 +416,7 @@ void loop(void) {
         windFunc(addr);
       }
     }
-      
+
     if (irradiationDisplay==1){
       for (int i=0; i<qty_pyranos; i++) {
         addr = channels_pyrano[i];       // we choose the analog channel X
@@ -424,8 +424,12 @@ void loop(void) {
       }   
     }
 
-    //Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
-    //Serial.print(freeMemory());  // print how much RAM is available in bytes. Temporary test.
+
+      
+
+
+    Serial.print(F("Free RAM = ")); //F function does the same and is now a built in library, in IDE > 1.0.0
+    Serial.print(freeMemory());  // print how much RAM is available in bytes. Temporary test.
 
     if (ControlSignal == 1) {
       controlFunc();
