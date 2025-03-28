@@ -128,7 +128,7 @@ while True:
         
         # Check if the Arduino has not spoken for 1 minutes   //NEW
         if datetime.now() - last_data_time > timeout_duration:
-            log_entry = f"No data received for {jam_threshold} minutes. Exiting to trigger service restart."    
+            log_entry = f"\nNo data received for {jam_threshold} minutes. Exiting to trigger service restart."    
             file.write(log_entry)
             file.flush()
             print(log_entry)

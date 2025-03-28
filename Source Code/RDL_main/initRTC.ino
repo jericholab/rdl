@@ -13,7 +13,7 @@ void initRTC() {
   }
 
   if (rtc.lostPower()) {
-    Serial.println("RTC is NOT running, let's set the time!");
+    Serial.println(F("RTC is NOT running, let's set the time!"));
     setTime();
   }
 

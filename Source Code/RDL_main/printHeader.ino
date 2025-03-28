@@ -126,7 +126,7 @@ void printHeader() {
       String terosText1 = F("Strain_ADC");
       Serial.print(terosText1);
       spacing2(terosText1, 12);
-      String terosText2 = F("Newton");
+      String terosText2 = F("[N]");
       Serial.print(terosText2);
       spacing2(terosText2, 12);
     }
