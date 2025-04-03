@@ -123,12 +123,16 @@ void printHeader() {
     for (int i = 0; i < qty_strain; i++) {
       Serial.print(F("*"));
       spacing2("*", 12);
-      String terosText1 = F("Strain_ADC");
+      String terosText1 = F("Strain_");
       Serial.print(terosText1);
+      Serial.print(i+1);
       spacing2(terosText1, 12);
       String terosText2 = F("[N]");
       Serial.print(terosText2);
       spacing2(terosText2, 12);
+      String terosText3 = F("[N-m]");
+      Serial.print(terosText3);
+      spacing2(terosText3, 12);
     }
   }
 
