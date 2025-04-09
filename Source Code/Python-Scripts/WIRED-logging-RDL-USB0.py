@@ -9,10 +9,6 @@ import shutil
 import json
 import os  # library to interact with the operating system
 
-#Jam length threshold for reset
-jam_threshold = 2 #minutes
-#jam_threshold = 15 #minutes
-
 # Load the configuration file
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
@@ -20,6 +16,11 @@ with open('config.json', 'r') as config_file:
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
 
+
+#Jam length threshold for reset
+#jam_threshold = 2 #minutes
+#jam_threshold = 15 #minutes
+jam_threshold = config['JAM_THRESHOLD'] #minutes
 
 print("RDL-python-logging...")
 DEVICE_NAME = "USB0"

@@ -5,6 +5,7 @@
   "RDL_FILEFORMAT_ACTIVE": "daily",
   "RDL_FILEFORMAT1": "hourly",
   "RDL_FILEFORMAT2": "daily",
+  "JAM_THRESHOLD": 15,
   "THERMAL_CAM_INTERVAL_SEC": 1800,
   "SD_CARD_NAME": "",
   "OTHER_SITE_NAME_X": "SiteX_Dummy",
