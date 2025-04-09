@@ -34,7 +34,7 @@ void strainFunc(float a, float b) {
         float force = (val-b)/a;    //[N] Force applied on load cell. Linear equation convert ADC to force based on calibration values.
         Serial.print(force);
         spacing1(force,12); 
-        float moment = force /ds;   //[N-m] Moment applied on load cell.
+        float moment = force *ds;   //[N-m] Moment applied on load cell.
         Serial.print(moment);
         spacing1(moment,12); 
         nau_ada.enable(false);   // power off the sensor before cutting power, so we are able to power up at the next measurement
