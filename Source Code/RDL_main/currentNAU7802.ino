@@ -7,12 +7,12 @@
 //********************** CAREFUL ******************************** STILL SOME DUMMY VALUES IN THIS FUNCTION ****************************
 //********************** CAREFUL ******************************** TEMPERATURE COMPENSATION INACTIVE FOR NOW ****************************
 
-void currentNAU7802(uint8_t t_channel) {
+void currentNAU7802(uint8_t t_channel, float zeroValue) {
 
   //Watchdog.enable(4000);        // Start the 4000ms counter of the watchdog. If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino.
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
   float slope = 1662407;        // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
-  float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
+  //float zeroValue = 2.4805;                      // TAMURA sensor output value when null current
   int n = 2;   //20                               // size of the sample to be collected
   int discarded = 0;                             // number of samples discarded
   int i;                                         // integer for loop iteration
