@@ -42,9 +42,11 @@ void strainFunc(float a, float b) {
   else{    
       Serial.print(F("*"));
       spacing2(F("*"),12); 
-      Serial.print(F("0.00"));                               //print the temperature
+      Serial.print(F("0.00"));                               //print zero value for ADC
       spacing2(F("0.00"),12); 
-      Serial.print(F("0.00"));                               //print the relative humidity
+      Serial.print(F("0.00"));                               //print zero value for Force
+      spacing2(F("0.00"),12);
+      Serial.print(F("0.00"));                               //print zero value for Moment
       spacing2(F("0.00"),12);
     }
 
