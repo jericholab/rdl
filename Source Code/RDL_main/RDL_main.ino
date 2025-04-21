@@ -17,10 +17,10 @@ bool tDisplay = 0;                      // optional measurement and display of t
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
-bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
+bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
-bool phDisplay = 1;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
+bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
@@ -374,8 +374,8 @@ void loop(void) {
         addr = i2cChannels_ph[i] - 1;   // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        //delay(1000);                      //A delay is required to avoid miscommunication. Delay value not optimized yet.        
-        delay(120000);   ///////// TEST TO SEE IMPACT OF WARMUP ON READING VALUE
+        //delay(1000);                      // A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        delay(120000);                  // Long 2-min delay required to warmup the pH sensor
         i2c_select(addr);
         delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);

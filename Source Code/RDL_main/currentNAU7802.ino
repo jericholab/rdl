@@ -56,7 +56,7 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
 
   if (current_present == 1) {
     nau_current.enable(true);
-    nau_current.enableCurrent2();   //////new test where enableCurrent2 is a copy of currentBegin() without the instantiation.
+    nau_current.enableCurrent2(); 
 
     nau_current.setRate(NAU7802_RATE_10SPS);   //I must eventually test if these function calls return true (1) ......................................
     //delay(100);
@@ -79,7 +79,6 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
         val_a = nau_current.read();
         delay(100);                    // We must space the two readings enough to avoid double bad readings.
         val_b = nau_current.read();
-
         if (abs(val_a - val_b) < 5000) { //threshold for value rejection is 5000 ADC.
           val_sum = val_sum + val_a;
         }
@@ -88,9 +87,10 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
         }
       }
     }
+
     val_sum = val_sum / float(n - discarded); //arithmetic average
     val2 = (val_sum - offset) / slope; //convert the ADC to volts
-    nau_current.enable(false);   ////// TESTING NEW POSITION FOR THIS LINE
+    nau_current.enable(false); 
   }
 
   //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the absent is absent, this line should not run.
@@ -109,15 +109,15 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
   Serial.print(offsetTdrift, 5);
   spacing1(offsetTdrift, 9);                          //12 spaces - 3 extra decimals (total 5) = 9 spaces
 
-  Serial.print(val_a, 0); // raw value
+  Serial.print(val_a, 0); // raw value (single read) 
   spacing1(val_a, 15);
-  Serial.print(val2, 4); // raw value
+  Serial.print(val2, 4); // raw value ADC (average)
   spacing1(val2, 11);                                //12 spaces - 1 extra decimals (total 5) =  11 spaces
 
   // CONVERT VOLTAGE TO AMPS
   float V_offset = zeroValue + offsetTdrift;       //[mV] offset value (no load) to calibrate the sensor
   float val3 = (val2 - V_offset) * hallRatio;      // Finalize conversion to instantaneous amps  (Removing V_offset after RMS allow negative currents)
-  Serial.print(val3, 3);                          // Print out the value you read. Test with 3 decimals
+  Serial.print(val3, 3);                           // Print out the value you read. Test with 3 decimals
   spacing1(val3, 11);                             // Since a bonus decimal is printed, the spacing requirement is reduced by one unit.
 
   //    Watchdog.reset();                               //  If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino.
