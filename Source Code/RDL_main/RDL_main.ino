@@ -320,9 +320,8 @@ void loop(void) {
         Wire.beginTransmission(addr);
         delay(100);//1000
         delay(300);//3000                 //I suspect that the board requires time to charge up. An increased delay seems to reduce miscommunication and/or bad readings.
-        float current_zero = 2.4857;                      // TAMURA sensor output value when null current
+        float current_zero = 2.4857;                      // TAMURA current sensor output value when null current
         float T_ref = 24.5;                               // Reference temperature [C] at which the tamura sensor null current was measured (temperature compensation)
-        //currentNAU7802(addr, current_zero);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         uint8_t t_channel = 1;                      // Temperature channel associated with the current sensor temperature compensation probe
         currentNAU7802(t_channel, current_zero, T_ref);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         Wire.endTransmission(addr);
