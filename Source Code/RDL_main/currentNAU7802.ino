@@ -3,11 +3,8 @@
 // PURPOSE: Obtain a measurement from the TAMURA current sensor by using the 24-bit ADC of the strain gauge load cell. Only works with DC current for now.
 // INPUT: none
 // OUTPUT: none
-//
-//********************** CAREFUL ******************************** STILL SOME DUMMY VALUES IN THIS FUNCTION ****************************
-//********************** CAREFUL ******************************** TEMPERATURE COMPENSATION INACTIVE FOR NOW ****************************
 
-void currentNAU7802(uint8_t t_channel, float zeroValue) {
+void currentNAU7802(uint8_t t_channel, float zeroValue, float T_ref) {
 
   //Watchdog.enable(4000);        // Start the 4000ms counter of the watchdog. If watchdog.reset() is not sent within 4000ms, the watchdog resets the Arduino.
   float offset = 26700;         // offset for conversion of adc to vols (temporary approximation based on early experimental measurements)
@@ -93,7 +90,7 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
     nau_current.enable(false); 
   }
 
-  //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the absent is absent, this line should not run.
+  //nau_current.enable(false);    ///////// PROBLEMATIC LINE: IN case the sensor is absent, this line should not run.
   Serial.print(F("*"));
   spacing2(F("*"), 12);
 
@@ -102,9 +99,9 @@ void currentNAU7802(uint8_t t_channel, float zeroValue) {
   Serial.print(T_comp, 2);
   spacing1(T_comp, 12);
   if (currentTComp == 1) {
-    float slope = 0; //-0.0001122;                  // slope for offset temperature drift compensation [mv/C] NULL VALUE FOR NOW
-    float T_ref = 21;                               // Reference temperature for the temperature compensation [C]
-    offsetTdrift = (arrayV[t_channel - 1] - 21) * slope; //offset temperature drift compensation [mV] (array indexed to 0, not 1)
+    float slope = -0.001136;                   // slope for offset temperature drift compensation [mv/C] based on exp 2025-05-08
+    //float T_ref = 21;                               // Reference temperature for the temperature compensation [C]
+    offsetTdrift = (T_comp - T_ref) * slope; //offset temperature drift compensation [mV] (array indexed to 0, not 1)  
   }
   Serial.print(offsetTdrift, 5);
   spacing1(offsetTdrift, 9);                          //12 spaces - 3 extra decimals (total 5) = 9 spaces

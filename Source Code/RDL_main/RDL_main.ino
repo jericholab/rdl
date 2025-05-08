@@ -13,7 +13,7 @@
 bool headerDisplay = 1;                 // optional display of headerprint (1 = yes, 0 = no)
 bool timeDisplay = 1;                   // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay = 1;                     // optional display of identification number of measurement (1 = yes, 0 = no)
-bool tDisplay = 0;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
+bool tDisplay = 1;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
@@ -23,12 +23,12 @@ bool strainDisplay = 0;                 // optional measurement and display of s
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
-bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors
+bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors (1 = yes, 0 = no)
 bool dstRegion = 1;                     // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
 int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1,2,3,4};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
-int i2cChannels_ph[] = {1};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
-int i2cChannels_current[] = {1};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
+int i2cChannels_ph[] = {5};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
+int i2cChannels_current[] = {5};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
 
 ////////// PROGRAMMER PARAMETERS ////////////
@@ -94,14 +94,6 @@ Adafruit_PCF8574 pcf4;                 //I2C SHIELD: create an instance of PCF85
 #define GEN_A 1.0222793532E-03
 #define GEN_B 2.5316558834E-04
 #define GEN_C -5.3213022916E-12
-
-//const int m_lines = 3;                 // Lines are the various sensors
-//const int m_col = 2;                   // Columns are associated coefficients
-//float strain_matrix[m_lines][m_col] = {    
-//  {1000, 20000},                       // DUMMY VALUE. Calibration value for strain function. Column #1 is the load cell ratio (Newton/ADC) measured experimentally.
-//  {1000, 400000},                      // DUMMY VALUES. Calibration value for strain function. Column #2 is the ADC value when load cell has no load.
-//  {1000, 800000}
-//};
 
 float arrayV[8];                       // define array to store values of all probes before Serial print
 float arrayR[8];                       // define array to store resistances of all probes before Serial print
@@ -327,10 +319,11 @@ void loop(void) {
         delay(100);//1000
         Wire.beginTransmission(addr);
         delay(100);//1000
-        ////Wire.setClock(clockSpeed);
         delay(300);//3000                 //I suspect that the board requires time to charge up. An increased delay seems to reduce miscommunication and/or bad readings.
-        float current_zero = 2.4805;                      // TAMURA sensor output value when null current
-        currentNAU7802(addr, current_zero);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        float current_zero = 2.4857;                      // TAMURA sensor output value when null current
+        float T_ref = 24.5;                               // Reference temperature [C] at which the tamura sensor null current was measured (temperature compensation)
+        //currentNAU7802(addr, current_zero);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
+        currentNAU7802(1, current_zero, T_ref);              //run the NAU7802 version of the current measurement function (e.g.  temperature compensation cannel (1-8))
         Wire.endTransmission(addr);
         delay(100); //1000                         //A delay is required to avoid miscommunication. Delay value not optimized yet.
         tca_init();                        // initialize the TCA9548 I2C MUX chip to ensure that no channel remains connected too late, as it will cause an I2C bus jam.
@@ -374,8 +367,8 @@ void loop(void) {
         addr = i2cChannels_ph[i] - 1;   // we choose the channel X on the 0-index array
         pcf3.digitalWrite(addr, LOW);    // turn LED on by sinking current to ground
         pcf4.digitalWrite(addr, HIGH);   // turn LED on by sinking current to ground
-        //delay(1000);                      // A delay is required to avoid miscommunication. Delay value not optimized yet.        
-        delay(120000);                  // Long 2-min delay required to warmup the pH sensor
+        delay(1000);                      // A delay is required to avoid miscommunication. Delay value not optimized yet.        
+        //delay(120000);                  // Long 2-min delay required to warmup the pH sensor
         i2c_select(addr);
         delay(1000);                        //A delay is required to avoid miscommunication. Delay value not optimized yet.
         Wire.beginTransmission(addr);
