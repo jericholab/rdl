@@ -1,50 +1,40 @@
 import os
 
-def merge_txt_files(output_file):
-    # Get the current directory where the script is running
-    script_directory = os.path.dirname(os.path.realpath(__file__))
-    
-    # Create or overwrite the output file in the same directory
+def find_txt_files_recursively(root_dir):
+    txt_files = []
+    for dirpath, _, filenames in os.walk(root_dir):
+        for file in filenames:
+            if file.endswith('.txt'):
+                full_path = os.path.join(dirpath, file)
+                txt_files.append(full_path)
+    return sorted(txt_files)  # Sorts alphabetically, good if filenames contain datetime
+
+def merge_txt_files(txt_files, output_file):
     with open(output_file, 'w') as outfile:
-        # Iterate over all files in the script directory
-        for filename in os.listdir(script_directory):
-            # Check if the file is a .txt file
-            if filename.endswith('.txt'):
-                file_path = os.path.join(script_directory, filename)
-                with open(file_path, 'r') as infile:
-                    # Write the content of the current .txt file into the output file
-                    outfile.write(infile.read())
-                    # Add a newline character after each file's content to separate them
-                    outfile.write("\n")
-
-# Specify the name of the output file
-output_file = 'merged_output.txt'  # The output file will be created in the script's directory
-
-# Call the function to merge the files
-merge_txt_files(output_file)
-
-print(f"All .txt files in the script's directory have been merged into {output_file}")
-
+        for file_path in txt_files:
+            with open(file_path, 'r') as infile:
+                outfile.write(infile.read())
+                outfile.write("\n")
 
 def clean_txt_file(input_file, output_file):
-    # Open the input file for reading
-    with open(input_file, 'r') as infile:
-        # Open the output file for writing the cleaned content
-        with open(output_file, 'w') as outfile:
-            # Iterate through each line in the input file
-            for line in infile:
-                # Strip the line of leading/trailing spaces (including newlines)
-                cleaned_line = line.strip()
-                # Check if the line is not empty, contains '*', and doesn't contain the word 'date'
-                if cleaned_line and 'date' not in cleaned_line.lower() and '*' in cleaned_line:
-                    # Write the cleaned line to the output file
-                    outfile.write(line)
+    with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+        for line in infile:
+            cleaned_line = line.strip()
+            if cleaned_line and '*' in cleaned_line and 'date' not in cleaned_line.lower():
+                outfile.write(line)
 
-# Specify the input and output file names
-input_file = 'merged_output.txt'  # Replace with your input file path
-output_file = 'cleaned_output.txt'  # The output file will have cleaned content
-
-# Call the function to clean the file
-clean_txt_file(input_file, output_file)
-
-print(f"The file {input_file} has been cleaned and saved as {output_file}")
+if __name__ == "__main__":
+    script_directory = os.path.dirname(os.path.realpath(__file__))
+    
+    # Step 1: Find and sort all .txt files recursively
+    txt_files = find_txt_files_recursively(script_directory)
+    
+    # Step 2: Merge into a single file
+    merged_file = os.path.join(script_directory, 'merged_output.txt')
+    merge_txt_files(txt_files, merged_file)
+    print(f"Merged {len(txt_files)} .txt files into {merged_file}")
+    
+    # Step 3: Clean the merged file
+    cleaned_file = os.path.join(script_directory, 'cleaned_output.txt')
+    clean_txt_file(merged_file, cleaned_file)
+    print(f"Cleaned data saved to {cleaned_file}")
