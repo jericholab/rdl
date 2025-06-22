@@ -77,6 +77,7 @@ void currentNAU7802(uint8_t t_channel, float zeroValue, float T_ref) {
           val_sum = val_sum + val_a;
         }
         else {
+          val_a = -222;            //// test //// lets try to use a different signal for rejection than non-comm.
           discarded = +1;       //if we discard a measurement, the sample size is reduced
         }
       }
