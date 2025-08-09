@@ -1,12 +1,12 @@
 //-------------------------------------------------------------------
-// FONCTION NAME: i2cScan // tca_select // tca_init
+// FONCTION NAME: i2cScan
 // PURPOSE: Scan all I2C ports to detect all the I2C devices (permanently connected to the i2c bus or multiplexed).
 // INPUT: none
 // OUTPUT: none
 
 // DEFAULT ADDRESSES OF RDL SYSTEM COMPONENTS
 // 0x20, 0x21 : PCF8574 on the RDL
-// 0x22, 0x23 : PCF8574 on the default SHIELD
+// 0x22, 0x23 : PCF8574 on the default primary SHIELD
 // 0x24, 0x25 : PCF8574 on a second SHIELD (double stack)
 // 0x44 : SHT40 (Air humidity and temperature)
 // 0x48 : ADS1115
@@ -21,8 +21,8 @@ void i2cScan() {
   Serial.println("\nTCAScanner ready!");
 
   for (uint8_t t = 0; t < 8; t++) {
-    pcf3.digitalWrite(t, LOW);  // turn LED on by sinking current to ground
-    pcf4.digitalWrite(t, HIGH);  // turn LED on by sinking current to ground
+    pcf3.digitalWrite(t, LOW);  // turn on by sinking current to ground
+    pcf4.digitalWrite(t, HIGH);  // turn on by sinking current to ground
     delay(100);
 
     tcaselect(t);
@@ -36,12 +36,18 @@ void i2cScan() {
         Serial.print("Found I2C 0x");  Serial.println(addr, HEX);
       }
     }
-    pcf3.digitalWrite(t, HIGH); // turn LED off by turning off sinking transistor
-    pcf4.digitalWrite(t, LOW); // turn LED off by turning off sinking transistor
+    pcf3.digitalWrite(t, HIGH); // turn off by turning off sinking transistor
+    pcf4.digitalWrite(t, LOW); // turn off by turning off sinking transistor
   }
 
   Serial.println("\ndone");
 }
+
+//-------------------------------------------------------------------
+// FONCTION NAME: tca_select
+// PURPOSE: 
+// INPUT: none
+// OUTPUT: none
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -51,8 +57,15 @@ void tcaselect(uint8_t i) {
   Wire.endTransmission();
 }
 
+
+//-------------------------------------------------------------------
+// FONCTION NAME: tca_init
+// PURPOSE: 
+// INPUT: none
+// OUTPUT: none
+
 void tca_init() {                              //Initialization function which disconnects all the channels
   Wire.beginTransmission(TCAADDR);
-  Wire.write(0);    //binary zero is "00000000".
+  Wire.write(0);    //binary zero is "0b00000000".
   Wire.endTransmission();
 }

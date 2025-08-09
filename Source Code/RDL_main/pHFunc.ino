@@ -7,7 +7,7 @@
 void phFunc() {
 
 #define address 99               //default I2C ID number for EZO pH Circuit.
-  char computerdata[20];           //we make a 20 byte character array to hold incoming data from a pc/mac/other.
+  char computerdata[20];           //we make a 20 byte character array to hold incoming data from a PC/mac/other.
   byte received_from_computer = 0; //we need to know how many characters have been received.
   byte serial_event = 0;           //a flag to signal when data has been received from the pc/mac/other.
   byte code = 0;                   //used to hold the I2C response code.

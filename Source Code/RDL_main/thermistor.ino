@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------
 // FONCTION NAME: thermistor
 // PURPOSE: measure the resistance value of a thermistor probe and convert it to temperature, based on applicable calibration coefficients.
-// INPUT: thermistorpin, seriesresistor, A, B, C
+// INPUT: channel, read mode (ADC), A, B, C
 // OUTPUT: ohm value (ohm) and temperature value (oC) in a structure
 
 struct STRUCT1 thermistor(float A, float B, float C, int channel, bool readMode)   //this creates a function called thermistor that is a member of the class STRUCT1

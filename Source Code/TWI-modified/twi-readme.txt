@@ -6,7 +6,7 @@ Introduction
 The use of long CAT cables require a slower version of the I2C clock speed than is possible with the native version of the Wire/TWI library. These two libraries work together to generate the I2C signal (SDA/SCL). The Wire library includes the TWI library.
 After a fresh install, the Arduino IDE software will create a copy of the TWI library found in /Program Files (x86) and put it in AppData. This becomes the TWI library dedicated to your specific User, and your specific version of the Arduino IDE. In other cases, a library might even be specific to a board (e.g. Arduino Uno). The `AppData\Local\Arduino15` path is where user-specific settings, additional boards, and custom versions of libraries are stored, and it takes precedence over the default installation libraries. This allows users to have multiple versions of the same library for different boards or Arduino cores. The IDE will then proceed to compile that copy. The result is sent to /Temp folder (e.g. twi.c.o). 
 In the future, when compiling/uploading an Arduino script, the IDE will in order look to use 1) the precompiled version; 2) the user-specific version, 3) the master version.
-If you want to modify the TWI library, and if you are not using a fresh install of the Arduino IDE, then you must delete the precompiled. You can then modify the user-specific version of the library, or you could delete this version too, and modify the master version.
+If you want to modify the TWI library, and if you are not using a fresh install of the Arduino IDE, then you must delete the pre-compiled library. You can then modify the user-specific version of the library, or you could delete this version too, and modify the master version.
 
 
 WINDOWS: THREE LOCATIONS
@@ -32,7 +32,7 @@ The modifications done by Jericho in the TWI library are small:
 
 
 EXPLANATIONS
-prescaler = the value set by the TWSR bits (TWPS1TWPS1 and TWPS0TWPS0):
+prescaler = the value set by the TWSR bits (TWPS1 and TWPS0):
     00 = prescaler of 1
     01 = prescaler of 4
     10 = prescaler of 16
