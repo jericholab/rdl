@@ -1,8 +1,8 @@
 import pandas as pd
 
 # Input and output file names (adjust these if needed)
-excel_file = 'coefficients_source.xlsx'
-header_file = 'coefficients.h'
+excel_file = 'coefficients_source_strain.xlsx'
+header_file = 'coefficients_strain.h'
 
 # Read the matrix from the Excel file.
 # The matrix of interest is in the range C7:D14.
