@@ -150,8 +150,39 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 - For the RDL, internal calibration is done automatically by a function from the NAU7802 library (calibrateAFE()). It is called at powerup and at a regular interval. The algorithm is still under development for the regular interval.
 
   ## EXTERNAL CALIBRATION
-- External calibration has to be done for each specific load cell. If the load cell is damaged and replaced, a calibration must be done. External calibration can be done via the source code only. It currently cannot be done via a live command.
-- Since strain gauges are highly linear devices, only a two-point calibration is required.
+   
+   Each load cell requires its own unique calibration coefficients. Because of this, once calibration is performed, do not interchange strain gauges between channels. For example, strain gauge #1 must always remain in I²C channel #1.
+   
+   ### Why Individual Calibration Is Necessary
+   •	Every load cell has slightly different electrical properties.
+   •	Calibration produces two unique parameters per load cell:
+   o	a = slope (gain)
+   o	b = offset (zero point)
+   •	This two-parameter calibration is sufficient because load cells are highly linear devices.
+   We recommend attaching a weatherproof identification tag to each load cell to avoid mix-ups.
+   If the load cell is damaged or replaced, a calibration must be done. 
+   
+   ### Calibration Process
+   Calibration is performed manually:
+   1.	Use a significant calibration weight to determine the slope coefficient (a). We recommend a default of limited weight of 1 kg to simplify manipulations and reduce the risk of injury.
+   2.	Ensure the calibration weight does not exceed the load cell’s rated capacity. The TAL220 model is available in capacities from 3 to 50 kg.
+   
+   ### Coefficient File Workflow
+   The source code repository includes a folder named “Coeff_gen”, containing all necessary files for creating a calibration coefficient file compatible with the main Arduino code.
+   1.	coefficients_source.xls – Input file
+   o	Fill this Excel file manually following the embedded instructions.
+   o	This file holds the raw calibration values (a, b) for each load cell.
+   2.	runMe.py – Processing script
+   o	This Python script reads coefficients_source.xls and generates the output file coefficients.h.
+   3.	coefficients.h – Output file
+   o	Contains an 8 × 2 float matrix with the coefficients (a, b) for up to 8 I²C channels (maximum 8 strain sensors).
+   o	The matrix size must remain constant. Empty channels must contain zeros.
+   o	No default values are provided because:
+   1.	Calibration values—especially b—vary significantly between units.
+   2.	Default values might mislead users into thinking calibration has already been completed.
+   
+   Calibration values can only be updated by compiling again the source code; it currently cannot be done via a Serial Monitor command.
+
 
   ## RJ45 CONNECTORS
 
@@ -226,17 +257,17 @@ Similarly, the input decoupling capacitors, by stabilizing the input voltage, ea
 
   ## EFFECTIVE CURRENT ALGORITHMS
 
-- The RDL has three algorithms for the measurement of current. The algorithm affects both the sampling method and the data treatment. It does not affect the current sensor itself. For this reason, the detailed description of the algorithms can be found in the SAD (Sofware Architecture Documentation).
+- The RDL has three algorithms for the measurement of current. The algorithm affects both the sampling method and the data treatment. It does not affect the current sensor itself. 
 
     ### DC AVERAGE
 
   - A simple arithmetic average of a variable-size sample. Useful for DC currents only.
 
-  ### SINE RMS
+  ### SINE RMS (NOT IMPLEMENTED YET)
 
   - Sine RMS (Root Mean Square) is used for AC measurements where the waveform is predominantly sinusoidal. This method provides an efficient computation by leveraging the properties of a sine wave. It rectifies the signal and applies a correction factor.
 
-  ### TRUE RMS
+  ### TRUE RMS  (NOT IMPLEMENTED YET)
 
   -  True RMS calculation provides accurate readings for AC currents regardless of waveform shape, making it essential for electronic applications involving non-linear loads.
   - The True RMS algorithm, and to a lesser extent the Sine RMS, require high-speed data processing. The limited Arduino Nano speed therefore poses a limit to the maximum allowable frequency of AC signal that can be measured.
