@@ -23,6 +23,9 @@ void startMessage(){
     Serial.println(F(" ms"));  
     Serial.println(F("For list of commands, type 'help'"));
     Serial.print(F("Extension wire, C1 to C8 (ohms): "));
+//    Serial.println(current_offset);
+//    Serial.println(current_T_channel);
+//    Serial.println(current_T_ref);
 
     if (headerDisplay == 1){
         for(int i=0; i<8; i++){

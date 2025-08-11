@@ -9,8 +9,8 @@ void terosFunc(uint8_t channel){
 
   digitalWrite(enable_V_MUX, LOW);               // toggle pin to LOW value in order turn on the V_MUX
   setMultiplexer(channel);                       // select the multiplexer channel
-  pcf1.digitalWrite(channel, LOW);               // turn LED on by sinking current to ground
-  pcf2.digitalWrite(channel, HIGH);              // turn LED on by sinking current to ground
+  pcf1.digitalWrite(channel, LOW);               // turn on by sinking current to ground
+  pcf2.digitalWrite(channel, HIGH);              // turn on by sinking current to ground
   delay(500); 
   bool readMode = 1;
   float sensorValue = getVoltFunc(readMode);           // read the voltage while assuming a 5000mV voltage reference
@@ -24,8 +24,8 @@ void terosFunc(uint8_t channel){
   Serial.print(VWC,3);  //mVolts
   spacing1(VWC,11);  // since a bonus decimal is printed, the spacing requirement is reduced by one unit.
 
-  pcf1.digitalWrite(channel, HIGH); //turn LED off by turning off sinking transistor
-  pcf2.digitalWrite(channel, LOW);  //turn LED off by turning off sinking transistor
+  pcf1.digitalWrite(channel, HIGH); //turn off by turning off sinking transistor
+  pcf2.digitalWrite(channel, LOW);  //turn off by turning off sinking transistor
 
   //WATER TENSION CALCULATION
   float teta = VWC;           // Transfer TEROS value to phi
