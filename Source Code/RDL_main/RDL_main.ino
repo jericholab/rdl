@@ -14,10 +14,10 @@ bool headerDisplay = 1;                 // optional display of headerprint (1 = 
 bool timeDisplay = 1;                   // optional display of timestamp (1 = yes, 0 = no)
 bool idDisplay = 1;                     // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay = 1;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
-bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
+bool ohmDisplay = 1;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
 bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
 bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
@@ -25,8 +25,9 @@ bool ControlSignal = 0;                 // optional activation of the signal con
 bool periodicHeader = 1;                // optional activation of a printed header every given interval
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors (1 = yes, 0 = no)
 bool dstRegion = 1;                     // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
+bool T_readMode = 0;                    // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
 int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
-int i2cChannels_strain[] = {1,2,3,4};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
+int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int i2cChannels_current[] = {1,2,3};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
 int channels_teros[] = {0};           // define array to store the list of analog channels dedicated to TEROS sensors (channels 0 to 7)
@@ -65,12 +66,11 @@ uint8_t numberV10 = numberV;            // (ms) Temporary storage variable for q
 uint8_t units_T = 0;                    // default temperature units are Celcius (0).
 
 Adafruit_NAU7802 nau_ada;                // Create instance of the Adafruit_NAU7802 class (Adafruit library)       /////// TEMPORARY COMMENTED TO WORK ON CURRENT SENSOR (SPARKFUN)
-//NAU7802 nau_current;                   //Create instance of the NAU7802 class (Sparkfun library)
 Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class dedicated to the current measurements (Sparkfun library)
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
-#define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)    ////////// The resistance of the second MUX will have to be added.
+#define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)    ////////// The resistance of the second MUX will have to be added. Can we just use 140 ohm?
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
@@ -257,8 +257,8 @@ void loop(void) {
       for (int i = 0; i < (numberC); i++) {
         setMultiplexer(i);                            // select the multiplexer channel
         int channel = i + 1;                          //channel being measured
-        bool readMode = 0;                            // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
-        struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C, channel, readMode ); //call 'thermistor' function and store results in a structure
+
+        struct STRUCT1 valeurs = thermistor(GEN_A, GEN_B, GEN_C, channel, T_readMode ); //call 'thermistor' function and store results in a structure
         arrayV[i] = valeurs.t;                        // storing temperature to array
         arrayR[i] = valeurs.o;                        // storing resistances (ohm) to array
       }
@@ -391,6 +391,9 @@ void loop(void) {
     printHeader();
     time2 = millis();                               //each time a reading is taken, time1 is reset
   }
+
+  //Serial.print(freeMemory());  // print how much RAM is available in bytes.
+  
   watchSerial(); //  Watching for incoming commands from the serial port
 
   // this block must be positionned right before the decision to read or not the group of thermistors (timePassed>= ReadInterval)
