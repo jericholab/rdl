@@ -99,7 +99,8 @@ It was therefore decided to start with an open-source carrier board for the prop
 
 
 ## CALIBRATION OVERVIEW
-
+- To calibrate a probe-meter pair, the RDL must be loaded with a specific program, not the main RDL code. This specific program, called Ardunio-I2C-pH-sample-code-autorequest-v2.ino, is available in the calibration folder of the repo.
+- This program assumes that the EZO-pH meter is already in I2C mode (it can operate in I2C or UART mode). To switch between the two modes, you can use two tiny programs located in: Source Code\Calibration-pH
 - For detailed instructions about the pH meter calibration please refer to the Jericho calibration procedure available on Github.
 - For pH measurements, the calibration is done with three buffer solutions that cover a large range of values. The three-point calibration is required because the response of the pH probe is not perfectly linear. The default pH values are 4, 7, 10 for pre-mixed liquid buffer solution. For powders, the pH values most often seen are 4.01, 6.86, 9.18. These powders are mixed with distilled water before use. Buffer powders have different pH values because they do not use the same chemicals. The limited range of the buffer solutions means that accuracy outside this range is unknown. The powders are generally more economic, more practical for transportation and more available. Their accuracy is judged sufficient (+/- 0.01 pH @ 25°C). Once mixed with water however, they have a limited shelf-life (hours to days). 
 - The solution temperature must be known at calibration time. And the reference value must be adjusted in the code. For example, if the solution temperature is X Celcius, the nominal pH value of 4.01 is 4.05, and this value must be entered in the code as the reference value for the middle point. 
