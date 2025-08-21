@@ -1,109 +1,308 @@
-#jericholab rdl - test script with python with daily file 
+# jericholab rdl - per-file Dropbox sync with round-trip verification (no batch folders)
 #!/usr/bin/env python3
-import serial
-from datetime import datetime
-import schedule
+import os
+import json
 import time
 import shutil
-import os   
 import logging
-import json
-import numpy as np
-import matplotlib.pyplot as plt
+import hashlib
+import random
+import subprocess
+from datetime import datetime
+import schedule
 
-# Load the configuration file
+# ---- external: your lightweight connectivity probe ----
+from internetAccess import internet_on  # must NOT execute loops at import
+
+# =============================
+# Config & working directory
+# =============================
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
-    print(json.dumps(config, indent=4))  # Print the config file
-    
-os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
+    print(json.dumps(config, indent=4))
 
-#configure the logging module
-#logging.basicConfig(filename="log_internal.txt", filemode="w", level=logging.DEBUG)
-#logging.info("This message will be logged to the file")
+print("RDL-python-syncing to Dropbox script (per-file, hardened)...")
 
+# ---- paths (unchanged) ----
+SOURCE  = "./logging-folder/2_tosync/"
+TRANSIT = "./logging-folder/3_transit/"
+SYNCED  = "./logging-folder/4_synced/"
 
-print("RDL-python-syncing to Dropbox script...")
+CLOUD_BASE  = f"Professional/WIRED/{config['SITE']}"
+CLOUD_FINAL = f"{CLOUD_BASE}"  # final destination in Dropbox
+UPLOADER    = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh"
 
-source_path = "./logging-folder/2_tosync/"  #relative path"
-transit_path = "./logging-folder/3_transit/"  #relative path"
-destination_path = "./logging-folder/4_synced/"
-#destination_path = "/media/orangepi/SD_CARD1/"
-#destination_path = f"/media/orangepi/{config['SD_CARD_NAME']}/"
-     
-def syncToDropbox():
-    
-    remove_empty_dirs(source_path)  #remove any empty folders created before sync
-    
-    print("move from /tosync to /transit folder")
-    sync(source_path, transit_path)    #copy the files from local folders "/tosync" to "/transit"
-    
-    print("syncToDropbox")
-    print("   ")
-    from subprocess import call
-    #localSide1 = "./logging-folder/transit/RDL"
-    localSide1 = transit_path + "/RDL"
-    cloudSide1 = f"Professional/WIRED/{config['SITE']}"
-    #localSide2 = "./logging-folder/transit/cameras"
-    localSide2 = transit_path + "/cameras"
-    cloudSide2 = f"Professional/WIRED/{config['SITE']}"
-    #localSide3 = "./logging-folder/transit/internet"
-    localSide3 = transit_path + "/internet"
-    cloudSide3 = f"Professional/WIRED/{config['SITE']}"
-    Upload = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
-    #Upload = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide1 +" " + cloudSide1
-    call ([Upload], shell=True)
-    #Upload2 = "/home/orangepi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
-    Upload2 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide2 +" " + cloudSide2
-    call ([Upload2], shell=True)
-    Upload3 = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh -s upload" + " " + localSide3 +" " + cloudSide3
-    call ([Upload3], shell=True)    
-    
-    print("move from /transit to /synced")
-    sync(transit_path, destination_path)    #copy the files from local folders "/transit" to "/synced"
-    remove_empty_dirs(transit_path)  #remove any transit folder that became empty
-    
-def sync(src, dest):
-    # If the destination directory doesn't exist, create it.
-    if not os.path.exists(dest):
-        os.makedirs(dest)
+# ---- logging (file optional) ----
+logging.basicConfig(
+    filename="sync.log",
+    filemode="a",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s: %(message)s"
+)
 
-    # Walk through all files and directories in the source directory.
-    for item in os.listdir(src):
-        s = os.path.join(src, item)
-        d = os.path.join(dest, item)
+# =============================
+# Utilities
+# =============================
 
-        # If item is a directory, recurse into it
-        if os.path.isdir(s):
-            sync(s, d)
-        else:
-            # Else (if the item is a file), copy it then remove it ca
-            if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
-                print(s)
-                shutil.copy2(s, d) #copy
-                os.remove(s)  #delete
-                time.sleep(1) #to avoid error due to fast looping
+def run_uploader(args):
+    """Run dropbox_uploader.sh with args list; return (ok, stdout, stderr)."""
+    cmd = [UPLOADER, "-s"] + args
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    logging.info("CMD %s\nOUT:\n%s\nERR:\n%s", " ".join(cmd), p.stdout, p.stderr)
+    return (p.returncode == 0, p.stdout, p.stderr)
+
+def files_in_tree(root):
+    """Yield (abs_path, rel_path_under_root) for all files under root."""
+    for r, _, files in os.walk(root):
+        for f in files:
+            fp = os.path.join(r, f)
+            rel = os.path.relpath(fp, root).replace("\\", "/")
+            yield fp, rel
+
+def sha256_file(path, buf=1<<20):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        while True:
+            b = f.read(buf)
+            if not b:
+                break
+            h.update(b)
+    return h.hexdigest()
 
 def remove_empty_dirs(path):
-    # Walk through the directory, bottom-up (to delete nested empty folders first)
+    """Delete empty directories under path (bottom-up)."""
     for root, dirs, files in os.walk(path, topdown=False):
-        for dir_ in dirs:
-            dir_path = os.path.join(root, dir_)
-            # If the directory is empty, remove it
-            if not os.listdir(dir_path):
-                print(f"Removing empty folder: {dir_path}")
-                os.rmdir(dir_path)
-    
-schedule.every(10).seconds.do(syncToDropbox)
-#schedule.every(1).minutes.do(syncToDropbox)
+        for d in dirs:
+            p = os.path.join(root, d)
+            try:
+                if not os.listdir(p):
+                    os.rmdir(p)
+                    print(f"Removing empty folder: {p}")
+            except Exception as e:
+                logging.warning("Failed to remove dir %s: %s", p, e)
 
+def move_all(src, dest):
+    """Move all entries from src into dest (preserves subtrees)."""
+    os.makedirs(dest, exist_ok=True)
+    for name in os.listdir(src):
+        shutil.move(os.path.join(src, name), os.path.join(dest, name))
+
+# =============================
+# Cloud helpers (Dropbox-Uploader)
+# =============================
+
+def cloud_mkdir(path):
+    """Idempotent: create folder on Dropbox (ignore 'already exists')."""
+    run_uploader(["mkdir", path])
+    return True
+
+def ensure_cloud_parents(dst_path):
+    """
+    Ensure parent directories for a Dropbox destination path exist.
+    Example: ensure parents for '.../RDL/USB0/foo/bar.txt' creates .../RDL and .../RDL/USB0/foo
+    """
+    parts = dst_path.strip("/").split("/")
+    if len(parts) <= 1:
+        return
+    acc = ""
+    for part in parts[:-1]:  # up to the parent
+        acc = f"{acc}/{part}" if acc else part
+        cloud_mkdir(acc)
+
+def cloud_download(src_cloud_path, dest_local_path):
+    ok, _, err = run_uploader(["download", src_cloud_path, dest_local_path])
+    if not ok:
+        logging.error("Download failed: %s -> %s (%s)", src_cloud_path, dest_local_path, err)
+    return ok
+
+def cloud_move_with_parents(src, dst):
+    """
+    Move src -> dst on Dropbox. If it fails (e.g., missing parent), create parents and retry once.
+    """
+    ok, _, err = run_uploader(["move", src, dst])
+    if ok:
+        return True
+    ensure_cloud_parents(dst)
+    ok2, _, err2 = run_uploader(["move", src, dst])
+    if not ok2:
+        logging.error("Move failed: %s -> %s\nERR1:%s\nERR2:%s", src, dst, err, err2)
+    return ok2
+
+# =============================
+# Per-file pipeline
+# =============================
+
+def upload_one_file(src_abs, relpath, retries=3, drop_sha_sidecar=True):
+    """
+    Per-file pipeline (no batch folders):
+      1) Upload local file to a temp path on Dropbox: /<relpath>.tmp_<rand>
+      2) Round-trip download and SHA-256 verify against local
+      3) Server-side rename temp -> final (/<relpath>) [atomic exposure to consumers]
+      4) Optionally upload a .sha256 sidecar
+    Returns True on success; False on failure (caller will retry next run).
+    """
+    # Compute local hash once
+    expected_sha = sha256_file(src_abs)
+
+    # Build cloud paths
+    rel_dir  = os.path.dirname(relpath).replace("\\", "/")
+    base     = os.path.basename(relpath)
+    tmp_name = base + f".tmp_{random.randint(1000,9999)}"
+
+    # Final and temporary destinations on Dropbox
+    dst_final = f"{CLOUD_FINAL}/{relpath}".replace("\\", "/")
+    dst_tmp   = f"{CLOUD_FINAL}/{rel_dir}/{tmp_name}".rstrip("/")
+
+    for attempt in range(1, retries + 1):
+        try:
+            # Ensure parent folders (for tmp path)
+            ensure_cloud_parents(dst_tmp)
+
+            # Upload to temp destination
+            ok, _, err = run_uploader(["upload", src_abs, dst_tmp])
+            if not ok:
+                logging.error("[attempt %d] upload failed: %s -> %s (%s)", attempt, src_abs, dst_tmp, err)
+                time.sleep(1.0)
+                continue
+
+            # Round-trip verify: download the just-uploaded temp object and compare hash
+            tmp_local = src_abs + ".roundtrip"
+            try:
+                if not cloud_download(dst_tmp, tmp_local):
+                    time.sleep(1.0)
+                    continue
+                got_sha = sha256_file(tmp_local)
+            finally:
+                try:
+                    os.remove(tmp_local)
+                except:
+                    pass
+
+            if got_sha.lower() != expected_sha.lower():
+                logging.error("[attempt %d] hash mismatch for %s (got %s expected %s)",
+                              attempt, relpath, got_sha, expected_sha)
+                # clean temp object to avoid litter
+                run_uploader(["delete", dst_tmp])
+                time.sleep(1.0)
+                continue
+
+            # Commit: rename temp -> final (atomic exposure)
+            if not cloud_move_with_parents(dst_tmp, dst_final):
+                # if commit fails, try cleaning temp for safety
+                run_uploader(["delete", dst_tmp])
+                time.sleep(1.0)
+                continue
+
+            # Optional: upload .sha256 sidecar (helps downstream consumers)
+            if drop_sha_sidecar:
+                sha_text  = expected_sha + "  " + base + "\n"
+                sha_local = src_abs + ".sha256"
+                with open(sha_local, "w") as sf:
+                    sf.write(sha_text)
+                try:
+                    sha_dest = dst_final + ".sha256"
+                    ensure_cloud_parents(sha_dest)
+                    ok_sha, _, err_sha = run_uploader(["upload", sha_local, sha_dest])
+                    if not ok_sha:
+                        logging.warning("sidecar upload failed: %s -> %s (%s)", sha_local, sha_dest, err_sha)
+                finally:
+                    try:
+                        os.remove(sha_local)
+                    except:
+                        pass
+
+            return True
+
+        except Exception as e:
+            logging.exception("[attempt %d] unexpected error on %s: %s", attempt, relpath, e)
+            time.sleep(1.0)
+
+    return False
+
+# =============================
+# Core sync
+# =============================
+
+def syncToDropbox():
+    # ---- lock: prevent overlaps ----
+    lock = "/home/pi/SHELF3/rdl_sync.lock"
+    if os.path.exists(lock):
+        logging.warning("Another sync run is active; skipping.")
+        return
+    open(lock, "w").close()
+
+    try:
+        # Housekeeping on local trees
+        remove_empty_dirs(SOURCE)
+
+        # ---- pre-flight internet ----
+        if not internet_on():
+            print("Offline. Will retry in 60 sec.")
+            logging.warning("Offline pre-check. Aborting this run.")
+            time.sleep(60)
+            return
+
+        # ---- stage new files: /2_tosync -> /3_transit (additive) ----
+        if any(os.scandir(SOURCE)):
+            print("Move from /tosync to /transit")
+            move_all(SOURCE, TRANSIT)
+        else:
+            # nothing new; also tidy transit if empty dirs remain
+            remove_empty_dirs(TRANSIT)
+
+        if not any(os.scandir(TRANSIT)):
+            print("Nothing to sync.")
+            return
+
+        # ---- per-file upload directly into /root with verification ----
+        files_ok = 0
+        files_fail = 0
+        bytes_ok = 0
+
+        # Walk files in TRANSIT (preserve hierarchy in relpath)
+        to_move_local = []  # (src_abs, dest_abs_in_synced, size)
+
+        for absf, rel in files_in_tree(TRANSIT):
+            # Skip any temporary or sidecar artifacts inadvertently left behind
+            if rel.endswith(".roundtrip") or rel.endswith(".tmp") or rel.endswith(".sha256"):
+                continue
+
+            ok = upload_one_file(absf, rel, retries=3, drop_sha_sidecar=False)
+            if ok:
+                st = os.stat(absf)
+                dest_abs = os.path.join(SYNCED, rel)
+                to_move_local.append((absf, dest_abs, st.st_size))
+                files_ok += 1
+                bytes_ok += st.st_size
+            else:
+                files_fail += 1
+
+        # ---- local promotion: move only successfully-uploaded files ----
+        for src_abs, dst_abs, _size in to_move_local:
+            os.makedirs(os.path.dirname(dst_abs), exist_ok=True)
+            shutil.copy2(src_abs, dst_abs)
+            os.remove(src_abs)
+
+        remove_empty_dirs(TRANSIT)
+
+        # Metrics
+        logging.info("Per-file sync round completed. ok=%d fail=%d bytes_ok=%d", files_ok, files_fail, bytes_ok)
+        print(f"Sync round: ok={files_ok} fail={files_fail} MB_ok={bytes_ok/1e6:.2f}")
+
+    finally:
+        try:
+            os.remove(lock)
+        except:
+            pass
+
+# =============================
+# Scheduler
+# =============================
+# Run every 30 seconds (your earlier cadence)
+schedule.every(30).seconds.do(syncToDropbox)
 
 while True:
     print("running...")
     schedule.run_pending()
-    time.sleep(10) #to avoid super fast looping
-
-
-    
-    
-
+    time.sleep(5)
