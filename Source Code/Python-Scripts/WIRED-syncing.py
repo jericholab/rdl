@@ -5,6 +5,7 @@ import json
 import time
 import shutil
 import logging
+import sys
 import hashlib
 import random
 import subprocess
@@ -32,14 +33,23 @@ SYNCED  = "./logging-folder/4_synced/"
 CLOUD_BASE  = f"Professional/WIRED/{config['SITE']}"
 CLOUD_FINAL = f"{CLOUD_BASE}"  # final destination in Dropbox
 UPLOADER    = "/home/pi/Dropbox-Uploader/dropbox_uploader.sh"
+LOG_FILE  = "logging-folder/sync.log"
+MAX_BYTES = 10 * 1024 * 1024  # 10 MiB MAX FOR LOG FILE
 
-# ---- logging (file optional) ----
+#---- logging (file optional) ----
 logging.basicConfig(
-    filename="sync.log",
+    filename=LOG_FILE,
     filemode="a",
     level=logging.INFO,
     format="%(asctime)s %(levelname)s: %(message)s"
 )
+
+# logging.basicConfig(
+#     level=logging.INFO,
+#     handlers=[logging.StreamHandler(sys.stdout)],
+#     format="%(asctime)s %(levelname)s: %(message)s"
+# )
+
 
 # =============================
 # Utilities
@@ -87,6 +97,16 @@ def move_all(src, dest):
     os.makedirs(dest, exist_ok=True)
     for name in os.listdir(src):
         shutil.move(os.path.join(src, name), os.path.join(dest, name))
+
+def prune_log_if_big(path=LOG_FILE, max_bytes=MAX_BYTES):
+    """Truncate the log file to zero bytes if it exceeds max_bytes."""
+    try:
+        if os.path.exists(path) and os.path.getsize(path) > max_bytes:
+            # Truncate in-place; safe even if a FileHandler has the file open.
+            open(path, "w").close()
+    except Exception:
+        pass  # per your request: no extra checks / failures ignored
+
 
 # =============================
 # Cloud helpers (Dropbox-Uploader)
@@ -305,4 +325,7 @@ schedule.every(30).seconds.do(syncToDropbox)
 while True:
     print("running...")
     schedule.run_pending()
-    time.sleep(5)
+    prune_log_if_big()
+    time.sleep(15)
+
+
