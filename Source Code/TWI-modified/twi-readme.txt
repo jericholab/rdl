@@ -50,10 +50,5 @@ STEP-BY-STEP PROCEDURE (WINDOWS)
 STEP-BY-STEP PROCEDURE (RASPBERRY PI)
 1. Delete the Wire folder located at /tmp/arduino_build_5381/libraries/Wire/
 2. Copy the new version of twi.c and overwrite the file located at /home/pi/.local/share/arduino-1.8.19/hardware/arduino/avr/libraries/Wire/src/utility/twi
-5. Compile the Arduino script again.
+3. Compile the Arduino script again.
 
-STEP-BY-STEP PROCEDURE (RASPBERRY PI)
-1.1. Delete the temporary Wire folder at  /tmp/arduino_build_5381/libraries/Wire/
-2. Modify and overwrite the twi.c/twi.h files in Wire folder at /home/pi/.local/share/arduino-1.8.19/hardware/arduino/avr/libraries/Wire/
-3. Copy the new /Wire folder to: C:\Users\newBlue\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\libraries\Wire\src\utility\twi
-4. Compile the Arduino script again.
