@@ -70,7 +70,7 @@ Adafruit_NAU7802 nau_current;           //Create instance of the NAU7802 class d
 Adafruit_ADS1115 ads1115;              //Create an instance of ADS1115
 Adafruit_SHT4x sht4 = Adafruit_SHT4x();  //creates an object named sht4 of the class Adafruit_SHT4x, using its default constructor (i.e. Adafruit_SHT4x).
 RTC_DS3231 rtc;                        // define the RTC model number used by the RTClib.h
-#define R_MUX 70                       // Internal resistance of a single CD74 multiplexer (ohms)    ////////// The resistance of the second MUX will have to be added. Can we just use 140 ohm?
+#define R_MUX 140                       // Internal resistance of a single CD74 multiplexer (two passages of 70 ohms each)
 #define NUMSAMPLES 10                  // Reduced sample size for the ADS1115. It might be necessary to give NUMSAMPLES as input of function voltFunc to have flexibility.
 float V_ref = 5;                       // calibration value for voltage measurements with channel A1
 bool SHT4_present = 0;                 // initialize the variable that will indicate if a sensor is present
