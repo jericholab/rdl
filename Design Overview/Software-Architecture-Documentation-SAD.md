@@ -84,7 +84,7 @@ Documentation license: CC-BY-SA.
   style="width:50%;">
     </p>
 </figure>
-<p align="center"> 3D view of the camera holder (v10)
+<p align="center"> High-level flow diagram of the RDL system
 
 
 
