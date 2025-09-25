@@ -80,7 +80,7 @@ Documentation license: CC-BY-SA.
 
 <figure>
 <p align="center">
-  <img src="../Design Overview/images/camera_holder_v10.JPG"
+  <img src="../Design Overview/images/flowchart.JPG"
   style="width:50%;">
     </p>
 </figure>
