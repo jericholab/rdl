@@ -80,10 +80,11 @@ Documentation license: CC-BY-SA.
 
 <figure>
 <p align="center">
-  <img src="../Design Overview/images/RDL-SAD-High-level-Flowchart.JPG"
-  style="width:80%;">
+  <img src="../Design Overview/images/camera_holder_v10.JPG"
+  style="width:50%;">
     </p>
 </figure>
+<p align="center"> 3D view of the camera holder (v10)
 
 
 
