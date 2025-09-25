@@ -1,0 +1,11 @@
+[Unit]
+Description=WIRED Reolink2
+After = network.target
+[Service]
+#ExecStart= sudo -u orangepi python3 /home/orangepi/Desktop/SHELF3/WIRED-logging-Reolink2.py
+#ExecStart= sudo -u pi python3 ../WIRED-logging-Reolink2.py
+ExecStart= sudo -u pi python3 /home/pi/SHELF3/WIRED-logging-Reolink2.py
+Restart = always
+RestartSec=60
+[Install]
+WantedBy=multi-user.target

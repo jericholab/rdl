@@ -24,11 +24,15 @@ import os  # library to interact with the operating system
 import glob  #library provides a way to find paths in the system. it recognizes characters like '*' that means 'every'.
 from PIL import Image, ImageFont, ImageDraw
 from pathlib import Path
+import time
 from time import sleep
 from datetime import datetime
 import json
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use a non-interactive backend to prevent GUI issues
 import matplotlib.pyplot as plt
+
 
 from seekcamera import (
     SeekCameraIOType,
@@ -37,7 +41,29 @@ from seekcamera import (
     SeekCameraFrameFormat,
 )
 
+# Load the configuration file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+    print(json.dumps(config, indent=4))  # Print the config file
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))  #change working directory to the directory containing the script
+
+import time
+
+class Timer:
+    def __init__(self, delay):
+        self.delay = delay  # Delay in seconds
+        self.start_time = time.time()
+        self.first_run = True  # A flag to allow immediate first run
+
+    def has_expired(self):
+        if self.first_run:
+            self.first_run = False  # After the first run, the flag is set to False
+            return True
+        return (time.time() - self.start_time) >= self.delay
+
+    def reset(self):
+        self.start_time = time.time()
 
 
 def on_frame(camera, camera_frame, file):
@@ -55,7 +81,12 @@ def on_frame(camera, camera_frame, file):
         but in this case it is a reference to the open CSV file to which
         to log data.
     """
+        
+    # Check if the timer has expired
     if True:
+    #if timer.has_expired():
+        # Timer has expired, process the frame and reset the timer
+        
         now = datetime.now()
         now = now.strftime(formatExpected)
         dailyFolderNow = datetime.now()
@@ -63,9 +94,14 @@ def on_frame(camera, camera_frame, file):
         folder_name = setUpFolders() #rerun the function to create the daily folder, if applicable
         
         try:
-            csvName = Path('./' + folder_name + '/' + camera.chipid +'-'+ str(now)).with_suffix('.csv')
+            if timer.has_expired():
+                csvName = Path('./' + folder_name + '/' + camera.chipid +'-'+ str(now)).with_suffix('.csv')
+                # Reset the timer after processing
+                timer.reset()
+            else:
+                csvName = Path('/home/pi/temp.csv')
+                #csvName = Path('/home/pi/' +'temp-'+ str(now)).with_suffix('.csv')
             file = open(csvName, "w")  # Open a new CSV file with the unique camera chip ID embedded.
-
         except OSError as e:
             print("Failed to open file: %s" % str(e))
             return
@@ -83,9 +119,18 @@ def on_frame(camera, camera_frame, file):
         s = os.path.join('./', csvName)
         print(s)
         thermography_plot(s)
+         
         # Wait ten seconds in between frames
-        #sleep(10.0)
         sleep(60.0)
+        #sleep(60.0)
+        
+
+        
+    #else:
+        # Timer hasn't expired yet, do nothing
+        #print("Timer not expired, skipping frame processing.")
+       # frame = camera_frame.thermography_float   #we dont want to print csv/jpeg but we want to keep the camera active (prevent bug)
+        
 
 def on_event(camera, event_type, event_status, _user_data):
     """Async callback fired whenever a camera event occurs.
@@ -136,7 +181,7 @@ def setUpFolders():
     dailyFolderNow = datetime.now()
     dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
     level1 = "./logging-folder"
-    level2 = level1 + "/tosync"
+    level2 = level1 + "/2_tosync"
     level3 = level2 + "/cameras/"
     level4 = level3 + CAMERA_NAME
     folder_name = level4 + "/" + dailyFolderNow
@@ -172,7 +217,7 @@ def thermography_plot(csv_filename):
         plt.ylabel('Row Index')
 
         # Define the output directory
-        output_directory = './logging-folder/tosync/cameras/infrared1/'
+        output_directory = './logging-folder/2_tosync/cameras/infrared1/'
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)  # Create the directory if it doesn't exist
 
@@ -206,6 +251,7 @@ def main():
     global dailyFolderNow
     global formatDailyFolder
     global folder_name
+    global timer
     #formatExpected = "%Y-%m-%d"  #log into different file every day
     #formatExpected = "%Y-%m-%d_%H"  #log into different file every hour
     #formatExpected = "-%Y-%m-%d_%H%M"  #log into different file every minute
@@ -215,7 +261,10 @@ def main():
     formatDailyFolder = "%Y-%m-%d"  #daily folder
     dailyFolderNow = dailyFolderNow.strftime(formatDailyFolder)
     folder_name = setUpFolders()  # Run once
-    
+    delay= config['THERMAL_CAM_INTERVAL_SEC']  #get the interval from json config file
+    # Initialize the timer for a 30-minute delay
+    #timer = Timer(delay=60)  # 10-minute timer
+    timer = Timer(delay)  #timer
     # Create a context structure responsible for managing all connected USB cameras.
     # Cameras with other IO types can be managed by using a bitwise or of the
     # SeekCameraIOType enum cases.

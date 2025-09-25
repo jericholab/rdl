@@ -1,0 +1,10 @@
+[Unit]
+Description=WIRED InternetAccessLog
+After = network.target
+[Service]
+ExecStart= sudo -u pi python3 /home/pi/SHELF3/WIRED-internetAccess.py
+WorkingDirectory=/home/pi/SHELF3
+Restart = always
+RestartSec=60
+[Install]
+WantedBy=multi-user.target

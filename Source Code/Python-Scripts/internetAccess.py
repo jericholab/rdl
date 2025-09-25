@@ -28,10 +28,13 @@ def log_internet_status():
         # Print to terminal window
         print(f"{current_time} - {status}\n")
 
-# Set the interval for checks (900 seconds = 15 minutes)
-interval = 60 #900
 
-while True:
-    log_internet_status()
-    # Wait for 15 minutes before the next check
-    time.sleep(interval)
+def main():
+    # runnable entry point (only when executed as a script)
+    interval = 60  # seconds
+    while True:
+        log_internet_status()
+        time.sleep(interval)
+
+if __name__ == "__main__":
+    main()

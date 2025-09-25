@@ -1,4 +1,4 @@
-#jericholab WIRED - test script to output reolink camera image hourly
+#jericholab WIRED - test script to output reolink camera image at fixed interval
 
 #import serial
 from datetime import datetime
@@ -43,7 +43,7 @@ def createFolder(folder_name):
         
 def setUpFolders():
     level1 = "./logging-folder"
-    level2 = level1 + "/tosync"
+    level2 = level1 + "/2_tosync"
     level3 = level2 + "/cameras/"
     level4 = level3 + CAMERA_NAME
     folder_name = level4 + "/" + dailyFolderNow
@@ -81,7 +81,8 @@ while True:
     if (now != then):
         takePicture()     
     
-    time.sleep(5) #to avoid super fast looping (in seconds)
+    #time.sleep(5) #to avoid super fast looping (in seconds)
+    time.sleep(900) #force a 15-min interval
     then = now
    
     

@@ -35,4 +35,3 @@ if [[ $confirm == [Yy] ]]; then
 else
     echo "Reboot canceled."
 fi
-
