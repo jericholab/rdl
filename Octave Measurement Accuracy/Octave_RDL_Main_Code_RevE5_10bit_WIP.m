@@ -1,6 +1,7 @@
 % RDL GNU Octave Main Code
 
-% Copyright 2022 Jericho Laboratory inc.
+% Copyright 2022-2025 Jericho Laboratory inc.
+
 % This program is free software: you can redistribute it and/or modify it under
 % the terms of the GNU General Public License as published by the Free Software
 % Foundation, either version 2 of the License, or (at your option) any later version.
@@ -46,14 +47,6 @@ Rs_uncertainty = 0.001 %ohm %manufacturer accuracy of the series resistor, as a 
 
 % OPTION 1: EVALUATE RDL PERFORMANCE WITH UNCALIBRATED THERMISTOR
 R_uncertainty=0.01 % [ohm/ohm] %assumption: commercial thermistor that has an uncertainty of 1% on the resistance value.
-
-% OPTION 2: EVALUATE RDL PERFORMANCE WITH CALIBRATED THERMISTOR (TO BE DONE)
-%With the Jericho calibrated sensors, the uncertainty is not a constant, but varies due to 3 different accuracy baths
-%A linearized function then interpolates the data point to define the uncertainty over the full range
-%Note: ADC value 0 is associated with 0V and max ADC value (ex: 1023) is associated with Vcc (ex: 3.3V)
-R_calib_uncertainty_T1 = 0.1;   %Reference bath uncertainty for the ice bath
-R_calib_uncertainty_T2 = 0.2;   %Reference bath uncertainty for the warm bath
-R_calib_uncertainty_T3 = 0.1;   %Reference bath uncertainty for the steam point
 
 % - - - - - - - - - - - - - - - - - - - - - -
 
