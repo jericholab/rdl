@@ -15,10 +15,10 @@ bool timeDisplay = 1;                   // optional display of timestamp (1 = ye
 bool idDisplay = 1;                     // optional display of identification number of measurement (1 = yes, 0 = no)
 bool tDisplay = 1;                      // optional measurement and display of temperature/illuminance values (1 = yes, 0 = no)
 bool ohmDisplay = 0;                    // optional display of probes resistance values (ohm) (1 = yes, 0 = no)
-bool SHT40Display = 0;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
+bool SHT40Display = 1;                  // optional measurement and display of i2c sensor values (1 = yes, 0 = no)
 bool voltDisplay = 0;                   // optional measurement and display of voltage reading values (1 = yes, 0 = no)
-bool currentDisplay = 1;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
-bool terosDisplay = 0;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
+bool currentDisplay = 0;                // optional measurement and display of True RMS current values (1 = yes, 0 = no)
+bool terosDisplay = 1;                  // optional measurement and display of Teros 10 meter reading values (soil humidity) (1 = yes, 0 = no)
 bool strainDisplay = 0;                 // optional measurement and display of strain gauge cell values (1 = yes, 0 = no)
 bool phDisplay = 0;                     // optional measurement and display of pH meter values (1 = yes, 0 = no)
 bool ControlSignal = 0;                 // optional activation of the signal control functions
@@ -26,7 +26,7 @@ bool periodicHeader = 1;                // optional activation of a printed head
 bool currentTComp = 1;                  // optional activation of a temperature compensation on the current sensors (1 = yes, 0 = no)
 bool dstRegion = 1;                     // define if you are in area where DST (Daylight Saving Time) is applied (1), or not (0).
 bool T_readMode = 0;                    // readMode ==0 (Nano ADC) and readMode == 1 (ADS1115 ADC)
-int i2cChannels_sht40[] = {1};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
+int i2cChannels_sht40[] = {8};          // define array to store the list of shield channels dedicated to air humidity sensors (channels 1 to 8)
 int i2cChannels_strain[] = {1};         // define array to store the list of shield channels dedicated to strain sensors  (channels 1 to 8)
 int i2cChannels_ph[] = {2};             // define array to store the list of shield channels dedicated to pH sensors  (channels 1 to 8)
 int i2cChannels_current[] = {1,2,3};        // define array to store the list of analog channels dedicated to current sensors (channels 0 to 7)
