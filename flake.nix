@@ -7,16 +7,19 @@
 
   outputs = { self, nixpkgs }:
       let 
-            system = "x86-64_linux";
-            pkgs = import nixpkgs { inherit system; };
-      in 
-      { 
+            system = "x86_64-linux";
+            pkgs   =  nixpkgs.legacyPackages.${system};
+      in { 
       devShells.${system}.default = pkgs.mkShell {
-            package = with pkgs; [
+            packages = with pkgs; [
                   arduino-cli
                   arduino-language-server
                   gcc
             ];
+            shellHook = ''
+                  echo "arduino environment"
+            '';
+ 
       };
   };
 }

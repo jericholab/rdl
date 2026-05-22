@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+setup.py
+examples/seekcamera-opencv.py
+examples/seekcamera-simple.py
+seekcamera/__init__.py
+seekcamera/_clib.py
+seekcamera/camera.py
+seekcamera/error.py
+seekcamera/version.py
+seekcamera_python.egg-info/PKG-INFO
+seekcamera_python.egg-info/SOURCES.txt
+seekcamera_python.egg-info/dependency_links.txt
+seekcamera_python.egg-info/requires.txt
+seekcamera_python.egg-info/top_level.txt
