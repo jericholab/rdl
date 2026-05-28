@@ -4,7 +4,7 @@
 // INPUT: none
 // OUTPUT: none
 uint32_t getI2Cfreq() {
-#if defined (ArDUINO_AVR_UNO)
+#if defined (ARDUINO_AVR_UNO)
   // Read the prescaler bits from TWSR
   uint8_t prescalerBits = (TWSR & 0x03);  // TWPS1:0
   uint8_t twbrValue     = TWBR;
@@ -18,12 +18,14 @@ uint32_t getI2Cfreq() {
 
   return freq;
 
-# elif defined(ARDUINO_AVR_NANO_EVERY)
-  uint8_t mbaudValue = TWOI.MBAUD;
-  uint32_t freq = F_CPU / (10 + (2 * (uint32_t)mbaudValue));
+# elif defined(__AVR_ATmega4809__)
+  uint8_t mbaudValue = TWI0.MBAUD;
+  // link for code regarding this equation
+  // https://onlinedocs.microchip.com/oxy/GUID-4E9DA219-611B-4772-B5D3-9ED908198864-en-US-16/GUID-18674A55-D327-41FE-9D35-FAB50EAD9B84.html?hl=25.3.2.2.1%2Cclock%2Cgeneration
+  uint32_t freq = F_CPU / (10 + (2UL * (uint32_t)mbaudValue));
   return freq;
 # else
-
+  return 0;
 #endif
 }
 

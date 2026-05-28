@@ -21,8 +21,9 @@
       void wire_clear_timeout_flag(){
             Wire.clearWireTimeoutFlag();
       }
-#elif defined(ARDUINO_AVR_NANO_EVERY)
+#elif defined(__AVR_ATmega4809__)
 #include<Wire.h>
+
       void wire_begin(void){
             Wire.begin(); 
       }
@@ -34,7 +35,6 @@
             return false;
       }
       void wire_clear_timeout_flag(){
-            void;
       }
 #else
       #error "Unsupported board target!"
